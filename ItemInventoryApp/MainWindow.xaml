@@ -5,8 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ItemInventoryApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="881.992" MinHeight="500" MinWidth="881.992">
     <Grid>
-        
+        <Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FFC10000" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <TabControl Margin="0,0,0,0">
+            <TabItem Header="Main View">
+                <Grid Background="#FF7A7A7A">
+                    <Grid Background="Aqua">
+                        <Button Content="Button" Width="75" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="35,0,0,50"/>
+
+                    </Grid>
+                    <Grid Background="Black" Margin="704,0,0,0">
+                        <Button Content="Button" Width="75" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,50"/>
+
+                    </Grid>
+                    <Grid Background="Bisque" Margin="150, 0, 150, 0">
+                        <Label TextBlock.FontSize="15" Background="Beige">ASTAOSDO</Label>
+                    </Grid>
+                    <!--<Canvas Margin="150,0,0,0">
+                        <Border BorderBrush="Black" BorderThickness="1" Height="100" Width="100"/>
+                    </Canvas>-->
+                </Grid>
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
     </Grid>
 </Window>
