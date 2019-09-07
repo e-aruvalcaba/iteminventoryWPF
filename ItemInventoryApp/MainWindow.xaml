@@ -20,18 +20,23 @@
                 <Grid Background="#FF7A7A7A">
                     <Grid Background="Aqua">
                         <Button Content="Button" Width="75" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="35,0,0,50"/>
-
                     </Grid>
                     <Grid Background="Black" Margin="704,0,0,0">
                         <Button Content="Button" Width="75" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,50"/>
-
                     </Grid>
                     <Grid Background="Bisque" Margin="150, 0, 150, 0">
-                        <Label TextBlock.FontSize="15" Background="Beige">ASTAOSDO</Label>
+                        <Canvas x:Name="MainCanvas">
+                            <!--<Border BorderBrush="Black" BorderThickness="1" Height="100" Width="100">
+                                --><!--<Label TextBlock.TextAlignment="Justify" Canvas.Left="10" Canvas.Top="100" Width="75">Espantapajaros de metal</Label>--><!--
+                            </Border>
+                            <TextBlock TextWrapping="WrapWithOverflow"  TextBlock.FontSize="9" Canvas.Top="100" Width="100" Height="30" TextAlignment="Center" ToolTip="Orden de Trompo asd asd asdas das das das asd asdasd">
+                                          Orden de Trompo sazonada con pimienta
+                            </TextBlock>
+                            <Border BorderBrush="Black" BorderThickness="1" Height="100" Width="100" Margin="0,130,0,0">
+                                --><!--<Label TextBlock.TextAlignment="Justify" Canvas.Left="10" Canvas.Top="100" Width="75">Espantapajaros de metal</Label>--><!--
+                            </Border>-->
+                        </Canvas>
                     </Grid>
-                    <!--<Canvas Margin="150,0,0,0">
-                        <Border BorderBrush="Black" BorderThickness="1" Height="100" Width="100"/>
-                    </Canvas>-->
                 </Grid>
             </TabItem>
             <TabItem Header="TabItem">

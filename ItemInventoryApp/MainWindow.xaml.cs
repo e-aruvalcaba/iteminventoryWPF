@@ -23,6 +23,11 @@ namespace ItemInventoryApp
         public MainWindow()
         {
             InitializeComponent();
+            UIRuntime obj = new UIRuntime():
+            var lista = UIRuntime
+            MainCanvas.Children.Add;
         }
+
+
     }
 }
