@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ItemInventoryApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="881.992" MinHeight="500" MinWidth="881.992">
+        Title="MainWindow" Height="499.047" Width="692.267" MinHeight="500" MinWidth="881.992" SizeChanged="Window_SizeChanged">
     <Grid>
         <Rectangle>
             <Rectangle.Fill>
@@ -16,26 +16,47 @@
             </Rectangle.Fill>
         </Rectangle>
         <TabControl Margin="0,0,0,0">
+            <!--PESTAÑA MAIN VIEW-->
             <TabItem Header="Main View">
+                <!--GRID PRINCIPAL DE LA PESTAÑA-->
                 <Grid Background="#FF7A7A7A">
+                    <!--GRID DE IZQUIERDA-->
                     <Grid Background="Aqua">
                         <Button Content="Button" Width="75" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="35,0,0,50"/>
                     </Grid>
+                    <!--GRID DE DERECHA-->                    
                     <Grid Background="Black" Margin="704,0,0,0">
                         <Button Content="Button" Width="75" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,50"/>
                     </Grid>
+                    <!--GRID DEL CENTRO-->
                     <Grid Background="Bisque" Margin="150, 0, 150, 0">
-                        <Canvas x:Name="MainCanvas">
-                            <!--<Border BorderBrush="Black" BorderThickness="1" Height="100" Width="100">
-                                --><!--<Label TextBlock.TextAlignment="Justify" Canvas.Left="10" Canvas.Top="100" Width="75">Espantapajaros de metal</Label>--><!--
-                            </Border>
-                            <TextBlock TextWrapping="WrapWithOverflow"  TextBlock.FontSize="9" Canvas.Top="100" Width="100" Height="30" TextAlignment="Center" ToolTip="Orden de Trompo asd asd asdas das das das asd asdasd">
-                                          Orden de Trompo sazonada con pimienta
-                            </TextBlock>
-                            <Border BorderBrush="Black" BorderThickness="1" Height="100" Width="100" Margin="0,130,0,0">
-                                --><!--<Label TextBlock.TextAlignment="Justify" Canvas.Left="10" Canvas.Top="100" Width="75">Espantapajaros de metal</Label>--><!--
-                            </Border>-->
-                        </Canvas>
+                        <!--A PARTIR DE AQUI SE CLONARA EL SIGUIENTE DOCK PANEL-->
+                        <DockPanel x:Name="DockMain" Background="White" >
+                            <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel x:Name="MainViewer" Background="#FFC1C8E4">
+                                    <Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
+                                        <DockPanel Height="100" >
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
+                                                <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                            </Border>
+                                            <Canvas x:Name="CanvasDatos" Height="100" SizeChanged="CanvasDatos_SizeChanged">
+                                                <TextBlock Padding="5">
+                                                    Tacos al Vapor $ 35
+                                                </TextBlock >
+                                                <TextBlock x:Name="TextoDescripcion" Height="70" Width="348" Padding="5" Margin="0,30,0,0" TextWrapping="WrapWithOverflow">
+                                                    5 Deliciosos tacos bañados en salsa de habanero. asdjaksd akjsd jkasdjask ajskasdk
+                                                </TextBlock >
+                                            </Canvas>
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
+                                                <!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>-->
+                                                <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
+                                            </Border>
+                                        </DockPanel>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                        <!--TERMINA CLONACION DE LOS DOCK PANELS PRINCIPALES DEL CENTRO-->
                     </Grid>
                 </Grid>
             </TabItem>
