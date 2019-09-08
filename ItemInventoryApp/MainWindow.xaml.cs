@@ -81,23 +81,10 @@ namespace ItemInventoryApp
             //var lista = obj.CreateBorders(itemList);
             var lista = obj.CreatePanels(itemList);
 
-
-
             for (int i = 0; i < lista.Count; i++)
             {
-                //MainCanvas.Children.Add(lista[i]);
                 MainViewer.Children.Add(lista[i]);
-
-                //MainViewer.Children.Add(obj.panel(itemList[i]));
             }
-
-            //for (int i = 0; i < itemList.Count; i++)
-            //{
-            //    //MainCanvas.Children.Add(lista[i]);
-            //    //MainViewer.Children.Add(lista[i]);
-
-            //    MainViewer.Children.Add(obj.panel(itemList[i]));
-            //}
         }
 
         private void CanvasDatos_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -112,7 +99,6 @@ namespace ItemInventoryApp
             if (DockMain.ActualWidth > Convert.ToDouble(entero))
             {
                 //TextoDescripcion.Width = DockMain.ActualWidth - 200;
-
             }
             else
             {

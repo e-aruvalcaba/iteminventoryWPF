@@ -24,7 +24,7 @@
                     <Grid Background="Aqua">
                         <Button Content="Button" Width="75" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="35,0,0,50"/>
                     </Grid>
-                    <!--GRID DE DERECHA-->                    
+                    <!--GRID DE DERECHA-->
                     <Grid Background="Black" Margin="704,0,0,0">
                         <Button Content="Button" Width="75" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,50"/>
                     </Grid>
@@ -48,7 +48,9 @@
                                                 </TextBlock >
                                             </Canvas>
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
-                                                --><!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>--><!--
+                                                -->
+                                    <!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>-->
+                                    <!--
                                                 <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
                                             </Border>
                                         </DockPanel>
@@ -67,7 +69,9 @@
                                                 </TextBlock >
                                             </Canvas>
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
-                                                --><!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>--><!--
+                                                -->
+                                    <!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>-->
+                                    <!--
                                                 <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
                                             </Border>
                                         </DockPanel>
@@ -79,10 +83,171 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5"/>
+            <!-- TAB para Operaciones con Productos-->
+            <TabItem Header="Productos">
+                <Grid x:Name="ProductMainViewer" >
+                    <!--Tab para operaciones con productos-->
+                    <TabControl Background="#FFD3E7F9">
+                        <TabItem Header="Crear Nuevo Producto">
+                            <Grid x:Name="CreateForm" Background="#FFAEC1D4" Margin="250,70,250,100" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Crear Productos</Label>
+                                <Grid   Grid.Row="1" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
+                                    <TextBox Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                    <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                                    <RichTextBox Grid.Row="3" Margin="0,0,0,0"></RichTextBox>
+                                    <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                                    <TextBox Grid.Row="4" Margin="130,0,0,0"></TextBox>
+                                    <Button Grid.Row="5" Margin="20,20,20,5" HorizontalAlignment="Center">Registrar item</Button>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+                        <!--Tab para Editar productos-->
+                        <TabItem Header="Editar Producto">
+                            <Grid Background="#FFAEC1D4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Inicia columna de la izquierda-->
+                                <Grid x:Name="EditForm" MaxWidth="400" Background="#FFAEC1D4" Margin="30,70,30,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Editar Producto</Label>
+                                    <Grid   Grid.Row="1" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
+                                        <TextBox Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                        <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                                        <RichTextBox Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                        <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                                        <TextBox Grid.Row="4" Margin="130,0,0,0"></TextBox>
+                                        <Button Grid.Row="5" Margin="20,20,20,5" HorizontalAlignment="Center">Registrar item</Button>
+                                    </Grid>
+                                </Grid>
+                                <!--Termina columna de la izquierda-->
+
+                                <!--Inicia Columna de la derecha-->
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="70"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <!--Controles para consulta-->
+                                    <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Label FontSize="13" Margin="0,20,200,20" Width="80" >Buscar por:</Label>
+                                        <ComboBox  Margin="0,20,20,20" Width="100">
+                                        </ComboBox>
+                                        <TextBox Margin="235, 20, 20, 20" Width="130"></TextBox>
+                                    </Grid>
+
+                                    <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Button>Buscar Ahora</Button>
+                                    </Grid>
+                                    <!--DatagridView-->
+                                    <DataGrid Background="Gray" Margin="0,0,0,30" HorizontalAlignment="Center" Grid.Row="2">
+                                        <DataGrid.Columns>
+                                            <DataGridCheckBoxColumn Header="ID" CanUserResize="False"/>
+                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Nombre"/>
+                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Descripcion"/>
+                                            <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Precio"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                                <!--Termina Columna de la derecha-->
+                            </Grid>
+                        </TabItem>
+                        <!--Tab para Eliminar productos-->
+                        <TabItem Header="Eliminar Producto">
+                            <Grid Background="#FFAEC1D4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Inicia columna de la izquierda-->
+                                <Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="30,70,30,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Eliminar Producto</Label>
+                                    <Grid   Grid.Row="1" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
+                                        <TextBox Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                        <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                                        <RichTextBox Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                        <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                                        <TextBox Grid.Row="4" Margin="130,0,0,0"></TextBox>
+                                        <Button Grid.Row="5" Margin="20,20,20,5" HorizontalAlignment="Center">Registrar item</Button>
+                                    </Grid>
+                                </Grid>
+                                <!--Termina columna de la izquierda-->
+
+                                <!--Inicia Columna de la derecha-->
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="70"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <!--Controles para consulta-->
+                                    <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Label FontSize="13" Margin="0,20,200,20" Width="80" >Buscar por:</Label>
+                                        <ComboBox  Margin="0,20,20,20" Width="100">
+                                        </ComboBox>
+                                        <TextBox Margin="235, 20, 20, 20" Width="130"></TextBox>
+                                    </Grid>
+
+                                    <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Button>Buscar Ahora</Button>
+                                    </Grid>
+                                    <!--DatagridView-->
+                                    <DataGrid Background="Gray" Margin="0,0,0,30" HorizontalAlignment="Center" Grid.Row="2">
+                                        <DataGrid.Columns>
+                                            <DataGridCheckBoxColumn Header="ID" CanUserResize="False"/>
+                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Nombre"/>
+                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Descripcion"/>
+                                            <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Precio"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                                <!--Termina Columna de la derecha-->
+                            </Grid>
+                        </TabItem>
+                        <!--Termina tab control para operaciones con productos-->
+                    </TabControl>
+                </Grid>
             </TabItem>
         </TabControl>
-
     </Grid>
 </Window>
