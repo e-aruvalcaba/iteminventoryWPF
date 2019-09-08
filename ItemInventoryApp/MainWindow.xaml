@@ -34,7 +34,7 @@
                         <DockPanel x:Name="DockMain" Background="White" >
                             <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                 <StackPanel x:Name="MainViewer" Background="#FFC1C8E4">
-                                    <Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
+                                    <!--<Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
                                         <DockPanel Height="100" >
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
                                                 <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
@@ -48,11 +48,30 @@
                                                 </TextBlock >
                                             </Canvas>
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
-                                                <!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>-->
+                                                --><!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>--><!--
                                                 <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
                                             </Border>
                                         </DockPanel>
                                     </Border>
+                                    <Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
+                                        <DockPanel Height="100" >
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
+                                                <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                            </Border>
+                                            <Canvas x:Name="CanvasDsatos" Height="100" SizeChanged="CanvasDatos_SizeChanged">
+                                                <TextBlock Padding="5">
+                                                    Tacos al Vapor $ 35
+                                                </TextBlock >
+                                                <TextBlock x:Name="TexstoDescripcion" Height="70" Width="348" Padding="5" Margin="0,30,0,0" TextWrapping="WrapWithOverflow">
+                                                    5 Deliciosos tacos bañados en salsa de habanero. asdjaksd akjsd jkasdjask ajskasdk
+                                                </TextBlock >
+                                            </Canvas>
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
+                                                --><!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>--><!--
+                                                <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
+                                            </Border>
+                                        </DockPanel>
+                                    </Border>-->
                                 </StackPanel>
                             </ScrollViewer>
                         </DockPanel>

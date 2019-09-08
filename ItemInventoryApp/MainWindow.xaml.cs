@@ -37,53 +37,66 @@ namespace ItemInventoryApp
             });
             itemList.Add(new Item
             {
-                id = 1,
-                Name = "Tacos al vapor",
-                Description = "Paquete de 5 tacos bañados en salsa roja de habanero",
-                Price = 25
+                id = 2,
+                Name = "Tacos de pastor",
+                Description = "Paquete de 5 tacos de pastor con cilantro cebolla caramelizada, salsa medio limon y doble tortilla.",
+                Price = 35
             });
             itemList.Add(new Item
             {
-                id = 1,
-                Name = "Tacos al vapor",
-                Description = "Paquete de 5 tacos bañados en salsa roja de habanero",
-                Price = 25
+                id = 3,
+                Name = "Tacos de bisteck",
+                Description = "Paquete de 5 tacos de bisteck de res con cilantro cebolla caramelizada, salsa medio limon y doble tortilla.",
+                Price = 40
             });
             itemList.Add(new Item
             {
-                id = 1,
-                Name = "Tacos al vapor",
-                Description = "Paquete de 5 tacos bañados en salsa roja de habanero",
-                Price = 25
+                id = 4,
+                Name = "Papa asada Mixta",
+                Description = "Deliciosa papa machacada con matenquilla en un contenedor de aluminio sasonada con especias finas y mezclada con queso amarillo derretido y crema y cubierta con carne de bisteck y de pastor, un chile en vinagre y 4 paquetes de galletas saladitas.",
+                Price = 60
             });
             itemList.Add(new Item
             {
-                id = 1,
-                Name = "Tacos al vapor",
-                Description = "Paquete de 5 tacos bañados en salsa roja de habanero",
-                Price = 25
+                id = 5,
+                Name = "Papa asada de pastor",
+                Description = "Deliciosa papa machacada con matenquilla en un contenedor de aluminio sasonada con especias finas y mezclada con queso amarillo derretido y crema y cubierta con carne de pastor, un chile en vinagre y 4 paquetes de galletas saladitas.",
+                Price = 45
             });
             itemList.Add(new Item
             {
-                id = 1,
-                Name = "Tacos al vapor",
-                Description = "Paquete de 5 tacos bañados en salsa roja de habanero",
-                Price = 25
+                id = 6,
+                Name = "Papa asada de bisteck",
+                Description = "Deliciosa papa machacada con matenquilla en un contenedor de aluminio sasonada con especias finas y mezclada con queso amarillo derretido y crema y cubierta con carne de bisteck, un chile en vinagre y 4 paquetes de galletas saladitas.",
+                Price = 55
             });
             itemList.Add(new Item
             {
-                id = 1,
-                Name = "Tacos al vapor",
-                Description = "Paquete de 5 tacos bañados en salsa roja de habanero",
-                Price = 25
+                id = 7,
+                Name = "Bomba",
+                Description = "5 Quesadillas en tostada con carne de pastor, cilantro cebolla, salsa y tocino.",
+                Price = 35
             });
 
-            var lista = obj.CreateBorders(itemList);
+            //var lista = obj.CreateBorders(itemList);
+            var lista = obj.CreatePanels(itemList);
 
-            //for (int i = 0; i < lista.Count; i++)
+
+
+            for (int i = 0; i < lista.Count; i++)
+            {
+                //MainCanvas.Children.Add(lista[i]);
+                MainViewer.Children.Add(lista[i]);
+
+                //MainViewer.Children.Add(obj.panel(itemList[i]));
+            }
+
+            //for (int i = 0; i < itemList.Count; i++)
             //{
             //    //MainCanvas.Children.Add(lista[i]);
-            //    MainViewer.Children.Add(lista[i]);
+            //    //MainViewer.Children.Add(lista[i]);
+
+            //    MainViewer.Children.Add(obj.panel(itemList[i]));
             //}
         }
 
@@ -98,12 +111,12 @@ namespace ItemInventoryApp
             int entero = 670;
             if (DockMain.ActualWidth > Convert.ToDouble(entero))
             {
-                TextoDescripcion.Width = DockMain.ActualWidth - 200;
+                //TextoDescripcion.Width = DockMain.ActualWidth - 200;
 
             }
             else
             {
-                TextoDescripcion.Width = 348;
+                //TextoDescripcion.Width = 348;
             }
         }
     }
