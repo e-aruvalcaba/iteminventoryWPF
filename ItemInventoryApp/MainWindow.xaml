@@ -89,12 +89,12 @@
                     <!--Tab para operaciones con productos-->
                     <TabControl Background="#FFD3E7F9">
                         <TabItem Header="Crear Nuevo Producto">
-                            <Grid x:Name="CreateForm" Background="#FFAEC1D4" Margin="250,70,250,100" Grid.Column="1">
+                            <Grid x:Name="CreateForm" MaxWidth="400" Background="#FFAEC1D4" Margin="30,70,30,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Crear Productos</Label>
+                                <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Crear Nuevo Producto</Label>
                                 <Grid   Grid.Row="1" >
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
@@ -107,7 +107,7 @@
                                     <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
                                     <TextBox Grid.Row="1" Margin="130,0,0,0"></TextBox>
                                     <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
-                                    <RichTextBox Grid.Row="3" Margin="0,0,0,0"></RichTextBox>
+                                    <RichTextBox Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
                                     <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
                                     <TextBox Grid.Row="4" Margin="130,0,0,0"></TextBox>
                                     <Button Grid.Row="5" Margin="20,20,20,5" HorizontalAlignment="Center">Registrar item</Button>
