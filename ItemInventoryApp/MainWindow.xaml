@@ -102,15 +102,18 @@
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
                                     <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
-                                    <TextBox Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                    <TextBox x:Name="txtBoxNombreC" Grid.Row="1" Margin="130,0,0,0"></TextBox>
                                     <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
-                                    <RichTextBox Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                    <RichTextBox x:Name="txtDescC" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
                                     <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
-                                    <TextBox Grid.Row="4" Margin="130,0,0,0"></TextBox>
-                                    <Button Grid.Row="5" Margin="20,20,20,5" HorizontalAlignment="Center">Registrar item</Button>
+                                    <TextBox x:Name="txtPrecioC" Grid.Row="4" Margin="130,0,0,0" KeyDown="TxtPrecioC_KeyDown"></TextBox>
+                                    <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                    <TextBox x:Name="txtImagePahC" Grid.Row="5" Margin="130,0,0,0"></TextBox>
+                                    <Button x:Name="btnCreateNewProduct" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click">Registrar item</Button>
                                 </Grid>
                             </Grid>
                         </TabItem>
@@ -135,15 +138,18 @@
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
                                         <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
-                                        <TextBox Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                        <TextBox IsEnabled="False" Grid.Row="1" Margin="130,0,0,0"></TextBox>
                                         <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
-                                        <RichTextBox Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                        <RichTextBox IsEnabled="False" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
                                         <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
-                                        <TextBox Grid.Row="4" Margin="130,0,0,0"></TextBox>
-                                        <Button Grid.Row="5" Margin="20,20,20,5" HorizontalAlignment="Center">Registrar item</Button>
+                                        <TextBox IsEnabled="False" Grid.Row="4" Margin="130,0,0,0"></TextBox>
+                                        <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                        <TextBox IsEnabled="False" x:Name="txtImagePahE" Grid.Row="5" Margin="130,0,0,0"></TextBox>
+                                        <Button Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center">Editar item</Button>
                                     </Grid>
                                 </Grid>
                                 <!--Termina columna de la izquierda-->

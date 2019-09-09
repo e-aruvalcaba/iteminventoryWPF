@@ -363,6 +363,14 @@ namespace ItemInventoryApp.Classes
                 return bd;
             }
 
+        public void ClearTextBoxes(List<TextBox> list)
+        {
+            foreach (var item in list)
+            {
+                item.Clear();
+            }
+        }
+
 
         } //End limit of code
     }
