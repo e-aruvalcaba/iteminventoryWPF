@@ -119,5 +119,58 @@ namespace ItemInventoryApp.DAL
 
         }
 
+        public Item SearchItembyID(int id)
+        {
+            Item item = new Item();
+
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+
+            try
+            {
+                item = DBInstance.Items.Find(x => x.id == id);
+                return item;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("No se pudo encontrar el item con el id especificado");
+                return item;
+            }
+
+        }
+
+        public bool edit_delete(Item item, string action)
+        {
+            bool success = false;
+
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+
+            try
+            {
+                var pastItem = DBInstance.Items.FindIndex(x => x.id == item.id);
+
+                if(action == "edit")
+                {
+                    DBInstance.Items[pastItem] = item;
+                    success = SaveDB(DBInstance);
+
+                }
+                else if(action == "delete")
+                {
+                    DBInstance.Items.RemoveAt(pastItem);
+                    success = SaveDB(DBInstance);
+                }
+                return success;
+            }
+            catch (Exception es)
+            {
+                MessageBox.Show("Error mientras se editaba el item. Error: "+es.Message);
+                return success;
+            }
+
+            return success;
+        }
+
     } //End of way
 }

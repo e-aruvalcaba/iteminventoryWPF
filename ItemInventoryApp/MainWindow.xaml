@@ -142,14 +142,15 @@
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
                                         <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
-                                        <TextBox IsEnabled="False" Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                        <TextBox x:Name="txtNombreE" IsEnabled="False" Grid.Row="1" Margin="130,0,0,0"></TextBox>
                                         <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
-                                        <RichTextBox IsEnabled="False" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                        <RichTextBox x:Name="txtDescE" IsEnabled="False" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
                                         <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
-                                        <TextBox IsEnabled="False" Grid.Row="4" Margin="130,0,0,0"></TextBox>
+                                        <TextBox x:Name="txtPriceE" IsEnabled="False" Grid.Row="4" Margin="130,0,0,0"></TextBox>
                                         <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
                                         <TextBox IsEnabled="False" x:Name="txtImagePahE" Grid.Row="5" Margin="130,0,0,0"></TextBox>
-                                        <Button Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center">Editar item</Button>
+                                        <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDE" Grid.Row="5"></TextBox>
+                                        <Button x:Name="btnEditar" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnEditar_Click">Editar item</Button>
                                     </Grid>
                                 </Grid>
                                 <!--Termina columna de la izquierda-->
@@ -164,22 +165,19 @@
                                     <!--Controles para consulta-->
                                     <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Label FontSize="13" Margin="0,20,200,20" Width="80" >Buscar por:</Label>
-                                        <ComboBox  Margin="0,20,20,20" Width="100">
+                                        <ComboBox x:Name="ComboEdit" Margin="0,20,20,20" Width="100">
+                                            <ComboBoxItem Content="ID"/>
+                                            <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox Margin="235, 20, 20, 20" Width="130"></TextBox>
+                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130"></TextBox>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Button>Buscar Ahora</Button>
+                                        <Button x:Name="btnSearchE">Buscar Ahora</Button>
                                     </Grid>
                                     <!--DatagridView-->
-                                    <DataGrid Background="Gray" Margin="0,0,0,30" HorizontalAlignment="Center" Grid.Row="2">
-                                        <DataGrid.Columns>
-                                            <DataGridCheckBoxColumn Header="ID" CanUserResize="False"/>
-                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Nombre"/>
-                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Descripcion"/>
-                                            <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Precio"/>
-                                        </DataGrid.Columns>
+                                    <DataGrid x:Name="DGEdit" Background="Gray" Margin="0,0,0,30" HorizontalAlignment="Center" Grid.Row="2" MouseDoubleClick="DGEdit_MouseDoubleClick">
+                                     
                                     </DataGrid>
                                 </Grid>
                                 <!--Termina Columna de la derecha-->

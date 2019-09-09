@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using ItemInventoryApp.Models;
 using System.Windows.Media.Imaging;
+using System.Collections.ObjectModel;
 
 namespace ItemInventoryApp.Classes
 {
@@ -224,153 +225,175 @@ namespace ItemInventoryApp.Classes
             return borderRet;
         }
 
-            public Border panel(Item item)
+        public Border panel(Item item)
+        {
+            #region First DockPanel
+            //Creating the main panel dockpanel
+            DockPanel panel = new DockPanel();
+            panel.Name = "DockMain" + item.id;
+            panel.Uid = item.id.ToString();
+            panel.Background = Brushes.White;
+
+            #endregion
+
+            #region ScrollViewer
+            //Creating the scrollviewer
+            ScrollViewer scroll = new ScrollViewer();
+            scroll.IsTabStop = true;
+            scroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            #endregion
+
+            #region StackPanel
+            Color color = (Color)ColorConverter.ConvertFromString("#FFC1C8E4");
+            SolidColorBrush myBrush = new SolidColorBrush(color);
+            //Creating the stackpanel for content
+            StackPanel stack = new StackPanel();
+            stack.Name = "MainViewer";
+            stack.Background = myBrush;
+            #endregion
+
+            #region border
+            color = (Color)ColorConverter.ConvertFromString("#8860D0");
+            myBrush = new SolidColorBrush(color);
+            Thickness tk = new Thickness(3.0);
+            Thickness margin = new Thickness(0, 0, 0, 0);
+            Border bd = new Border();
+            bd.BorderBrush = myBrush;
+            bd.BorderThickness = tk;
+            bd.Height = 105;
+            bd.Margin = margin;
+            bd.Uid = "border" + item.id.ToString();
+            bd.Name = "border" + item.id.ToString();
+
+            DockPanel.SetDock(bd, Dock.Top);
+            #endregion
+
+            #region Second DockPanel
+            //Creating the main panel dockpanel
+            DockPanel panel2 = new DockPanel();
+            panel2.Height = 100;
+            #endregion
+
+            #region 2nd border
+            color = (Color)ColorConverter.ConvertFromString("#8860D0");
+            myBrush = new SolidColorBrush(color);
+
+
+            Border bd2 = new Border();
+            bd2.BorderBrush = myBrush;
+            bd2.BorderThickness = new Thickness(0, 0, 3, 0);
+            bd2.Height = 100;
+            bd2.Width = 100;
+            bd2.CornerRadius = new CornerRadius(5);
+            bd2.Padding = new Thickness(3);
+
+            Image img = new Image();
+            //Uri myUri = new Uri(@"C:\FTWh9O.png", UriKind.RelativeOrAbsolute);
+            //BmpBitmapDecoder decoder = new BmpBitmapDecoder(myUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            //BitmapSource bitmapSource = decoder.Frames[0];
+            //img.Source = bitmapSource;
+            bd2.Child = img;
+
+            panel2.Children.Add(bd2);
+
+            #endregion
+
+            #region Canvas
+            Canvas cnv = new Canvas();
+            cnv.Name = "CanvasDatos";
+            cnv.Height = 100;
+
+            //Adding the textblock to canvas
+
+            cnv.Children.Add(new TextBlock
             {
-                #region First DockPanel
-                //Creating the main panel dockpanel
-                DockPanel panel = new DockPanel();
-                panel.Name = "DockMain" + item.id;
-                panel.Uid = item.id.ToString();
-                panel.Background = Brushes.White;
+                Padding = new Thickness(5),
+                Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
+            });
 
-                #endregion
+            cnv.Children.Add(new TextBlock
+            {
+                Name = "TextoDescripcion",
+                Height = 70,
+                Width = 348,
+                Padding = new Thickness(5),
+                Margin = new Thickness(0, 30, 0, 0),
+                TextWrapping = TextWrapping.WrapWithOverflow,
+                Text = item.Description
+            });
 
-                #region ScrollViewer
-                //Creating the scrollviewer
-                ScrollViewer scroll = new ScrollViewer();
-                scroll.IsTabStop = true;
-                scroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-                #endregion
+            //Adding Canvas to panel 2
+            panel2.Children.Add(cnv);
+            #endregion
 
-                #region StackPanel
-                Color color = (Color)ColorConverter.ConvertFromString("#FFC1C8E4");
-                SolidColorBrush myBrush = new SolidColorBrush(color);
-                //Creating the stackpanel for content
-                StackPanel stack = new StackPanel();
-                stack.Name = "MainViewer";
-                stack.Background = myBrush;
-                #endregion
-
-                #region border
-                color = (Color)ColorConverter.ConvertFromString("#8860D0");
-                myBrush = new SolidColorBrush(color);
-                Thickness tk = new Thickness(3.0);
-                Thickness margin = new Thickness(0, 0, 0, 0);
-                Border bd = new Border();
-                bd.BorderBrush = myBrush;
-                bd.BorderThickness = tk;
-                bd.Height = 105;
-                bd.Margin = margin;
-                bd.Uid = "border" + item.id.ToString();
-                bd.Name = "border" + item.id.ToString();
-
-                DockPanel.SetDock(bd, Dock.Top);
-                #endregion
-
-                #region Second DockPanel
-                //Creating the main panel dockpanel
-                DockPanel panel2 = new DockPanel();
-                panel2.Height = 100;
-                #endregion
-
-                #region 2nd border
-                color = (Color)ColorConverter.ConvertFromString("#8860D0");
-                myBrush = new SolidColorBrush(color);
-
-
-                Border bd2 = new Border();
-                bd2.BorderBrush = myBrush;
-                bd2.BorderThickness = new Thickness(0, 0, 3, 0);
-                bd2.Height = 100;
-                bd2.Width = 100;
-                bd2.CornerRadius = new CornerRadius(5);
-                bd2.Padding = new Thickness(3);
-
-                Image img = new Image();
-                //Uri myUri = new Uri(@"C:\FTWh9O.png", UriKind.RelativeOrAbsolute);
-                //BmpBitmapDecoder decoder = new BmpBitmapDecoder(myUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-                //BitmapSource bitmapSource = decoder.Frames[0];
-                //img.Source = bitmapSource;
-                bd2.Child = img;
-
-                panel2.Children.Add(bd2);
-
-                #endregion
-
-                #region Canvas
-                Canvas cnv = new Canvas();
-                cnv.Name = "CanvasDatos";
-                cnv.Height = 100;
-
-                //Adding the textblock to canvas
-
-                cnv.Children.Add(new TextBlock
+            #region 3er border
+            //Adding 3er border to panel2
+            panel2.Children.Add(new Border
+            {
+                Height = 100,
+                Width = 100,
+                BorderBrush = myBrush,
+                BorderThickness = new Thickness(3, 0, 0, 0),
+                CornerRadius = new CornerRadius(5),
+                Padding = new Thickness(3),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Child = new Button
                 {
-                    Padding = new Thickness(5),
-                    Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
-                });
+                    Content = "Agregar",
+                    Width = 70,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Height = 30,
+                    Name = "btnAgregar"
+                }
+                //.Click += new RoutedEventHandler(Click_Event)
+                //.AddHandler(Button.ClickEvent, new RoutedEventHandler(Click_Event))
+            });
+            #endregion
 
-                cnv.Children.Add(new TextBlock
-                {
-                    Name = "TextoDescripcion",
-                    Height = 70,
-                    Width = 348,
-                    Padding = new Thickness(5),
-                    Margin = new Thickness(0, 30, 0, 0),
-                    TextWrapping = TextWrapping.WrapWithOverflow,
-                    Text = item.Description
-                });
+            #region adding the remaining elements to the dockpanel
 
-                //Adding Canvas to panel 2
-                panel2.Children.Add(cnv);
-                #endregion
-
-                #region 3er border
-                //Adding 3er border to panel2
-                panel2.Children.Add(new Border
-                {
-                    Height = 100,
-                    Width = 100,
-                    BorderBrush = myBrush,
-                    BorderThickness = new Thickness(3, 0, 0, 0),
-                    CornerRadius = new CornerRadius(5),
-                    Padding = new Thickness(3),
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    Child = new Button
-                    {
-                        Content = "Agregar",
-                        Width = 70,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Height = 30,
-                        Name = "btnAgregar"
-                    }
-                    //.Click += new RoutedEventHandler(Click_Event)
-                    //.AddHandler(Button.ClickEvent, new RoutedEventHandler(Click_Event))
-                });
-                #endregion
-
-                #region adding the remaining elements to the dockpanel
-
-                bd.Child = panel2;
-                stack.Children.Add(bd);
-                scroll.Content = stack;
-                panel.Children.Add(scroll);
+            bd.Child = panel2;
+            stack.Children.Add(bd);
+            scroll.Content = stack;
+            panel.Children.Add(scroll);
 
 
-                #endregion
+            #endregion
 
-                return bd;
-            }
+            return bd;
+        }
 
         public void ClearTextBoxes(List<TextBox> list)
         {
             foreach (var item in list)
             {
                 item.Clear();
+
             }
         }
 
+        public void Enable_disableTextBoxes(List<TextBox> list, bool action)
+        {
+            foreach (var item in list)
+            {
+                item.IsEnabled = action;
+            }
 
-        } //End limit of code
-    }
+        }
+
+
+        public void PopulateDataGrid(DataGrid dg, DatabaseModel db)
+        {
+            ObservableCollection<Item> data = new ObservableCollection<Item>();
+
+            foreach (var item in db.Items)
+            {
+                data.Add(item);
+            }
+
+            dg.ItemsSource = data;
+        }
+
+    } //End limit of code
+}

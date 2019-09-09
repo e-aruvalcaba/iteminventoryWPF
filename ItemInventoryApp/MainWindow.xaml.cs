@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,9 +101,12 @@ namespace ItemInventoryApp
             GlobalMainObject = MainObject;
             GlobalHandler = handler;
             UiruntimeHandler = obj;
-        }
 
-        private void CanvasDatos_SizeChanged(object sender, SizeChangedEventArgs e)
+            //Poblate DatagridView with items
+            UiruntimeHandler.PopulateDataGrid(DGEdit, GlobalMainObject); 
+    }
+
+    private void CanvasDatos_SizeChanged(object sender, SizeChangedEventArgs e)
         {
            
         }
@@ -197,6 +202,105 @@ namespace ItemInventoryApp
             //if()
 
 
+        }
+
+        private void DGEdit_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (sender != null)
+                {
+                    DataGrid grid = sender as DataGrid;
+                    if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+                    {
+                        //This is the code which helps to show the data when the row is double clicked.
+                        DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+                        Item dr = (Item)dgr.Item;
+
+                        txtIDE.Text = dr.id.ToString();
+                        txtNombreE.Text = dr.Name;
+                        txtDescE.Document.ContentStart.InsertTextInRun(dr.Description);
+                        txtPriceE.Text = dr.Price.ToString();
+                        txtImagePahE.Text = dr.ImagePath;
+
+                        List<TextBox> txtlist = new List<TextBox>();
+
+                        txtlist.Add(txtNombreE);
+                        txtlist.Add(txtImagePahE);
+                        txtlist.Add(txtPriceE);
+                     
+                        txtDescE.IsEnabled = true;
+                        UiruntimeHandler.Enable_disableTextBoxes(txtlist, true);
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+
+        private void BtnEditar_Click(object sender, RoutedEventArgs e)
+        {
+            List<TextBox> txtlist = new List<TextBox>();
+
+            txtlist.Add(txtNombreE);
+            txtlist.Add(txtImagePahE);
+            txtlist.Add(txtPriceE);
+
+
+            string richtext = new TextRange(txtDescE.Document.ContentStart, txtDescE.Document.ContentEnd).Text;
+            if (!string.IsNullOrEmpty(txtNombreE.Text) && !string.IsNullOrEmpty(txtPriceE.Text))
+            {
+                string noAccepted = "qwertyuiop´+asdfghjklñ{zxcvbnm,-!#$%%&/()=?[]*¨¨_:;¬{}¡*";
+
+                if (!txtPriceE.Text.Contains(noAccepted))
+                {
+                    if (!txtPriceE.Equals("."))
+                    {
+                        //Obtener el item con el id especifico
+                        Item theitem = GlobalHandler.SearchItembyID(Convert.ToInt32(txtIDE.Text));
+
+                        theitem.Name = txtNombreE.Text;
+                        theitem.Description = richtext;
+                        theitem.Price = Convert.ToDouble(txtPriceE.Text);
+                        theitem.ImagePath = txtImagePahE.Text;
+
+                        GlobalHandler.edit_delete(theitem, "delete");
+
+                        //GlobalMainObject = GlobalHandler.UpdateDBObject();
+                        //GlobalHandler.CreateItem(new Item
+                        //{
+                        //    id = GlobalMainObject.Items[GlobalMainObject.Items.Count - 1].id + 1,
+                        //    Name = txtNombreE.Text,
+                        //    Description = richtext,
+                        //    Price = Convert.ToInt32(txtPriceE.Text),
+                        //    ImagePath = txtImagePahE.Text
+                        //});
+
+                        
+                        UiruntimeHandler.ClearTextBoxes(txtlist);
+                        txtDescE.Document.Blocks.Clear();
+                        txtDescE.IsEnabled = false;
+                        UiruntimeHandler.Enable_disableTextBoxes(txtlist, false);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("No puede poner un punto como precio a un articulo por favor introduzca una suma real.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Los datos introducidos en el campo de precio no son validos, recuerde que este campo es numerico y por tanto solo acepta numeros y puntos (.)");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Todos los campos excepto el campo para imagen deben estar llenos antes de guardar un articulo.");
+            }
         }
     } //End of the way
 }
