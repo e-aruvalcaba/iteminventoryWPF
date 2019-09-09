@@ -395,5 +395,61 @@ namespace ItemInventoryApp.Classes
             dg.ItemsSource = data;
         }
 
+        public void PopulateAllDataGrids(List<DataGrid> dgList, DatabaseModel db)
+        {
+            ObservableCollection<Item> data = new ObservableCollection<Item>();
+
+            foreach (var item in db.Items)
+            {
+                data.Add(item);
+            }
+
+            foreach (var dg in dgList)
+            {
+                dg.ItemsSource = data;
+            }
+
+        }
+
+        public void SetTextBoxFromDataGrid(Item item, List<TextBox> list, RichTextBox rich, string action)
+        {
+            string[] array = new string[4];
+            switch (action)
+            {
+                case "edit":
+                    array[0] = "txtIDE";
+                    array[1] = "txtNombreE";
+                    array[2] = "txtPriceE";
+                    array[3] = "txtImagePahE";
+                    break;
+                case "delete":
+                    array[0] = "txtIDEDel";
+                    array[1] = "txtNombreDel";
+                    array[2] = "txtPriceDel";
+                    array[3] = "txtImgPahDel";
+                    break;
+            }
+
+            string[] values = new string[4];
+            values[0] = item.id.ToString();
+            values[1] = item.Name;
+            values[2] = item.Price.ToString();
+            values[3] = item.ImagePath;
+            rich.Document.ContentStart.InsertTextInRun(item.Description);
+            foreach (var it in list)
+            {
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (it.Name.Equals(array[i]))
+                    {
+                        it.Text = values[i];
+                    }
+                }
+            }
+
+            
+        }
+
+
     } //End limit of code
 }

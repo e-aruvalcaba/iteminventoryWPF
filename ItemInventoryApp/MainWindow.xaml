@@ -121,11 +121,11 @@
                         <TabItem Header="Editar Producto">
                             <Grid Background="#FFAEC1D4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="350" />
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <!-- Inicia columna de la izquierda-->
-                                <Grid x:Name="EditForm" MaxWidth="400" Background="#FFAEC1D4" Margin="30,70,30,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid x:Name="EditForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto" />
                                         <RowDefinition Height="*" />
@@ -176,9 +176,9 @@
                                         <Button x:Name="btnSearchE">Buscar Ahora</Button>
                                     </Grid>
                                     <!--DatagridView-->
-                                    <DataGrid x:Name="DGEdit" Background="Gray" Margin="0,0,0,30" HorizontalAlignment="Center" Grid.Row="2" MouseDoubleClick="DGEdit_MouseDoubleClick">
-                                     
+                                    <DataGrid x:Name="DGEdit" Background="Gray" Margin="0,0,0,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGEdit_MouseDoubleClick">
                                     </DataGrid>
+
                                 </Grid>
                                 <!--Termina Columna de la derecha-->
                             </Grid>
@@ -187,11 +187,11 @@
                         <TabItem Header="Eliminar Producto">
                             <Grid Background="#FFAEC1D4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="350" />
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <!-- Inicia columna de la izquierda-->
-                                <Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="30,70,30,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto" />
                                         <RowDefinition Height="*" />
@@ -204,15 +204,19 @@
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
-                                        <TextBox Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14" >Nombre del Item:</Label>
+                                        <TextBox x:Name="txtNombreDel" Grid.Row="1" Margin="130,0,0,0" IsEnabled="False"></TextBox>
                                         <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
-                                        <RichTextBox Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                        <RichTextBox x:Name="txtDescDel" Grid.Row="3" Margin="0,0,0,0" Height="100" IsEnabled="False"></RichTextBox>
                                         <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
-                                        <TextBox Grid.Row="4" Margin="130,0,0,0"></TextBox>
-                                        <Button Grid.Row="5" Margin="20,20,20,5" HorizontalAlignment="Center">Registrar item</Button>
+                                        <TextBox x:Name="txtPriceDel" Grid.Row="4" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                        <TextBox x:Name="txtImgPahDel" Grid.Row="5" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDEDel" Grid.Row="5"></TextBox>
+                                        <Button x:Name="btnDeleteItem" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnDeleteItem_Click" >Eliminar item</Button>
                                     </Grid>
                                 </Grid>
                                 <!--Termina columna de la izquierda-->
@@ -227,22 +231,18 @@
                                     <!--Controles para consulta-->
                                     <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Label FontSize="13" Margin="0,20,200,20" Width="80" >Buscar por:</Label>
-                                        <ComboBox  Margin="0,20,20,20" Width="100">
+                                        <ComboBox x:Name="comboEliminar"  Margin="0,20,20,20" Width="100" SelectionChanged="ComboEliminar_SelectionChanged">
+                                            <ComboBoxItem Content="ID"/>
+                                            <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox Margin="235, 20, 20, 20" Width="130"></TextBox>
+                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130"></TextBox>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Button>Buscar Ahora</Button>
+                                        <Button x:Name="btnSearchDel" IsEnabled="False" Click="BtnSearchDel_Click">Buscar Ahora</Button>
                                     </Grid>
                                     <!--DatagridView-->
-                                    <DataGrid Background="Gray" Margin="0,0,0,30" HorizontalAlignment="Center" Grid.Row="2">
-                                        <DataGrid.Columns>
-                                            <DataGridCheckBoxColumn Header="ID" CanUserResize="False"/>
-                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Nombre"/>
-                                            <DataGridCheckBoxColumn Binding="{x:Null}" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Descripcion"/>
-                                            <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Precio"/>
-                                        </DataGrid.Columns>
+                                    <DataGrid x:Name="DGDelete" Background="Gray" Margin="0,0,10,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick">
                                     </DataGrid>
                                 </Grid>
                                 <!--Termina Columna de la derecha-->

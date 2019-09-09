@@ -136,7 +136,25 @@ namespace ItemInventoryApp.DAL
                 MessageBox.Show("No se pudo encontrar el item con el id especificado");
                 return item;
             }
+        }
 
+        public List<Item> SearchItembyName(string Name)
+        {
+            List<Item> item = new List<Item>();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            try
+            {
+                //item = DBInstance.Items.Find(x => x.id == id);
+                var sitem = DBInstance.Items.Where(it => it.Name.StartsWith(Name)).ToList();
+                item = sitem;
+                return item;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error en la busqueda : "+ex.Message);
+                return item;
+            }
         }
 
         public bool edit_delete(Item item, string action)
@@ -168,8 +186,41 @@ namespace ItemInventoryApp.DAL
                 MessageBox.Show("Error mientras se editaba el item. Error: "+es.Message);
                 return success;
             }
+        }
 
-            return success;
+        public List<Item> SearchByCriteria(string criteria, string data)
+        {
+            List<Item> List = new List<Item>();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+
+            switch (criteria)
+            {
+                case "ID":
+                    try
+                    {
+                        List.Add(SearchItembyID(Convert.ToInt32(data)));
+                        return List;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al buscar por ID");
+                    }
+                    break;
+                case "Nombre":
+                    try
+                    {
+                        List = SearchItembyName(data);
+                        return List;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al buscar por ID");
+                    }
+                    break;
+            }
+
+            return List;
         }
 
     } //End of way
