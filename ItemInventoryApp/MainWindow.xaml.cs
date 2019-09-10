@@ -108,11 +108,12 @@ namespace ItemInventoryApp
             DataGridList.Add(DGDelete);
             //Poblate DatagridView with items
             UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
-    }
+        }
 
-    private void CanvasDatos_SizeChanged(object sender, SizeChangedEventArgs e)
+        #region ResponsiveElementsModule
+        private void CanvasDatos_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-           
+
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -128,11 +129,13 @@ namespace ItemInventoryApp
                 //TextoDescripcion.Width = 348;
             }
         }
+        #endregion
 
+        #region CreateNewProduct
         private void BtnCreateNewProduct_Click(object sender, RoutedEventArgs e)
         {
             string richtext = new TextRange(txtDescC.Document.ContentStart, txtDescC.Document.ContentEnd).Text;
-            if (!string.IsNullOrEmpty(txtBoxNombreC.Text)&&!string.IsNullOrEmpty(richtext) && !string.IsNullOrEmpty(txtPrecioC.Text))
+            if (!string.IsNullOrEmpty(txtBoxNombreC.Text) && !string.IsNullOrEmpty(richtext) && !string.IsNullOrEmpty(txtPrecioC.Text))
             {
                 string noAccepted = "qwertyuiop´+asdfghjklñ{zxcvbnm,-!#$%%&/()=?[]*¨¨_:;¬{}¡*";
 
@@ -140,10 +143,10 @@ namespace ItemInventoryApp
                 {
                     if (!txtPrecioC.Equals("."))
                     {
-
                         GlobalMainObject = GlobalHandler.UpdateDBObject();
-                        GlobalHandler.CreateItem(new Item {
-                            id = GlobalMainObject.Items[GlobalMainObject.Items.Count-1].id+1,
+                        GlobalHandler.CreateItem(new Item
+                        {
+                            id = GlobalMainObject.Items[GlobalMainObject.Items.Count - 1].id + 1,
                             Name = txtBoxNombreC.Text,
                             Description = richtext,
                             Price = Convert.ToInt32(txtPrecioC.Text),
@@ -176,39 +179,9 @@ namespace ItemInventoryApp
                 MessageBox.Show("Todos los campos excepto el campo para imagen deben estar llenos antes de guardar un articulo.");
             }
         }
+        #endregion
 
-        private void TxtPrecioC_KeyDown(object sender, KeyEventArgs e)
-        {
-            //string[] accepted = new string[21];
-            //accepted[0] = "D0";
-            //accepted[1] = "D1";
-            //accepted[2] = "D2";
-            //accepted[3] = "D3";
-            //accepted[4] = "D4";
-            //accepted[5] = "D5";
-            //accepted[6] = "D6";
-            //accepted[7] = "D7";
-            //accepted[8] = "D8";
-            //accepted[9] = "D9";
-            //accepted[10] = ".";
-            //accepted[11] = "NumPad0";
-            //accepted[12] = "NumPad1";
-            //accepted[13] = "NumPad2";
-            //accepted[14] = "NumPad3";
-            //accepted[15] = "NumPad4";
-            //accepted[16] = "NumPad5";
-            //accepted[17] = "NumPad6";
-            //accepted[18] = "NumPad7";
-            //accepted[19] = "NumPad8";
-            //accepted[20] = "NumPad9";
-
-            //string noAccepted = "qwertyuiop´+asdfghjklñ{zxcvbnm,-!#$%%&/()=?[]*¨¨_:;¬{}¡*";
-
-            //if()
-
-
-        }
-
+        #region EditAndDeleteModule_DatagridDoubleClickEvents
         private void DGEdit_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -249,6 +222,39 @@ namespace ItemInventoryApp
             }
         }
 
+
+        private void DGDelete_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (sender != null)
+                {
+                    DataGrid grid = sender as DataGrid;
+                    if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+                    {
+                        //This is the code which helps to show the data when the row is double clicked.
+                        DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+                        Item dr = (Item)dgr.Item;
+
+                        //Create List of textboxes
+                        List<TextBox> txtlist = new List<TextBox>();
+                        txtlist.Add(txtNombreDel);
+                        txtlist.Add(txtImgPahDel);
+                        txtlist.Add(txtPriceDel);
+                        txtlist.Add(txtIDEDel);
+                        //Set text extracted from the datagrid
+                        UiruntimeHandler.SetTextBoxFromDataGrid(dr, txtlist, txtDescDel, "delete");
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+
         private void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             List<TextBox> txtlist = new List<TextBox>();
@@ -275,7 +281,7 @@ namespace ItemInventoryApp
                         theitem.Price = Convert.ToDouble(txtPriceE.Text);
                         theitem.ImagePath = txtImagePahE.Text;
 
-                        if(GlobalHandler.edit_delete(theitem, "edit"))
+                        if (GlobalHandler.edit_delete(theitem, "edit"))
                         {
                             MessageBox.Show("Se ha editado correctamente el producto con el id: " + theitem.id);
                         }
@@ -319,9 +325,9 @@ namespace ItemInventoryApp
 
             Item theitem = GlobalHandler.SearchItembyID(Convert.ToInt32(txtIDEDel.Text));
 
-            if(GlobalHandler.edit_delete(theitem, "delete"))
+            if (GlobalHandler.edit_delete(theitem, "delete"))
             {
-                MessageBox.Show("Se ha eliminado correctamente el producto con el id: "+theitem.id);
+                MessageBox.Show("Se ha eliminado correctamente el producto con el id: " + theitem.id);
             }
             else
             {
@@ -334,39 +340,9 @@ namespace ItemInventoryApp
             GlobalMainObject = GlobalHandler.UpdateDBObject();
             UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
         }
+        #endregion
 
-        private void DGDelete_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (sender != null)
-                {
-                    DataGrid grid = sender as DataGrid;
-                    if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
-                    {
-                        //This is the code which helps to show the data when the row is double clicked.
-                        DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
-                        Item dr = (Item)dgr.Item;
-
-                        //Create List of textboxes
-                        List<TextBox> txtlist = new List<TextBox>();
-                        txtlist.Add(txtNombreDel);
-                        txtlist.Add(txtImgPahDel);
-                        txtlist.Add(txtPriceDel);
-                        txtlist.Add(txtIDEDel);
-                        //Set text extracted from the datagrid
-                        UiruntimeHandler.SetTextBoxFromDataGrid(dr, txtlist, txtDescDel, "delete");
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
-            }
-        }
-
+        #region ComboboxAndSearchModule
         private void ComboEliminar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //var a = ((ComboBoxItem)comboEliminar.SelectedItem).Content.ToString();
@@ -380,6 +356,18 @@ namespace ItemInventoryApp
             }
         }
 
+        private void ComboEdit_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //var a = ((ComboBoxItem)comboEliminar.SelectedItem).Content.ToString();
+            if (ComboEdit.SelectedItem != null)
+            {
+                btnSearchE.IsEnabled = true;
+            }
+            else
+            {
+
+            }
+        }
         private void BtnSearchDel_Click(object sender, RoutedEventArgs e)
         {
             if (!txtSearchDel.Text.Equals("") && comboEliminar.SelectedItem != null)
@@ -403,8 +391,95 @@ namespace ItemInventoryApp
                     //Retrieve the original datasource for deletegrid 
                 }
             }
+        }
+
+        private void BtnSearchE_Click(object sender, RoutedEventArgs e)
+        {
+            if (!txtSearchE.Text.Equals("") && ComboEdit.SelectedItem != null)
+            {
+                string criteria = ((ComboBoxItem)ComboEdit.SelectedItem).Content.ToString();
+
+                var List = GlobalHandler.SearchByCriteria(criteria, txtSearchE.Text);
+
+                ObservableCollection<Item> datasource = new ObservableCollection<Item>();
+
+                foreach (var item in List)
+                {
+                    datasource.Add(item);
+                }
+                DGDelete.ItemsSource = datasource;
+            }
+            else
+            {
+                if (txtSearchE.Text.Equals("") && ComboEdit.SelectedItem == null)
+                {
+                    //Retrieve the original datasource for deletegrid 
+                }
+            }
+        }
+        #endregion
+
+        #region SearchTextboxEmptyEvents
+        //summary-----------------------------------------------
+        //
+        //------------------------------------------------------
+        private void TxtSearchE_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (txtSearchE.Text.Equals(""))
+            {
+                //Retrieve the original datasource for deletegrid 
+                GlobalMainObject = GlobalHandler.UpdateDBObject();
+                UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
+            }
+        }
+
+        private void TxtSearchDel_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (txtSearchDel.Text.Equals(""))
+            {
+                //Retrieve the original datasource for deletegrid 
+                GlobalMainObject = GlobalHandler.UpdateDBObject();
+                UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
+            }
+        }
+
+
+        #endregion
+
+        #region txtBoxValidations
+        private void TxtPrecioC_KeyDown(object sender, KeyEventArgs e)
+        {
+            //string[] accepted = new string[21];
+            //accepted[0] = "D0";
+            //accepted[1] = "D1";
+            //accepted[2] = "D2";
+            //accepted[3] = "D3";
+            //accepted[4] = "D4";
+            //accepted[5] = "D5";
+            //accepted[6] = "D6";
+            //accepted[7] = "D7";
+            //accepted[8] = "D8";
+            //accepted[9] = "D9";
+            //accepted[10] = ".";
+            //accepted[11] = "NumPad0";
+            //accepted[12] = "NumPad1";
+            //accepted[13] = "NumPad2";
+            //accepted[14] = "NumPad3";
+            //accepted[15] = "NumPad4";
+            //accepted[16] = "NumPad5";
+            //accepted[17] = "NumPad6";
+            //accepted[18] = "NumPad7";
+            //accepted[19] = "NumPad8";
+            //accepted[20] = "NumPad9";
+
+            //string noAccepted = "qwertyuiop´+asdfghjklñ{zxcvbnm,-!#$%%&/()=?[]*¨¨_:;¬{}¡*";
+
+            //if()
+
 
         }
+        #endregion
+
+
     } //End of the way
 }
-                             

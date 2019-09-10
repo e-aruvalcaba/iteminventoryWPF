@@ -165,15 +165,15 @@
                                     <!--Controles para consulta-->
                                     <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Label FontSize="13" Margin="0,20,200,20" Width="80" >Buscar por:</Label>
-                                        <ComboBox x:Name="ComboEdit" Margin="0,20,20,20" Width="100">
+                                        <ComboBox x:Name="ComboEdit" Margin="0,20,20,20" Width="100" SelectionChanged="ComboEdit_SelectionChanged">
                                             <ComboBoxItem Content="ID"/>
                                             <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130"></TextBox>
+                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130" KeyUp="TxtSearchE_KeyUp"/>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Button x:Name="btnSearchE">Buscar Ahora</Button>
+                                        <Button IsEnabled="False" x:Name="btnSearchE" Click="BtnSearchE_Click">Buscar Ahora</Button>
                                     </Grid>
                                     <!--DatagridView-->
                                     <DataGrid x:Name="DGEdit" Background="Gray" Margin="0,0,0,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGEdit_MouseDoubleClick">
@@ -235,7 +235,7 @@
                                             <ComboBoxItem Content="ID"/>
                                             <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130"></TextBox>
+                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130" KeyUp="TxtSearchDel_KeyUp"></TextBox>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
