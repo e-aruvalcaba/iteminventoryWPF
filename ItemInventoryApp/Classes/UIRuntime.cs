@@ -102,11 +102,12 @@ namespace ItemInventoryApp.Classes
         /*//
             // SUMMARY
             // Create the structure of all panels where the data display
-            // Retuen a list of panels on the ui that have as content all the data from a item list
+            // Retuen an array with 2 lists of ui elements borders for the panels on the ui that have as content all the data from a item list and textblock to control responsive textblock
         */
         public List<Border> CreatePanels(List<Item> dataArray)
         {
             List<Border> borderRet = new List<Border>();
+
             foreach (var item in dataArray)
             {
                 #region First DockPanel
@@ -186,24 +187,23 @@ namespace ItemInventoryApp.Classes
                 cnv.Height = 100;
 
                 //Adding the textblock to canvas
-
                 cnv.Children.Add(new TextBlock
                 {
                     Padding = new Thickness(5),
                     Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
                 });
-
                 cnv.Children.Add(new TextBlock
                 {
                     Name = "TextoDescripcion",
                     Height = 70,
-                    Width = 348,
+                    Width = 300,
+                    MaxWidth = 300,
+                    HorizontalAlignment = HorizontalAlignment.Left,
                     Padding = new Thickness(5),
                     Margin = new Thickness(0, 30, 0, 0),
                     TextWrapping = TextWrapping.WrapWithOverflow,
                     Text = item.Description
                 });
-
                 //Adding Canvas to panel 2
                 panel2.Children.Add(cnv);
                 #endregion
@@ -236,6 +236,7 @@ namespace ItemInventoryApp.Classes
                     Child = dynamicButton
                 });
                 #endregion
+                
                 #region adding the remaining elements to the dockpanel
                 bd.Child = panel2;
                 #endregion                

@@ -27,6 +27,9 @@ namespace ItemInventoryApp
     {
         //Dependency injection for all librarys
         Library Global = new Library();
+        List<Border> borderList = new List<Border>();
+        List<TextBlock> textBlock = new List<TextBlock>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -43,12 +46,12 @@ namespace ItemInventoryApp
             //Create an instance of UIruntime class
             UIRuntime obj = new UIRuntime();
             //Create a list of border UIComponent dinamically that shows the app to the final user 
-            List<Border> lista = obj.CreatePanels(MainObject.Items);
-
+            /*List<Border> */
+            borderList = obj.CreatePanels(MainObject.Items);
             //Set the list on the content viewer
-            for (int i = 0; i < lista.Count; i++)
+            for (int i = 0; i < borderList.Count; i++)
             {
-                MainViewer.Children.Add(lista[i]);
+                MainViewer.Children.Add(borderList[i]);
             }
             //Set the global main object
             Global.DatbaseInstance = MainObject;
@@ -63,22 +66,35 @@ namespace ItemInventoryApp
         }
 
         #region ResponsiveElementsModule
-        private void CanvasDatos_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
-        }
-
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Console.WriteLine(DockMain.ActualWidth);
             int entero = 670;
             if (DockMain.ActualWidth > Convert.ToDouble(entero))
             {
-                //TextoDescripcion.Width = DockMain.ActualWidth - 200;
+                foreach (var item in borderList)
+                {
+                    var element = LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
+                    if (element != null)
+                    {
+                        var newelement = (TextBlock)element;
+                        newelement.Width = DockMain.ActualWidth - 200;
+                        newelement.MaxWidth = newelement.Width;
+                    }
+                }
             }
             else
             {
-                //TextoDescripcion.Width = 348;
+                foreach (var item in borderList)
+                {
+                    var element = LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
+                    if (element != null)
+                    {
+                        var newelement = (TextBlock)element;
+                        newelement.Width = 300;
+                        newelement.MaxWidth = newelement.Width;
+                    }
+                }
             }
         }
         #endregion
@@ -198,7 +214,7 @@ namespace ItemInventoryApp
                         var id = dr.id;
                         if ( MessageBox.Show("Eliminar el registro con ID: " + id + "?", "Caption", MessageBoxButton.OKCancel).ToString().Equals("OK"))
                         {
-                            if (Global.DBHandler.edit_delete(dr, "delete", Global.DataGridList))
+                            if (Global.DBHandler.edit_delete_item(dr, "delete", Global.DataGridList))
                             {
                                 MessageBox.Show("Se elimino correctamente el registro con el id: "+id);
                             }
@@ -272,7 +288,7 @@ namespace ItemInventoryApp
                         theitem.Price = Convert.ToDouble(txtPriceE.Text);
                         theitem.ImagePath = txtImagePahE.Text;
 
-                        if (Global.DBHandler.edit_delete(theitem, "edit", Global.DataGridList))
+                        if (Global.DBHandler.edit_delete_item(theitem, "edit", Global.DataGridList))
                         {
                             MessageBox.Show("Se ha editado correctamente el producto con el id: " + theitem.id);
                         }
@@ -316,7 +332,7 @@ namespace ItemInventoryApp
 
         //    Item theitem = Global.DBHandler.SearchItembyID(Convert.ToInt32(txtIDEDel.Text));
 
-        //    if (Global.DBHandler.edit_delete(theitem, "delete"))
+        //    if (Global.DBHandler.edit_delete_item(theitem, "delete"))
         //    {
         //        MessageBox.Show("Se ha eliminado correctamente el producto con el id: " + theitem.id);
         //    }

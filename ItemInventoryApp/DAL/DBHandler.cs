@@ -24,26 +24,12 @@ namespace ItemInventoryApp.DAL
             DBInstance.Items = new List<Item>();
             DBInstance.Pedidos = new List<Pedido>();
         }
-
-        public DatabaseModel UpdateDBObject()
-        {
-            //Declare file name
-            string fileName = @"C:\InventoryApp\_InventoryDB.json";
-            string content = "";
-
-            using (StreamReader sr = File.OpenText(fileName))
-            {
-                using (StreamReader r = new StreamReader(fileName))
-                {
-                    content = r.ReadToEnd();
-                }
-            }
-
-            var json = JsonConvert.DeserializeObject<DatabaseModel>(content);
-
-            return json;
-        }
-
+        #region Database Handle
+        /*
+          * // SUMMARY
+          * // Retrieve and initialize the data from the JSON File used as DataBase 
+          * // Return: DatabaseModel object
+        */
         public DatabaseModel InitializeDB()
         {
             string content = "";
@@ -82,7 +68,34 @@ namespace ItemInventoryApp.DAL
                 return json;
             }
         }
+        /*
+          * // SUMMARY
+          * // Retrieve the data from the JSON File used as DataBase to update the object with more recent data
+          * // Return: DatabaseModel object
+        */
+        public DatabaseModel UpdateDBObject()
+        {
+            //Declare file name
+            string fileName = @"C:\InventoryApp\_InventoryDB.json";
+            string content = "";
 
+            using (StreamReader sr = File.OpenText(fileName))
+            {
+                using (StreamReader r = new StreamReader(fileName))
+                {
+                    content = r.ReadToEnd();
+                }
+            }
+
+            var json = JsonConvert.DeserializeObject<DatabaseModel>(content);
+
+            return json;
+        }
+        /*
+          * // SUMMARY
+          * // Saves the changes on the JSON File writing the new values
+          * // Return: bool (True/False)
+        */
         private bool SaveDB(DatabaseModel db)
         {
 
@@ -100,29 +113,24 @@ namespace ItemInventoryApp.DAL
                 return success;
             }
         }
+        #endregion
 
-        public bool CreateItem(Item Newitem, List<DataGrid> dgList)
+        #region Searchs for item
+        /*
+          * // SUMMARY
+          * // Return all items on the JSON Database
+          * // Return: List of Items
+        */
+        public List<Item> GetAllItems()
         {
-            bool success = false;
-
-            //UpdateDBObject the databaseobject to get the most recent data
             DBInstance = UpdateDBObject();
-
-            try
-            {
-                DBInstance.Items.Add(Newitem);
-                success = SaveDB(DBInstance);
-                runtime.PopulateAllDataGrids(dgList, DBInstance);
-                return success;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return success;
-            }
-
+            return DBInstance.Items;
         }
-
+        /*
+          * // SUMMARY
+          * // Searchs for a specific item with the ID received
+          * // Return: DatabaseModel object
+        */
         public Item SearchItembyID(int id)
         {
             Item item = new Item();
@@ -139,7 +147,11 @@ namespace ItemInventoryApp.DAL
                 return item;
             }
         }
-
+        /*
+          * // SUMMARY
+          * // Searchs for a specific item wheres the Text coincidence from variable Name received
+          * // Return: DatabaseModel object
+        */
         public List<Item> SearchItembyName(string Name)
         {
             List<Item> item = new List<Item>();
@@ -158,39 +170,11 @@ namespace ItemInventoryApp.DAL
                 return item;
             }
         }
-
-        public bool edit_delete(Item item, string action, List<DataGrid> dgList)
-        {
-            bool success = false;
-
-            //UpdateDBObject the databaseobject to get the most recent data
-            DBInstance = UpdateDBObject();
-
-            try
-            {
-                var pastItem = DBInstance.Items.FindIndex(x => x.id == item.id);
-
-                if (action == "edit")
-                {
-                    DBInstance.Items[pastItem] = item;
-                    success = SaveDB(DBInstance);
-
-                }
-                else if (action == "delete")
-                {
-                    DBInstance.Items.RemoveAt(pastItem);
-                    success = SaveDB(DBInstance);
-                }
-                runtime.PopulateAllDataGrids(dgList, DBInstance);
-                return success;
-            }
-            catch (Exception es)
-            {
-                MessageBox.Show("Error mientras se editaba el item. Error: " + es.Message);
-                return success;
-            }
-        }
-
+        /*
+          * // SUMMARY
+          * // Manage the search functions and calls the searchbyID or searchbyName depending on criteria received
+          * // Return: DatabaseModel object
+        */
         public List<Item> SearchByCriteria(string criteria, string data)
         {
             List<Item> List = new List<Item>();
@@ -233,12 +217,73 @@ namespace ItemInventoryApp.DAL
 
             return List;
         }
+        #endregion
 
-        public List<Item> GetAllItems()
+        #region JSON CRUD FOR ITEMS
+        /*
+          * // SUMMARY
+          * // Insert data of a new item on JSON FILE writing the current data and updates the DBInstance with the new data
+          * // Return: bool (True/False)
+        */
+        public bool CreateItem(Item Newitem, List<DataGrid> dgList)
         {
+            bool success = false;
+
+            //UpdateDBObject the databaseobject to get the most recent data
             DBInstance = UpdateDBObject();
-            return DBInstance.Items;
+
+            try
+            {
+                DBInstance.Items.Add(Newitem);
+                success = SaveDB(DBInstance);
+                runtime.PopulateAllDataGrids(dgList, DBInstance);
+                return success;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return success;
+            }
+
         }
+        /*
+          * // SUMMARY
+          * // Edit or Delete Data from JSON FILE and updates the DBInstance and JSON File with the new data
+          * // Return: bool (True/False)
+        */
+        public bool edit_delete_item(Item item, string action, List<DataGrid> dgList)
+        {
+            bool success = false;
+
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+
+            try
+            {
+                var pastItem = DBInstance.Items.FindIndex(x => x.id == item.id);
+
+                if (action == "edit")
+                {
+                    DBInstance.Items[pastItem] = item;
+                    success = SaveDB(DBInstance);
+
+                }
+                else if (action == "delete")
+                {
+                    DBInstance.Items.RemoveAt(pastItem);
+                    success = SaveDB(DBInstance);
+                }
+                runtime.PopulateAllDataGrids(dgList, DBInstance);
+                return success;
+            }
+            catch (Exception es)
+            {
+                MessageBox.Show("Error mientras se editaba el item. Error: " + es.Message);
+                return success;
+            }
+        }
+        #endregion
+
 
     } //End of way
 }

@@ -6,6 +6,41 @@
         xmlns:local="clr-namespace:ItemInventoryApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="499.047" Width="692.267" MinHeight="500" MinWidth="881.992" SizeChanged="Window_SizeChanged">
+
+    <Window.Resources>
+        <Style x:Key = "btnPedidos" TargetType = "Button">
+            <Setter Property = "Height" Value = "35" />
+            <Setter Property = "Width" Value = "120" />
+            <Setter Property = "FontFamily"  Value="Comic Sans MS"/>
+            <Setter Property = "Foreground" Value = "White" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property = "FontSize" Value = "12" />
+            <Setter Property = "Margin" Value = "30,50,30,50" />
+            <Setter Property = "TextBlock.TextAlignment" Value="Center" />
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property = "Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" BorderThickness="1,1,1,1" >
+                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsPressed"  Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Rectangle>
             <Rectangle.Fill>
@@ -21,19 +56,23 @@
                 <!--GRID PRINCIPAL DE LA PESTAÑA-->
                 <Grid Background="#FF7A7A7A">
                     <!--GRID DE IZQUIERDA-->
-                    <Grid Background="Aqua">
-                        <Button Content="Button" Width="75" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="35,0,0,50"/>
+                    <Grid Background="#F6CE3E">
+                        <Button Content="Confirmar Pedido" Style = "{StaticResource btnPedidos}">
+                            <Button.Effect>
+                                <DropShadowEffect/>
+                            </Button.Effect>
+                        </Button>
                     </Grid>
                     <!--GRID DE DERECHA-->
-                    <Grid Background="Black" Margin="704,0,0,0">
-                        <Button Content="Button" Width="75" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,50"/>
+                    <Grid Background="#F6CE3E" Margin="704,0,0,0">
+                        <Button Content="Entregar Pedido" HorizontalAlignment="Right" Style = "{StaticResource btnPedidos}"  Margin="0,0,35,50"/>
                     </Grid>
                     <!--GRID DEL CENTRO-->
-                    <Grid Background="Bisque" Margin="150, 0, 150, 0">
+                    <Grid Background="Bisque" Margin="180, 0, 180, 0">
                         <!--A PARTIR DE AQUI SE CLONARA EL SIGUIENTE DOCK PANEL-->
                         <DockPanel x:Name="DockMain" Background="White" >
                             <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel x:Name="MainViewer" Background="#FFC1C8E4">
+                                <StackPanel x:Name="MainViewer" Background="#FFA6E0FF">
                                     <!--<Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
                                         <DockPanel Height="100" >
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
@@ -60,7 +99,7 @@
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
                                                 <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
                                             </Border>
-                                            <Canvas x:Name="CanvasDsatos" Height="100" SizeChanged="CanvasDatos_SizeChanged">
+                                            <Canvas x:Name="CanvasDsatos" Height="100">
                                                 <TextBlock Padding="5">
                                                     Tacos al Vapor $ 35
                                                 </TextBlock >
