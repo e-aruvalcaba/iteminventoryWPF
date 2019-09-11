@@ -17,72 +17,96 @@ namespace ItemInventoryApp.Classes
 {
     class UIRuntime
     {
-        public List<Border> CreateBorders(List<Item> dataArray)
-        {
-            List<Border> borderRet = new List<Border>();
 
-            var loop = 0;
-            foreach (var item in dataArray)
-            {
-                Border bd = new Border();
-                Label lb = new Label();
-                lb.Content = string.Format("{0} ${1}", item.Name, item.Price);
-                lb.ToolTip = item.Description;
-                Thickness tk = new Thickness(1.0);
-                //bd.Width = 100;
-                bd.Height = 100;
-                bd.BorderBrush = Brushes.Black;
-                bd.BorderThickness = tk;
-                bd.Name = "border1";
-                bd.Uid = item.id.ToString();
-                bd.Child = lb;
-                Thickness margin = new Thickness(loop * 100, 0, 0, 0);
-                bd.Margin = margin;
-                borderRet.Add(bd);
-            }
+        #region Commented Blocks
+        //How to obtain the elements on children list
+        //UIElement[] array = new UIElement[4];
+        //panel2.Children.CopyTo(array, 0);
 
-            return borderRet;
-        }
+        //public List<Border> CreateBorders(List<Item> dataArray)
+        //{
+        //    List<Border> borderRet = new List<Border>();
 
-        public List<Canvas> Initialize_Canvas(List<Item> dataArray)
-        {
-            List<Canvas> borderRet = new List<Canvas>();
+        //    var loop = 0;
+        //    foreach (var item in dataArray)
+        //    {
+        //        Border bd = new Border();
+        //        Label lb = new Label();
+        //        lb.Content = string.Format("{0} ${1}", item.Name, item.Price);
+        //        lb.ToolTip = item.Description;
+        //        Thickness tk = new Thickness(1.0);
+        //        //bd.Width = 100;
+        //        bd.Height = 100;
+        //        bd.BorderBrush = Brushes.Black;
+        //        bd.BorderThickness = tk;
+        //        bd.Name = "border1";
+        //        bd.Uid = item.id.ToString();
+        //        bd.Child = lb;
+        //        Thickness margin = new Thickness(loop * 100, 0, 0, 0);
+        //        bd.Margin = margin;
+        //        borderRet.Add(bd);
+        //    }
 
-            var loop = 0;
-            foreach (var item in dataArray)
-            {
-                Canvas cnv = new Canvas();
+        //    return borderRet;
+        ////}
 
-                Border bd = new Border();
-                Label lb = new Label();
-                lb.Content = string.Format("{0} ${1}", item.Name, item.Price);
-                lb.ToolTip = item.Description;
-                Thickness tk = new Thickness(1.0);
-                bd.Height = 100;
-                bd.Background = Brushes.Black;
-                bd.BorderBrush = Brushes.Black;
-                bd.BorderThickness = tk;
-                bd.Name = "border1";
-                bd.Uid = item.id.ToString();
-                //bd.Child = lb;
-                //Thickness margin = new Thickness(loop * 100, 0, 0, 0);
-                //bd.Margin = margin;
-                cnv.Background = Brushes.Black;
-                cnv.HorizontalAlignment = HorizontalAlignment.Stretch;
-                cnv.Children.Add(bd);
-                cnv.Children.Add(lb);
+        //public List<Canvas> Initialize_Canvas(List<Item> dataArray)
+        //{
+        //    List<Canvas> borderRet = new List<Canvas>();
 
-                borderRet.Add(cnv);
-            }
+        //    var loop = 0;
+        //    foreach (var item in dataArray)
+        //    {
+        //        Canvas cnv = new Canvas();
 
-            return borderRet;
-        }
+        //        Border bd = new Border();
+        //        Label lb = new Label();
+        //        lb.Content = string.Format("{0} ${1}", item.Name, item.Price);
+        //        lb.ToolTip = item.Description;
+        //        Thickness tk = new Thickness(1.0);
+        //        bd.Height = 100;
+        //        bd.Background = Brushes.Black;
+        //        bd.BorderBrush = Brushes.Black;
+        //        bd.BorderThickness = tk;
+        //        bd.Name = "border1";
+        //        bd.Uid = item.id.ToString();
+        //        //bd.Child = lb;
+        //        //Thickness margin = new Thickness(loop * 100, 0, 0, 0);
+        //        //bd.Margin = margin;
+        //        cnv.Background = Brushes.Black;
+        //        cnv.HorizontalAlignment = HorizontalAlignment.Stretch;
+        //        cnv.Children.Add(bd);
+        //        cnv.Children.Add(lb);
 
+        //        borderRet.Add(cnv);
+        //    }
+
+        //    return borderRet;
+        //}
+
+        //public void PopulateDataGrid(DataGrid dg, DatabaseModel db)
+        //{
+        //    ObservableCollection<Item> data = new ObservableCollection<Item>();
+
+        //    foreach (var item in db.Items)
+        //    {
+        //        data.Add(item);
+        //    }
+
+        //    dg.ItemsSource = data;
+        //}
+
+        #endregion
+
+        #region UI Panel Creation
+        /*//
+            // SUMMARY
+            // Create the structure of all panels where the data display
+            // Retuen a list of panels on the ui that have as content all the data from a item list
+        */
         public List<Border> CreatePanels(List<Item> dataArray)
         {
             List<Border> borderRet = new List<Border>();
-
-            var loop = 0;
             foreach (var item in dataArray)
             {
                 #region First DockPanel
@@ -185,9 +209,23 @@ namespace ItemInventoryApp.Classes
                 #endregion
 
                 #region 3er border
+
+                Button dynamicButton = new Button
+                {
+                    Content = "Agregar",
+                    Width = 70,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Height = 30,
+                    Name = "btnAgregar" + item.id.ToString(),
+                    Uid = item.id.ToString()
+                };
+                dynamicButton.Click += dynamicButton_Click;
                 //Adding 3er border to panel2
                 panel2.Children.Add(new Border
                 {
+                    Name = "Border3",
+                    Uid = "Border3",
                     Height = 100,
                     Width = 100,
                     BorderBrush = myBrush,
@@ -195,37 +233,32 @@ namespace ItemInventoryApp.Classes
                     CornerRadius = new CornerRadius(5),
                     Padding = new Thickness(3),
                     HorizontalAlignment = HorizontalAlignment.Right,
-                    Child = new Button
-                    {
-                        Content = "Agregar",
-                        Width = 70,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Height = 30,
-                        Name = "btnAgregar"
-                    }
-                    //.Click += new RoutedEventHandler(Click_Event)
-                    //.AddHandler(Button.ClickEvent, new RoutedEventHandler(Click_Event))
+                    Child = dynamicButton
                 });
                 #endregion
-
                 #region adding the remaining elements to the dockpanel
-
                 bd.Child = panel2;
-                //stack.Children.Add(bd);
-                //scroll.Content = stack;
-                //panel.Children.Add(scroll);
-
-
-                #endregion
-
+                #endregion                
                 borderRet.Add(bd);
-
             }
-
             return borderRet;
         }
+        /*//
+            // SUMMARY
+            // Create the Click event behavior to all the buttons on the panel dynamically
+            // Return click event on UI (Void type)
+        */
+        private void dynamicButton_Click(object sender, RoutedEventArgs e)
+        {
+            var element = (Button)sender;
+            MessageBox.Show(element.Uid);
+        }
 
+        /*//
+            // SUMMARY
+            // Create a panel dinamically based on 1 item::: i don't know if is in use or deprecated by createPanels function
+            //Return 1 panel element with the required data
+        */
         public Border panel(Item item)
         {
             #region First DockPanel
@@ -347,10 +380,12 @@ namespace ItemInventoryApp.Classes
                     Height = 30,
                     Name = "btnAgregar"
                 }
+
+
                 //.Click += new RoutedEventHandler(Click_Event)
-                //.AddHandler(Button.ClickEvent, new RoutedEventHandler(Click_Event))
             });
             #endregion
+
 
             #region adding the remaining elements to the dockpanel
 
@@ -364,16 +399,27 @@ namespace ItemInventoryApp.Classes
 
             return bd;
         }
+        #endregion
 
+        #region Textboxes Functionality
+        /*
+            // SUMMARY
+            // Clear all the textboxes that receives from textbox list
+            // Return: Void
+        */
         public void ClearTextBoxes(List<TextBox> list)
         {
             foreach (var item in list)
             {
                 item.Clear();
-
             }
         }
 
+        /*
+            // SUMMARY
+            // Enables or disables all the textboxes that receives from textbox list
+            // Return: Void
+        */
         public void Enable_disableTextBoxes(List<TextBox> list, bool action)
         {
             foreach (var item in list)
@@ -382,20 +428,14 @@ namespace ItemInventoryApp.Classes
             }
 
         }
+        #endregion
 
-
-        public void PopulateDataGrid(DataGrid dg, DatabaseModel db)
-        {
-            ObservableCollection<Item> data = new ObservableCollection<Item>();
-
-            foreach (var item in db.Items)
-            {
-                data.Add(item);
-            }
-
-            dg.ItemsSource = data;
-        }
-
+        #region DataGrid Operations
+        /*
+           // SUMMARY
+           // Sets the itemSource (DataSource) of all the datagrids on the datagrid list with the data from the JSON DB
+           // Return: Void
+       */
         public void PopulateAllDataGrids(List<DataGrid> dgList, DatabaseModel db)
         {
             ObservableCollection<Item> data = new ObservableCollection<Item>();
@@ -411,7 +451,11 @@ namespace ItemInventoryApp.Classes
             }
 
         }
-
+        /*
+             // SUMMARY
+             // Sets the data for all the textboxes on edit or delete modules::: //DELETE MODULES DEPRECATED, NO LONGER NEED TXTBOXES
+             // Return: Void
+         */
         public void SetTextBoxFromDataGrid(Item item, List<TextBox> list, RichTextBox rich, string action)
         {
             string[] array = new string[4];
@@ -423,7 +467,7 @@ namespace ItemInventoryApp.Classes
                     array[2] = "txtPriceE";
                     array[3] = "txtImagePahE";
                     break;
-                case "delete":
+                case "delete": //DEPRECATED DELETED MODULE NO LONGER NEED TEXTBOXES TO DELETE
                     array[0] = "txtIDEDel";
                     array[1] = "txtNombreDel";
                     array[2] = "txtPriceDel";
@@ -447,10 +491,12 @@ namespace ItemInventoryApp.Classes
                     }
                 }
             }
-
-            
         }
-
+        /*
+            // SUMMARY
+            // Sets the datagrid datasource with the needed data from the textbox search
+            // Return: Void
+        */
         public void search(ComboBox combo, DBHandler handler, string texto, DataGrid dg)
         {
             string criteria = ((ComboBoxItem)combo.SelectedItem).Content.ToString();
@@ -472,7 +518,7 @@ namespace ItemInventoryApp.Classes
                 dg.ItemsSource = list;
             }
         }
-
+        #endregion
 
     } //End limit of code
 }

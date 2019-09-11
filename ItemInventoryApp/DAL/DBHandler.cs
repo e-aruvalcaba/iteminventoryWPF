@@ -7,12 +7,15 @@ using System.Windows;
 using System.Threading.Tasks;
 using ItemInventoryApp.Models;
 using Newtonsoft.Json;
+using System.Windows.Controls;
+using ItemInventoryApp.Classes;
 
 namespace ItemInventoryApp.DAL
 {
     class DBHandler
     {
         private DatabaseModel DBInstance;
+        private UIRuntime runtime = new UIRuntime();
         private static string fileName = @"C:\InventoryApp\_InventoryDB.json";
 
         public DBHandler()
@@ -54,7 +57,7 @@ namespace ItemInventoryApp.DAL
             //Si el archivo no existe se crea
             if (!File.Exists(fileName))
             {
-                
+
                 var data = JsonConvert.SerializeObject(DBInstance);
                 using (FileStream fs = File.Create(fileName))
                 {
@@ -93,12 +96,12 @@ namespace ItemInventoryApp.DAL
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error saving data on json database file. Error: "+ex.Message);
+                MessageBox.Show("Error saving data on json database file. Error: " + ex.Message);
                 return success;
             }
         }
 
-        public bool CreateItem(Item Newitem)
+        public bool CreateItem(Item Newitem, List<DataGrid> dgList)
         {
             bool success = false;
 
@@ -109,6 +112,7 @@ namespace ItemInventoryApp.DAL
             {
                 DBInstance.Items.Add(Newitem);
                 success = SaveDB(DBInstance);
+                runtime.PopulateAllDataGrids(dgList, DBInstance);
                 return success;
             }
             catch (Exception e)
@@ -122,15 +126,11 @@ namespace ItemInventoryApp.DAL
         public Item SearchItembyID(int id)
         {
             Item item = new Item();
-
             //UpdateDBObject the databaseobject to get the most recent data
             DBInstance = UpdateDBObject();
-
             try
             {
                 item = DBInstance.Items.Find(x => x.id == id);
-
-                //item = item == null ? new Item {} : item;
                 return item;
             }
             catch (Exception)
@@ -145,12 +145,6 @@ namespace ItemInventoryApp.DAL
             List<Item> item = new List<Item>();
             //UpdateDBObject the databaseobject to get the most recent data
             DBInstance = UpdateDBObject();
-
-            if (string.IsNullOrEmpty(Name))
-            {
-                return DBInstance.Items;
-            }
-
             try
             {
                 //item = DBInstance.Items.Find(x => x.id == id);
@@ -160,12 +154,12 @@ namespace ItemInventoryApp.DAL
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error en la busqueda : "+ex.Message);
+                MessageBox.Show("Error en la busqueda : " + ex.Message);
                 return item;
             }
         }
 
-        public bool edit_delete(Item item, string action)
+        public bool edit_delete(Item item, string action, List<DataGrid> dgList)
         {
             bool success = false;
 
@@ -176,22 +170,23 @@ namespace ItemInventoryApp.DAL
             {
                 var pastItem = DBInstance.Items.FindIndex(x => x.id == item.id);
 
-                if(action == "edit")
+                if (action == "edit")
                 {
                     DBInstance.Items[pastItem] = item;
                     success = SaveDB(DBInstance);
 
                 }
-                else if(action == "delete")
+                else if (action == "delete")
                 {
                     DBInstance.Items.RemoveAt(pastItem);
                     success = SaveDB(DBInstance);
                 }
+                runtime.PopulateAllDataGrids(dgList, DBInstance);
                 return success;
             }
             catch (Exception es)
             {
-                MessageBox.Show("Error mientras se editaba el item. Error: "+es.Message);
+                MessageBox.Show("Error mientras se editaba el item. Error: " + es.Message);
                 return success;
             }
         }
@@ -202,13 +197,18 @@ namespace ItemInventoryApp.DAL
             //UpdateDBObject the databaseobject to get the most recent data
             DBInstance = UpdateDBObject();
 
+            if (string.IsNullOrEmpty(data))
+            {
+                return List = GetAllItems();
+            }
+
             switch (criteria)
             {
                 case "ID":
                     try
                     {
                         List.Add(SearchItembyID(Convert.ToInt32(data)));
-
+                        //List.Add(SearchItembyID(Convert.ToInt32(data)));
                         List = List[0] == null ? new List<Item>() : List;
 
                         return List;
@@ -226,12 +226,18 @@ namespace ItemInventoryApp.DAL
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error al buscar por ID error: "+ex.Message);
+                        MessageBox.Show("Error al buscar por ID error: " + ex.Message);
                     }
                     break;
             }
 
             return List;
+        }
+
+        public List<Item> GetAllItems()
+        {
+            DBInstance = UpdateDBObject();
+            return DBInstance.Items;
         }
 
     } //End of way

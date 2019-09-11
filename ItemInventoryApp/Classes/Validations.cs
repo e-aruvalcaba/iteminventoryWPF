@@ -9,12 +9,22 @@ namespace ItemInventoryApp.Classes
 {
     class Validations
     {
+        #region Textboxes Validation
+        /*
+            // SUMMARY
+            // Validates that the text typed on the textbox is a number. (Only for numeric textboxes)
+            // Return: bool (true/false)
+        */
         private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
         public bool IsTextAllowed(string text)
         {
             return !_regex.IsMatch(text);
         }
-
+        /*
+            // SUMMARY
+            // Validates that the text typed on the textbox is a number. (Only for numeric textboxes)
+            // Return: bool (true/false)
+        */
         public bool isNumber(string text)
         {
             bool valid = false;
@@ -28,5 +38,6 @@ namespace ItemInventoryApp.Classes
 
             return valid;
         }
-    }
+        #endregion
+    } //End of the way
 }

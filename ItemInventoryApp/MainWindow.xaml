@@ -187,11 +187,11 @@
                         <TabItem Header="Eliminar Producto">
                             <Grid Background="#FFAEC1D4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="350" />
+                                    <!--<ColumnDefinition Width="350" />-->
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <!-- Inicia columna de la izquierda-->
-                                <Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <!--<Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto" />
                                         <RowDefinition Height="*" />
@@ -218,11 +218,12 @@
                                         <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDEDel" Grid.Row="5"></TextBox>
                                         <Button x:Name="btnDeleteItem" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnDeleteItem_Click" >Eliminar item</Button>
                                     </Grid>
-                                </Grid>
+                                </Grid>-->
                                 <!--Termina columna de la izquierda-->
 
                                 <!--Inicia Columna de la derecha-->
-                                <Grid Grid.Column="1">
+                                <!--<Grid Grid.Column="1">-->
+                                <Grid Grid.Column="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="70"/>
                                         <RowDefinition Height="auto"/>
@@ -242,7 +243,7 @@
                                         <Button x:Name="btnSearchDel" IsEnabled="False" Click="BtnSearchDel_Click">Buscar Ahora</Button>
                                     </Grid>
                                     <!--DatagridView-->
-                                    <DataGrid x:Name="DGDelete" Background="Gray" Margin="0,0,10,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick">
+                                    <DataGrid x:Name="DGDelete" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick">
                                     </DataGrid>
                                 </Grid>
                                 <!--Termina Columna de la derecha-->

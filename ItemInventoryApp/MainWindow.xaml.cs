@@ -25,72 +25,23 @@ namespace ItemInventoryApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DatabaseModel GlobalMainObject = new DatabaseModel();
-        private DBHandler GlobalHandler;
-        private UIRuntime UiruntimeHandler;
-        private List<DataGrid> DataGridList = new List<DataGrid>();
-        private Validations validationsHandler = new Validations();
-
+        //Dependency injection for all librarys
+        Library Global = new Library();
         public MainWindow()
         {
             InitializeComponent();
+            Global.DatbaseInstance = new DatabaseModel();
+            Global.DBHandler = new DBHandler();
+            Global.UIRuntime = new UIRuntime();
+            Global.DataGridList = new List<DataGrid>();
+            Global.TextBoxList = new List<TextBox>();
+            Global.ValidationsHandler = new Validations();
             //Create an instance of dbhandler        
             DBHandler handler = new DBHandler();
             //Create the mainObject to retrieve de json data
             DatabaseModel MainObject = handler.InitializeDB();
-            //Populate a hardcoded list of items 
-            //MainObject.Items.Add(new Item {
-            //    id = 1,
-            //    Name = "Tacos al vapor",
-            //    Description = "Paquete de 5 tacos bañados en salsa roja de habanero",
-            //    Price = 25
-            //});
-            //MainObject.Items.Add(new Item
-            //{
-            //    id = 2,
-            //    Name = "Tacos de pastor",
-            //    Description = "Paquete de 5 tacos de pastor con cilantro cebolla caramelizada, salsa medio limon y doble tortilla.",
-            //    Price = 35
-            //});
-            //MainObject.Items.Add(new Item
-            //{
-            //    id = 3,
-            //    Name = "Tacos de bisteck",
-            //    Description = "Paquete de 5 tacos de bisteck de res con cilantro cebolla caramelizada, salsa medio limon y doble tortilla.",
-            //    Price = 40
-            //});
-            //MainObject.Items.Add(new Item
-            //{
-            //    id = 4,
-            //    Name = "Papa asada Mixta",
-            //    Description = "Deliciosa papa machacada con matenquilla en un contenedor de aluminio sasonada con especias finas y mezclada con queso amarillo derretido y crema y cubierta con carne de bisteck y de pastor, un chile en vinagre y 4 paquetes de galletas saladitas.",
-            //    Price = 60
-            //});
-            //MainObject.Items.Add(new Item
-            //{
-            //    id = 5,
-            //    Name = "Papa asada de pastor",
-            //    Description = "Deliciosa papa machacada con matenquilla en un contenedor de aluminio sasonada con especias finas y mezclada con queso amarillo derretido y crema y cubierta con carne de pastor, un chile en vinagre y 4 paquetes de galletas saladitas.",
-            //    Price = 45
-            //});
-            //MainObject.Items.Add(new Item
-            //{
-            //    id = 6,
-            //    Name = "Papa asada de bisteck",
-            //    Description = "Deliciosa papa machacada con matenquilla en un contenedor de aluminio sasonada con especias finas y mezclada con queso amarillo derretido y crema y cubierta con carne de bisteck, un chile en vinagre y 4 paquetes de galletas saladitas.",
-            //    Price = 55
-            //});
-            //MainObject.Items.Add(new Item
-            //{
-            //    id = 7,
-            //    Name = "Bomba",
-            //    Description = "5 Quesadillas en tostada con carne de pastor, cilantro cebolla, salsa y tocino.",
-            //    Price = 35
-            //});
             //Create an instance of UIruntime class
             UIRuntime obj = new UIRuntime();
-            //var lista = obj.CreateBorders(MainObject.Items);
-
             //Create a list of border UIComponent dinamically that shows the app to the final user 
             List<Border> lista = obj.CreatePanels(MainObject.Items);
 
@@ -100,15 +51,15 @@ namespace ItemInventoryApp
                 MainViewer.Children.Add(lista[i]);
             }
             //Set the global main object
-            GlobalMainObject = MainObject;
-            GlobalHandler = handler;
-            UiruntimeHandler = obj;
+            Global.DatbaseInstance = MainObject;
+            Global.DBHandler = handler;
+            Global.UIRuntime = obj;
 
             //Populate datagrid list
-            DataGridList.Add(DGEdit);
-            DataGridList.Add(DGDelete);
+            Global.DataGridList.Add(DGEdit);
+            Global.DataGridList.Add(DGDelete);
             //Poblate DatagridView with items
-            UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
+            Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
         }
 
         #region ResponsiveElementsModule
@@ -144,26 +95,42 @@ namespace ItemInventoryApp
                 {
                     if (!txtPrecioC.Equals("."))
                     {
-                        GlobalMainObject = GlobalHandler.UpdateDBObject();
-                        GlobalHandler.CreateItem(new Item
+
+                        try
                         {
-                            id = GlobalMainObject.Items[GlobalMainObject.Items.Count - 1].id + 1,
-                            Name = txtBoxNombreC.Text,
-                            Description = richtext,
-                            Price = Convert.ToInt32(txtPrecioC.Text),
-                            ImagePath = txtImagePahC.Text
-                        });
+                            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                            if(Global.DBHandler.CreateItem(new Item
+                            {
+                                id = Global.DatbaseInstance.Items[Global.DatbaseInstance.Items.Count - 1].id + 1,
+                                Name = txtBoxNombreC.Text,
+                                Description = richtext,
+                                Price = Convert.ToInt32(txtPrecioC.Text),
+                                ImagePath = txtImagePahC.Text
+                            }, Global.DataGridList))
+                            {
+                                List<TextBox> txtlist = new List<TextBox>();
 
-                        List<TextBox> txtlist = new List<TextBox>();
+                                txtlist.Add(txtBoxNombreC);
+                                txtlist.Add(txtImagePahC);
+                                txtlist.Add(txtPrecioC);
+                                txtDescC.Document.Blocks.Clear();
 
-                        txtlist.Add(txtBoxNombreC);
-                        txtlist.Add(txtImagePahC);
-                        txtlist.Add(txtPrecioC);
-                        txtDescC.Document.Blocks.Clear();
+                                Global.UIRuntime.ClearTextBoxes(txtlist);
+                                Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                                Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
+                                MessageBox.Show("Se ha creado exitosamente el nuevo producto.");
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se pudo crear el nuevo producto.");
+                            }
 
-                        UiruntimeHandler.ClearTextBoxes(txtlist);
-                        GlobalMainObject = GlobalHandler.UpdateDBObject();
-                        UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error creando nuevo producto: "+ex.Message);
+                        }
+
                     }
                     else
                     {
@@ -195,11 +162,6 @@ namespace ItemInventoryApp
                         //This is the code which helps to show the data when the row is double clicked.
                         DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
                         Item dr = (Item)dgr.Item;
-                        //txtIDE.Text = dr.id.ToString();
-                        //txtNombreE.Text = dr.Name;
-                        //txtDescE.Document.ContentStart.InsertTextInRun(dr.Description);
-                        //txtPriceE.Text = dr.Price.ToString();
-                        //txtImagePahE.Text = dr.ImagePath;
 
                         //Create List of textboxes
                         List<TextBox> txtlist = new List<TextBox>();
@@ -208,21 +170,18 @@ namespace ItemInventoryApp
                         txtlist.Add(txtPriceE);
                         txtlist.Add(txtIDE);
                         //Set text extracted from the datagrid
-                        UiruntimeHandler.SetTextBoxFromDataGrid(dr, txtlist, txtDescE, "edit");
+                        Global.UIRuntime.SetTextBoxFromDataGrid(dr, txtlist, txtDescE, "edit");
                         //Enable textboxes to edit
                         txtDescE.IsEnabled = true;
-                        UiruntimeHandler.Enable_disableTextBoxes(txtlist, true);
+                        Global.UIRuntime.Enable_disableTextBoxes(txtlist, true);
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString());
             }
         }
-
 
         private void DGDelete_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -236,25 +195,56 @@ namespace ItemInventoryApp
                         //This is the code which helps to show the data when the row is double clicked.
                         DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
                         Item dr = (Item)dgr.Item;
-
-                        //Create List of textboxes
-                        List<TextBox> txtlist = new List<TextBox>();
-                        txtlist.Add(txtNombreDel);
-                        txtlist.Add(txtImgPahDel);
-                        txtlist.Add(txtPriceDel);
-                        txtlist.Add(txtIDEDel);
-                        //Set text extracted from the datagrid
-                        UiruntimeHandler.SetTextBoxFromDataGrid(dr, txtlist, txtDescDel, "delete");
+                        var id = dr.id;
+                        if ( MessageBox.Show("Eliminar el registro con ID: " + id + "?", "Caption", MessageBoxButton.OKCancel).ToString().Equals("OK"))
+                        {
+                            if (Global.DBHandler.edit_delete(dr, "delete", Global.DataGridList))
+                            {
+                                MessageBox.Show("Se elimino correctamente el registro con el id: "+id);
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se pudo eliminar el registro con el id: " + id);
+                            }
+                        }
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString());
             }
         }
+
+        //private void DGDelete_MouseDoubleClick(object sender, MouseButtonEventArgs e) //This code is to enable the form on delete zone
+        //{
+        //    try
+        //    {
+        //        if (sender != null)
+        //        {
+        //            DataGrid grid = sender as DataGrid;
+        //            if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+        //            {
+        //                //This is the code which helps to show the data when the row is double clicked.
+        //                DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+        //                Item dr = (Item)dgr.Item;
+
+        //                //Create List of textboxes
+        //                List<TextBox> txtlist = new List<TextBox>();
+        //                txtlist.Add(txtNombreDel);
+        //                txtlist.Add(txtImgPahDel);
+        //                txtlist.Add(txtPriceDel);
+        //                txtlist.Add(txtIDEDel);
+        //                //Set text extracted from the datagrid
+        //                Global.UIRuntime.SetTextBoxFromDataGrid(dr, txtlist, txtDescDel, "delete");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message.ToString());
+        //    }
+        //}
 
         private void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
@@ -275,14 +265,14 @@ namespace ItemInventoryApp
                     if (!txtPriceE.Equals("."))
                     {
                         //Obtener el item con el id especifico
-                        Item theitem = GlobalHandler.SearchItembyID(Convert.ToInt32(txtIDE.Text));
+                        Item theitem = Global.DBHandler.SearchItembyID(Convert.ToInt32(txtIDE.Text));
 
                         theitem.Name = txtNombreE.Text;
                         theitem.Description = richtext;
                         theitem.Price = Convert.ToDouble(txtPriceE.Text);
                         theitem.ImagePath = txtImagePahE.Text;
 
-                        if (GlobalHandler.edit_delete(theitem, "edit"))
+                        if (Global.DBHandler.edit_delete(theitem, "edit", Global.DataGridList))
                         {
                             MessageBox.Show("Se ha editado correctamente el producto con el id: " + theitem.id);
                         }
@@ -292,12 +282,12 @@ namespace ItemInventoryApp
                         }
 
 
-                        UiruntimeHandler.ClearTextBoxes(txtlist);
+                        Global.UIRuntime.ClearTextBoxes(txtlist);
                         txtDescE.Document.Blocks.Clear();
                         txtDescE.IsEnabled = false;
-                        UiruntimeHandler.Enable_disableTextBoxes(txtlist, false);
-                        GlobalMainObject = GlobalHandler.UpdateDBObject();
-                        UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
+                        Global.UIRuntime.Enable_disableTextBoxes(txtlist, false);
+                        Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                        Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
                     }
                     else
                     {
@@ -315,32 +305,32 @@ namespace ItemInventoryApp
             }
         }
 
-        private void BtnDeleteItem_Click(object sender, RoutedEventArgs e)
-        {
-            List<TextBox> txtlist = new List<TextBox>();
+        //private void BtnDeleteItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    List<TextBox> txtlist = new List<TextBox>();
 
-            txtlist.Add(txtNombreDel);
-            txtlist.Add(txtImgPahDel);
-            txtlist.Add(txtPriceDel);
-            txtlist.Add(txtIDEDel);
+        //    txtlist.Add(txtNombreDel);
+        //    txtlist.Add(txtImgPahDel);
+        //    txtlist.Add(txtPriceDel);
+        //    txtlist.Add(txtIDEDel);
 
-            Item theitem = GlobalHandler.SearchItembyID(Convert.ToInt32(txtIDEDel.Text));
+        //    Item theitem = Global.DBHandler.SearchItembyID(Convert.ToInt32(txtIDEDel.Text));
 
-            if (GlobalHandler.edit_delete(theitem, "delete"))
-            {
-                MessageBox.Show("Se ha eliminado correctamente el producto con el id: " + theitem.id);
-            }
-            else
-            {
-                MessageBox.Show("No se pudo eliminar el producto con el id: " + theitem.id);
-            }
+        //    if (Global.DBHandler.edit_delete(theitem, "delete"))
+        //    {
+        //        MessageBox.Show("Se ha eliminado correctamente el producto con el id: " + theitem.id);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("No se pudo eliminar el producto con el id: " + theitem.id);
+        //    }
 
-            UiruntimeHandler.ClearTextBoxes(txtlist);
-            txtDescDel.Document.Blocks.Clear();
-            //Update the datagrids after delete
-            GlobalMainObject = GlobalHandler.UpdateDBObject();
-            UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
-        }
+        //    Global.UIRuntime.ClearTextBoxes(txtlist);
+        //    txtDescDel.Document.Blocks.Clear();
+        //    //Update the datagrids after delete
+        //    Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+        //    Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
+        //}
         #endregion
 
         #region ComboboxAndSearchModule
@@ -377,7 +367,7 @@ namespace ItemInventoryApp
             {
                 string criteria = ((ComboBoxItem)comboEliminar.SelectedItem).Content.ToString();
 
-                var List = GlobalHandler.SearchByCriteria(criteria, txtSearchDel.Text);
+                var List = Global.DBHandler.SearchByCriteria(criteria, txtSearchDel.Text);
 
                 ObservableCollection<Item> datasource = new ObservableCollection<Item>();
 
@@ -400,7 +390,7 @@ namespace ItemInventoryApp
         {
             if (!txtSearchE.Text.Equals("") && ComboEdit.SelectedItem != null)
             {
-                UiruntimeHandler.search(ComboEdit, GlobalHandler, txtSearchE.Text, DGEdit);
+                Global.UIRuntime.search(ComboEdit, Global.DBHandler, txtSearchE.Text, DGEdit);
             }
             else
             {
@@ -415,12 +405,12 @@ namespace ItemInventoryApp
         #region SearchTextboxEmptyEvents
         private void TxtSearchE_KeyUp(object sender, KeyEventArgs e)
         {
-            UiruntimeHandler.search(ComboEdit, GlobalHandler, txtSearchE.Text, DGEdit);
+            Global.UIRuntime.search(ComboEdit, Global.DBHandler, txtSearchE.Text, DGEdit);
         }
 
         private void TxtSearchDel_KeyUp(object sender, KeyEventArgs e)
         {
-            UiruntimeHandler.search(comboEliminar, GlobalHandler, txtSearchDel.Text, DGDelete);
+            Global.UIRuntime.search(comboEliminar, Global.DBHandler, txtSearchDel.Text, DGDelete);
         }
 
 
@@ -461,6 +451,7 @@ namespace ItemInventoryApp
 
         #endregion
 
+        #region Validation for searchTextboxes
         private void TxtSearchDel_KeyDown(object sender, KeyEventArgs e)
         {
           
@@ -480,10 +471,12 @@ namespace ItemInventoryApp
                 string selection = ((ComboBoxItem)ComboEdit.SelectedItem).Content.ToString();
                 if (selection == "ID")
                 {
-                    e.Handled = !validationsHandler.isNumber(e.Text);
-                    //e.Handled = !validationsHandler.IsTextAllowed(e.Text);
+                    e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
+                    //e.Handled = !Global.ValidationsHandler.IsTextAllowed(e.Text);
                 }
             }
         }
+        #endregion
+
     } //End of the way
 }
