@@ -29,6 +29,7 @@ namespace ItemInventoryApp
         private DBHandler GlobalHandler;
         private UIRuntime UiruntimeHandler;
         private List<DataGrid> DataGridList = new List<DataGrid>();
+        private Validations validationsHandler = new Validations();
 
         public MainWindow()
         {
@@ -349,6 +350,7 @@ namespace ItemInventoryApp
             if (comboEliminar.SelectedItem != null)
             {
                 btnSearchDel.IsEnabled = true;
+                txtSearchDel.IsEnabled = true;
             }
             else
             {
@@ -362,6 +364,7 @@ namespace ItemInventoryApp
             if (ComboEdit.SelectedItem != null)
             {
                 btnSearchE.IsEnabled = true;
+                txtSearchE.IsEnabled = true;
             }
             else
             {
@@ -397,17 +400,7 @@ namespace ItemInventoryApp
         {
             if (!txtSearchE.Text.Equals("") && ComboEdit.SelectedItem != null)
             {
-                string criteria = ((ComboBoxItem)ComboEdit.SelectedItem).Content.ToString();
-
-                var List = GlobalHandler.SearchByCriteria(criteria, txtSearchE.Text);
-
-                ObservableCollection<Item> datasource = new ObservableCollection<Item>();
-
-                foreach (var item in List)
-                {
-                    datasource.Add(item);
-                }
-                DGDelete.ItemsSource = datasource;
+                UiruntimeHandler.search(ComboEdit, GlobalHandler, txtSearchE.Text, DGEdit);
             }
             else
             {
@@ -420,27 +413,14 @@ namespace ItemInventoryApp
         #endregion
 
         #region SearchTextboxEmptyEvents
-        //summary-----------------------------------------------
-        //
-        //------------------------------------------------------
         private void TxtSearchE_KeyUp(object sender, KeyEventArgs e)
         {
-            if (txtSearchE.Text.Equals(""))
-            {
-                //Retrieve the original datasource for deletegrid 
-                GlobalMainObject = GlobalHandler.UpdateDBObject();
-                UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
-            }
+            UiruntimeHandler.search(ComboEdit, GlobalHandler, txtSearchE.Text, DGEdit);
         }
 
         private void TxtSearchDel_KeyUp(object sender, KeyEventArgs e)
         {
-            if (txtSearchDel.Text.Equals(""))
-            {
-                //Retrieve the original datasource for deletegrid 
-                GlobalMainObject = GlobalHandler.UpdateDBObject();
-                UiruntimeHandler.PopulateAllDataGrids(DataGridList, GlobalMainObject);
-            }
+            UiruntimeHandler.search(comboEliminar, GlobalHandler, txtSearchDel.Text, DGDelete);
         }
 
 
@@ -478,8 +458,32 @@ namespace ItemInventoryApp
 
 
         }
+
         #endregion
 
+        private void TxtSearchDel_KeyDown(object sender, KeyEventArgs e)
+        {
+          
+        }
 
+        private void TxtSearchE_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void TxtSearchE_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Console.WriteLine("Letra presionandolo " + e.Text);
+
+            if (ComboEdit.SelectedItem != null)
+            {
+                string selection = ((ComboBoxItem)ComboEdit.SelectedItem).Content.ToString();
+                if (selection == "ID")
+                {
+                    e.Handled = !validationsHandler.isNumber(e.Text);
+                    //e.Handled = !validationsHandler.IsTextAllowed(e.Text);
+                }
+            }
+        }
     } //End of the way
 }

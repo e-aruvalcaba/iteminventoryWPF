@@ -11,6 +11,7 @@ using System.Windows.Media;
 using ItemInventoryApp.Models;
 using System.Windows.Media.Imaging;
 using System.Collections.ObjectModel;
+using ItemInventoryApp.DAL;
 
 namespace ItemInventoryApp.Classes
 {
@@ -448,6 +449,28 @@ namespace ItemInventoryApp.Classes
             }
 
             
+        }
+
+        public void search(ComboBox combo, DBHandler handler, string texto, DataGrid dg)
+        {
+            string criteria = ((ComboBoxItem)combo.SelectedItem).Content.ToString();
+            var list = handler.SearchByCriteria(criteria, texto);
+
+            try
+            {
+                ObservableCollection<Item> datasource = new ObservableCollection<Item>();
+
+                foreach (var item in list)
+                {
+                    datasource.Add(item);
+                }
+                dg.ItemsSource = datasource;
+            }
+            catch (Exception ex)
+            {
+                list = handler.SearchByCriteria("Nombre", "");
+                dg.ItemsSource = list;
+            }
         }
 
 

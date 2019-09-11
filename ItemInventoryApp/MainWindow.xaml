@@ -169,7 +169,7 @@
                                             <ComboBoxItem Content="ID"/>
                                             <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130" KeyUp="TxtSearchE_KeyUp"/>
+                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130" KeyUp="TxtSearchE_KeyUp" IsEnabled="False" PreviewTextInput="TxtSearchE_PreviewTextInput"/>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -235,7 +235,7 @@
                                             <ComboBoxItem Content="ID"/>
                                             <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130" KeyUp="TxtSearchDel_KeyUp"></TextBox>
+                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130" IsEnabled="False"  KeyUp="TxtSearchDel_KeyUp" KeyDown="TxtSearchDel_KeyDown"></TextBox>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">

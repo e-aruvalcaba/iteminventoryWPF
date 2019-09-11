@@ -129,6 +129,8 @@ namespace ItemInventoryApp.DAL
             try
             {
                 item = DBInstance.Items.Find(x => x.id == id);
+
+                //item = item == null ? new Item {} : item;
                 return item;
             }
             catch (Exception)
@@ -143,10 +145,16 @@ namespace ItemInventoryApp.DAL
             List<Item> item = new List<Item>();
             //UpdateDBObject the databaseobject to get the most recent data
             DBInstance = UpdateDBObject();
+
+            if (string.IsNullOrEmpty(Name))
+            {
+                return DBInstance.Items;
+            }
+
             try
             {
                 //item = DBInstance.Items.Find(x => x.id == id);
-                var sitem = DBInstance.Items.Where(it => it.Name.StartsWith(Name)).ToList();
+                var sitem = DBInstance.Items.Where(it => it.Name.ToLower().StartsWith(Name.ToLower())).ToList();
                 item = sitem;
                 return item;
             }
@@ -200,11 +208,14 @@ namespace ItemInventoryApp.DAL
                     try
                     {
                         List.Add(SearchItembyID(Convert.ToInt32(data)));
+
+                        List = List[0] == null ? new List<Item>() : List;
+
                         return List;
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error al buscar por ID");
+                        //MessageBox.Show("Error al buscar por ID, intente ingresando solo numeros de 0 a 9.");
                     }
                     break;
                 case "Nombre":
@@ -215,7 +226,7 @@ namespace ItemInventoryApp.DAL
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error al buscar por ID");
+                        MessageBox.Show("Error al buscar por ID error: "+ex.Message);
                     }
                     break;
             }
