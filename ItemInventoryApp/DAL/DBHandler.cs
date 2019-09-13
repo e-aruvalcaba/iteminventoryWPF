@@ -15,14 +15,17 @@ namespace ItemInventoryApp.DAL
     class DBHandler
     {
         private DatabaseModel DBInstance;
-        private UIRuntime runtime = new UIRuntime();
+        //private UIRuntime runtime = new UIRuntime();
         private static string fileName = @"C:\InventoryApp\_InventoryDB.json";
+        private Pedido pedidoEnMemoria = new Pedido();
+        //private Library Lib = new Library();
 
         public DBHandler()
         {
             DBInstance = new DatabaseModel();
             DBInstance.Items = new List<Item>();
             DBInstance.Pedidos = new List<Pedido>();
+            DBInstance.TempPedido = new Pedido();
         }
         #region Database Handle
         /*
@@ -51,6 +54,9 @@ namespace ItemInventoryApp.DAL
                     fs.Write(title, 0, title.Length);
                 }
 
+                //DBInstance.Items = new List<Item>();
+                //DBInstance.Pedidos = new List<Pedido>();
+                //DBInstance.TempPedido = new Pedido();
                 return DBInstance;
             }
             else //Si el archivo existe se lee por completo el contenido del JSON y se deserializa, para luego retornarse.
@@ -225,7 +231,7 @@ namespace ItemInventoryApp.DAL
           * // Insert data of a new item on JSON FILE writing the current data and updates the DBInstance with the new data
           * // Return: bool (True/False)
         */
-        public bool CreateItem(Item Newitem, List<DataGrid> dgList)
+        public bool CreateItem(Item Newitem, List<DataGrid> dgList, UIRuntime runtime)
         {
             bool success = false;
 
@@ -251,7 +257,7 @@ namespace ItemInventoryApp.DAL
           * // Edit or Delete Data from JSON FILE and updates the DBInstance and JSON File with the new data
           * // Return: bool (True/False)
         */
-        public bool edit_delete_item(Item item, string action, List<DataGrid> dgList)
+        public bool edit_delete_item(Item item, string action, List<DataGrid> dgList, UIRuntime runtime)
         {
             bool success = false;
 
@@ -284,6 +290,108 @@ namespace ItemInventoryApp.DAL
         }
         #endregion
 
+        public bool CreatePedido()
+        {
+            bool success = false;
+
+            return success;
+        }
+
+        //public Pedido GeneratePedidoOnMemory(Item item, int pedidoId, DatabaseModel db) {
+
+        //    pedidoId = pedidoId.Equals(0) ? 1 : pedidoId += 1;
+
+        //    pedidoEnMemoria.id = pedidoId;
+        //    item.Qty++;
+        //    pedidoEnMemoria.Items.Add(item);
+        //    pedidoEnMemoria.ItemsQuantity = pedidoEnMemoria.Items.Count;
+        //    pedidoEnMemoria.Status = new PedidoStatus().NotRegistered;
+        //    pedidoEnMemoria.Total = item.Price * pedidoEnMemoria.ItemsQuantity;
+        //    pedidoEnMemoria.Date = DateTime.Now.Date;
+
+        //    return pedidoEnMemoria;
+        //}
+
+        public Pedido GeneratePedidoOnMemory(Item item, int pedidoId, DatabaseModel db)
+        {
+
+            pedidoId = pedidoId.Equals(0) ? 1 : pedidoId += 1;
+
+            //pedidoEnMemoria.id = pedidoId;
+            //pedidoEnMemoria.Items.Add(item);
+            //pedidoEnMemoria.ItemsQuantity = pedidoEnMemoria.Items.Count;
+            //pedidoEnMemoria.Status = new PedidoStatus().NotRegistered;
+            //pedidoEnMemoria.Total = item.Price * pedidoEnMemoria.ItemsQuantity;
+            //pedidoEnMemoria.Date = DateTime.Now.Date;
+
+            item.Qty++;
+
+            Pedido newPedido = new Pedido();
+
+            newPedido.id = pedidoId;
+            newPedido.ItemsQuantity = 1;
+            newPedido.Status = new PedidoStatus().NotRegistered;
+            newPedido.Items.Add(item);
+            newPedido.Total = item.Price;
+            newPedido.Date = DateTime.Now.Date;
+
+            return db.TempPedido=newPedido;
+        }
+        #region Dynamic Buttons Functionality
+
+        public void addItemtoPedido(int ItemID, UIRuntime runtime)
+        {
+            Item item = new Item();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            //se busca el producto que se agregara al pedido
+            item = SearchItembyID(Convert.ToInt32(ItemID));
+            //Hay datos en el objeto en memoria??? Si no existen datos se inicializa el nuevo pedido...
+            if (DBInstance.TempPedido.id.Equals(0))
+            {
+                GeneratePedidoOnMemory(item, DBInstance.Pedidos.Count,DBInstance);
+                SaveDB(DBInstance);
+            }
+            else // Si existe un pedido en memoria comenzamos las validaciones del producto en la lista
+            {
+                int index = DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id);
+                //Si existe en la lista cargada en memoria entonces se actualiza, si no existe se agrega a la lista en memoria
+                if (DBInstance.TempPedido.Items.Find(x => x.id == item.id) != null) //Ya existe el producto
+                {
+                    DBInstance.TempPedido.Items[index].Qty++;
+                    DBInstance.TempPedido.Total += item.Price;
+
+                    //DrawPedido(runtime, pedidoEnMemoria);
+
+                }
+                else // No existe el producto en la lista
+                {
+                    item.Qty++;
+                    DBInstance.TempPedido.Items.Add(item);
+                    DBInstance.TempPedido.ItemsQuantity = DBInstance.TempPedido.Items.Count;
+                    DBInstance.TempPedido.Total += item.Price;
+
+                    //DrawPedido(runtime, pedidoEnMemoria);
+                }
+                SaveDB(DBInstance);
+            }
+            DrawPedido(runtime, DBInstance.TempPedido);
+        }
+
+        private void DrawPedido(UIRuntime runtime, Pedido MemP)
+        {
+            var el = (Window)Application.Current.MainWindow;
+            var element = (DockPanel)el.FindName("PanelPedidos");
+            //DockPanel element = UIHelper.FindChild<DockPanel>(Application.Current.MainWindow, "PanelPedidos");
+
+            element.Children.Clear();
+
+            for (int i = 0; i < MemP.Items.Count; i++)
+            {
+                element.Children.Add(runtime.CreatePedidoPanels(MemP.Items[i], i + 1));
+            }
+        }
+        #endregion
 
     } //End of way
 }

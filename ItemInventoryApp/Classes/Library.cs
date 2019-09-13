@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ItemInventoryApp.Classes
@@ -17,5 +18,6 @@ namespace ItemInventoryApp.Classes
         public Validations ValidationsHandler;
         public List<DataGrid> DataGridList;
         public List<TextBox> TextBoxList;
+        public List<UIElement> Elements;
     }
 }

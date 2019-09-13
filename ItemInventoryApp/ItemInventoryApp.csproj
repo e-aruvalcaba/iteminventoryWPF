@@ -65,6 +65,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\Library.cs" />
+    <Compile Include="Classes\PedidoStatus.cs" />
+    <Compile Include="Classes\UIHelper.cs" />
     <Compile Include="Classes\UIRuntime.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

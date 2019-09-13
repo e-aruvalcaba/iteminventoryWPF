@@ -39,6 +39,38 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <!-- _____________________________________________________Boton Eliminar Pedido Style_________________________________________ -->
+        <Style x:Key = "btnEliminarPedido" TargetType = "Button">
+            <Setter Property = "Height" Value = "20" />
+            <Setter Property = "Width" Value = "50" />
+            <Setter Property = "FontFamily"  Value="Comic Sans MS"/>
+            <Setter Property = "Foreground" Value = "White" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property = "FontSize" Value = "11" />
+            <Setter Property = "Background" Value="Black"/>
+            <Setter Property = "Margin" Value="15,5,5,5"/>
+            <Setter Property = "HorizontalAlignment" Value="Left"/>
+            <Setter Property = "VerticalAlignment" Value="Center"/>
+            <Setter Property = "Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="3">
+                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsPressed"  Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -62,20 +94,21 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <!--Tabla para los items de los pedidos-->
-                        <Grid Background="#F6CE3E" Grid.Row="0">
+                        <Grid x:Name="GridPedidos" Background="#F6CE3E" Grid.Row="0">
                             <!--<Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>-->
 
-                            <!--COMIENZAN LAS PRUEBAS PARA EL GRI DE LOS PEDIDOS-->
-                            
+                            <!--COMIENZAN LAS PRUEBAS PARA EL GRID DE LOS PEDIDOS-->
+
                             <DockPanel x:Name="Pedidos" Background="White" Width="180" HorizontalAlignment="Left" >
                                 <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                  <!--A partir de aqui se clonaran los pedidos en tiempo real-->
                                     <StackPanel x:Name="PedidosMainViewer" Background="#F6CE3E">
                                         <Border BorderBrush="#8860D0" DockPanel.Dock="Top">
-                                            <DockPanel>
-                                                <Canvas DockPanel.Dock="Top" Height="100">
+                                            <DockPanel x:Name="PanelPedidos">
+                                                <!--<Canvas DockPanel.Dock="Top" Height="100">
                                                     <Grid>
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="*"/>
@@ -91,125 +124,18 @@
                                                         <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
                                                             Orden de Tacos de Bisteck
                                                         </TextBlock>
-                                                        <TextBlock Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
-                                                            Total: $345 pesos
+                                                        <TextBlock Background="#232D33" Foreground="White" FontWeight="Bold" Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
+                                                            Total: $345
                                                         </TextBlock>
+                                                        <Button Grid.Row="2" Content="Eliminar" Style = "{StaticResource btnEliminarPedido}"/>
                                                     </Grid>
-                                                </Canvas>
-
-                                                <Canvas Height="100" DockPanel.Dock="Top">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
-                                                            Item #2
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                            Cantidad x 4
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
-                                                            Papa Asada Mixta
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
-                                                            Total: $220 pesos
-                                                        </TextBlock>
-                                                    </Grid>
-                                                </Canvas>
-
-                                                <Canvas Height="100" DockPanel.Dock="Top">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
-                                                            Item #2
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                            Cantidad x 4
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
-                                                            Papa Asada Mixta
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
-                                                            Total: $220 pesos
-                                                        </TextBlock>
-                                                    </Grid>
-                                                </Canvas>
-
-                                                <Canvas Height="100" DockPanel.Dock="Top">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
-                                                            Item #2
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                            Cantidad x 4
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
-                                                            Papa Asada Mixta
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
-                                                            Total: $220 pesos
-                                                        </TextBlock>
-                                                    </Grid>
-                                                </Canvas>
-
-                                                <Canvas Height="100" DockPanel.Dock="Top">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
-                                                            Item #2
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                            Cantidad x 4
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
-                                                            Papa Asada Mixta
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
-                                                            Total: $220 pesos
-                                                        </TextBlock>
-                                                    </Grid>
-                                                </Canvas>
-
-                                                <Canvas Height="100" DockPanel.Dock="Top">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
-                                                            Item #2
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                            Cantidad x 4
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
-                                                            Papa Asada Mixta
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
-                                                            Total: $220 pesos
-                                                        </TextBlock>
-                                                    </Grid>
-                                                </Canvas>
+                                                </Canvas>-->
 
                                             </DockPanel>
                                         </Border>
                                     </StackPanel>
+
+                                    <!--Termina clonacion de pedidos en tiempo real-->
                                 </ScrollViewer>
                             </DockPanel>
                             <!--TERMINAN LAS PRUEBAS PARA EL GRI DE LOS PEDIDOS-->

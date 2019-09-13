@@ -8,10 +8,11 @@ namespace ItemInventoryApp.Models
 {
     class Pedido
     {
-        public int Id { get; set; }
-        public List<Item> Items { get; set; }
+        public int id { get; set; }
+        public List<Item> Items { get; set; } = new List<Item>();
+        public int ItemsQuantity { get; set; }
+        public int Status { get; set; }
         public double Total { get; set; }
-        public string Status { get; set; }
         public DateTime Date { get; set; }
     }
 }

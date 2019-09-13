@@ -17,86 +17,10 @@ namespace ItemInventoryApp.Classes
 {
     class UIRuntime
     {
+        public UIRuntime()
+        {
 
-        #region Commented Blocks
-        //How to obtain the elements on children list
-        //UIElement[] array = new UIElement[4];
-        //panel2.Children.CopyTo(array, 0);
-
-        //public List<Border> CreateBorders(List<Item> dataArray)
-        //{
-        //    List<Border> borderRet = new List<Border>();
-
-        //    var loop = 0;
-        //    foreach (var item in dataArray)
-        //    {
-        //        Border bd = new Border();
-        //        Label lb = new Label();
-        //        lb.Content = string.Format("{0} ${1}", item.Name, item.Price);
-        //        lb.ToolTip = item.Description;
-        //        Thickness tk = new Thickness(1.0);
-        //        //bd.Width = 100;
-        //        bd.Height = 100;
-        //        bd.BorderBrush = Brushes.Black;
-        //        bd.BorderThickness = tk;
-        //        bd.Name = "border1";
-        //        bd.Uid = item.id.ToString();
-        //        bd.Child = lb;
-        //        Thickness margin = new Thickness(loop * 100, 0, 0, 0);
-        //        bd.Margin = margin;
-        //        borderRet.Add(bd);
-        //    }
-
-        //    return borderRet;
-        ////}
-
-        //public List<Canvas> Initialize_Canvas(List<Item> dataArray)
-        //{
-        //    List<Canvas> borderRet = new List<Canvas>();
-
-        //    var loop = 0;
-        //    foreach (var item in dataArray)
-        //    {
-        //        Canvas cnv = new Canvas();
-
-        //        Border bd = new Border();
-        //        Label lb = new Label();
-        //        lb.Content = string.Format("{0} ${1}", item.Name, item.Price);
-        //        lb.ToolTip = item.Description;
-        //        Thickness tk = new Thickness(1.0);
-        //        bd.Height = 100;
-        //        bd.Background = Brushes.Black;
-        //        bd.BorderBrush = Brushes.Black;
-        //        bd.BorderThickness = tk;
-        //        bd.Name = "border1";
-        //        bd.Uid = item.id.ToString();
-        //        //bd.Child = lb;
-        //        //Thickness margin = new Thickness(loop * 100, 0, 0, 0);
-        //        //bd.Margin = margin;
-        //        cnv.Background = Brushes.Black;
-        //        cnv.HorizontalAlignment = HorizontalAlignment.Stretch;
-        //        cnv.Children.Add(bd);
-        //        cnv.Children.Add(lb);
-
-        //        borderRet.Add(cnv);
-        //    }
-
-        //    return borderRet;
-        //}
-
-        //public void PopulateDataGrid(DataGrid dg, DatabaseModel db)
-        //{
-        //    ObservableCollection<Item> data = new ObservableCollection<Item>();
-
-        //    foreach (var item in db.Items)
-        //    {
-        //        data.Add(item);
-        //    }
-
-        //    dg.ItemsSource = data;
-        //}
-
-        #endregion
+        }
 
         #region UI Panel Creation
         /*//
@@ -236,7 +160,7 @@ namespace ItemInventoryApp.Classes
                     Child = dynamicButton
                 });
                 #endregion
-                
+
                 #region adding the remaining elements to the dockpanel
                 bd.Child = panel2;
                 #endregion                
@@ -252,7 +176,9 @@ namespace ItemInventoryApp.Classes
         private void dynamicButton_Click(object sender, RoutedEventArgs e)
         {
             var element = (Button)sender;
-            MessageBox.Show(element.Uid);
+            //MessageBox.Show(element.Uid);
+            DBHandler handlers = new DBHandler();
+            handlers.addItemtoPedido(Convert.ToInt32(element.Uid), this);
         }
 
         /*//
@@ -381,9 +307,6 @@ namespace ItemInventoryApp.Classes
                     Height = 30,
                     Name = "btnAgregar"
                 }
-
-
-                //.Click += new RoutedEventHandler(Click_Event)
             });
             #endregion
 
@@ -520,6 +443,161 @@ namespace ItemInventoryApp.Classes
             }
         }
         #endregion
+
+        #region UI Pedidos Creation
+        /*//
+            // SUMMARY
+            // Create a panel that represents 1 item on a Pedido with the data, total, qty, name of item and number of item
+            // Return: Canvas element to add on a Dockpanel
+        */
+        public Canvas CreatePedidoPanels(Item data, int PedidoId)
+        {
+            #region Creating Canvas
+
+
+            Canvas Canv = new Canvas();
+            Canv.Name = "Item" + PedidoId;
+            Canv.Height = 100;
+            DockPanel.SetDock(Canv, Dock.Top);
+
+            //Creating 1st Grid
+            Grid Grid1 = new Grid();
+
+            Grid1.RowDefinitions.Add(new RowDefinition
+            {
+                Height = new GridLength(100, GridUnitType.Star),
+            });
+            Grid1.RowDefinitions.Add(new RowDefinition
+            {
+                Height = new GridLength(100, GridUnitType.Star),
+            });
+            Grid1.RowDefinitions.Add(new RowDefinition
+            {
+                Height = new GridLength(100, GridUnitType.Auto),
+            });
+
+            TextBlock Texto1 = new TextBlock();
+            Texto1.FontSize = 16;
+            Texto1.FontWeight = FontWeights.Bold;
+            Texto1.Padding = new Thickness(3);
+            Texto1.Text = "ITEM #" + PedidoId;
+            Texto1.Name = "Texto1id_" + data.id;
+            Grid.SetRow(Texto1, 0);
+            DockPanel.SetDock(Texto1, Dock.Top);
+
+            TextBlock Texto2 = new TextBlock();
+            Texto2.FontSize = 12;
+            Texto2.FontWeight = FontWeights.Bold;
+            Texto2.Padding = new Thickness(3);
+            Texto2.VerticalAlignment = VerticalAlignment.Center;
+            Texto2.HorizontalAlignment = HorizontalAlignment.Right;
+            Texto2.Text = "Cantidad x " + data.Qty;
+            Texto2.Name = "Texto2id_" + data.id;
+            Grid.SetRow(Texto2, 0);
+            DockPanel.SetDock(Texto2, Dock.Top);
+
+            TextBlock Texto3 = new TextBlock();
+            Texto3.FontSize = 13;
+            Texto3.Padding = new Thickness(3);
+            Texto3.HorizontalAlignment = HorizontalAlignment.Left;
+            Texto3.Text = data.Description;
+            Texto3.Height = 45;
+            Texto3.Width = 160;
+            Texto3.TextWrapping = TextWrapping.WrapWithOverflow;
+            Texto3.Text = data.Name;
+            Texto3.Name = "Texto3id_" + data.id;
+            Grid.SetRow(Texto3, 1);
+            DockPanel.SetDock(Texto3, Dock.Top);
+
+            Color color = (Color)ColorConverter.ConvertFromString("#232D33");
+            SolidColorBrush myBrush = new SolidColorBrush(color);
+            TextBlock Texto4 = new TextBlock();
+            Texto4.FontSize = 12;
+            Texto4.Padding = new Thickness(5);
+            Texto4.HorizontalAlignment = HorizontalAlignment.Right;
+            Texto4.Text = string.Format("Total: ${0} pesos", (data.Qty * data.Price));
+            Texto4.TextWrapping = TextWrapping.WrapWithOverflow;
+            Texto4.Text = "Total: $" + data.Price * data.Qty;
+            Texto4.Name = "Texto4id_" + data.id;
+            Texto4.Background = myBrush;
+            Texto4.Foreground = Brushes.White;
+            Texto4.FontWeight = FontWeights.Bold;
+            Grid.SetRow(Texto4, 2);
+            DockPanel.SetDock(Texto4, Dock.Top);
+
+            Button btnEliminar = new Button();
+            btnEliminar.Content = "Eliminar";
+            btnEliminar.Height = 20;
+            btnEliminar.Width = 50;
+            btnEliminar.FontFamily = new FontFamily("Comic Sans MS");
+            btnEliminar.Foreground = Brushes.White;
+            btnEliminar.FontWeight = FontWeights.Bold;
+            btnEliminar.FontSize = 11;
+            btnEliminar.Background = Brushes.Black;
+            btnEliminar.Margin = new Thickness(15, 5, 5, 5);
+            btnEliminar.HorizontalAlignment = HorizontalAlignment.Left;
+            btnEliminar.VerticalAlignment = VerticalAlignment.Center;
+            btnEliminar.Click += eliminarItem;
+            Grid.SetRow(btnEliminar, 2);
+            #endregion
+
+            //Adding elements to canvas
+            Grid1.Children.Add(Texto1);
+            Grid1.Children.Add(Texto2);
+            Grid1.Children.Add(Texto3);
+            Grid1.Children.Add(Texto4);
+            Grid1.Children.Add(btnEliminar);
+            Canv.Children.Add(Grid1);
+            return Canv;
+        }
+
+        private void eliminarItem(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Eliminar item");
+            //Si hay mas de 1 producto elimina solo 1 de la cantidad, en caso contrario elimina el producto de la lista de productos y se actualiza la lista.
+        }
+        #endregion
+
+        public void redraw(UIElement element, string typeElement, object[] list, string type)
+        {
+            typeElement = typeElement.ToLower();
+            type = type.ToLower();
+            List<Border> lista = new List<Border>();
+            List<Canvas> listaC = new List<Canvas>();
+            switch (type)
+            {
+                case "border":
+                    lista = (List<Border>)list[0];
+                    break;
+                case "canvas":
+                    listaC = (List<Canvas>)list[0];
+                    break;
+
+            }
+
+            switch (typeElement) {
+                case "dockpanel":
+                    var nElement = (DockPanel)element;
+                    nElement.Children.Clear();
+
+                    foreach (var item in listaC)
+                    {
+                        nElement.Children.Add(item);
+                    }
+                    break;
+                case "stackpanel":
+                    var nElement2 = (StackPanel)element;
+                    nElement2.Children.Clear();
+
+                    foreach (var item in lista)
+                    {
+                        nElement2.Children.Add(item);
+                    }
+                    break;
+            }
+        }
+
+ 
 
     } //End limit of code
 }

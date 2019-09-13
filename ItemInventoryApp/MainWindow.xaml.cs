@@ -39,23 +39,23 @@ namespace ItemInventoryApp
             Global.DataGridList = new List<DataGrid>();
             Global.TextBoxList = new List<TextBox>();
             Global.ValidationsHandler = new Validations();
+            Global.Elements = new List<UIElement>();
             //Create an instance of dbhandler        
-            DBHandler handler = new DBHandler();
+            
             //Create the mainObject to retrieve de json data
-            DatabaseModel MainObject = handler.InitializeDB();
+            Global.DatbaseInstance = Global.DBHandler.InitializeDB();
             //Create an instance of UIruntime class
             UIRuntime obj = new UIRuntime();
             //Create a list of border UIComponent dinamically that shows the app to the final user 
             /*List<Border> */
-            borderList = obj.CreatePanels(MainObject.Items);
+            borderList = obj.CreatePanels(Global.DatbaseInstance.Items);
             //Set the list on the content viewer
             for (int i = 0; i < borderList.Count; i++)
             {
                 MainViewer.Children.Add(borderList[i]);
             }
             //Set the global main object
-            Global.DatbaseInstance = MainObject;
-            Global.DBHandler = handler;
+            //Global.DatbaseInstance = MainObject;
             Global.UIRuntime = obj;
 
             //Populate datagrid list
@@ -63,6 +63,7 @@ namespace ItemInventoryApp
             Global.DataGridList.Add(DGDelete);
             //Poblate DatagridView with items
             Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
+            Global.Elements.Add(PanelPedidos);
         }
 
         #region ResponsiveElementsModule
@@ -114,15 +115,17 @@ namespace ItemInventoryApp
 
                         try
                         {
-                            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                            //FixMe cambiar esta logica al DBHndler
+                            //Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
                             if(Global.DBHandler.CreateItem(new Item
                             {
-                                id = Global.DatbaseInstance.Items[Global.DatbaseInstance.Items.Count - 1].id + 1,
+                                //id = Global.DatbaseInstance.Items.Count.Equals(0) ? 1 : Global.DatbaseInstance.Items[Global.DatbaseInstance.Items.Count].id + 1,
+                                id = Global.DatbaseInstance.Items.Count + 1,
                                 Name = txtBoxNombreC.Text,
                                 Description = richtext,
                                 Price = Convert.ToInt32(txtPrecioC.Text),
                                 ImagePath = txtImagePahC.Text
-                            }, Global.DataGridList))
+                            }, Global.DataGridList, Global.UIRuntime))
                             {
                                 List<TextBox> txtlist = new List<TextBox>();
 
@@ -135,6 +138,12 @@ namespace ItemInventoryApp
                                 Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
                                 Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
                                 MessageBox.Show("Se ha creado exitosamente el nuevo producto.");
+
+                                //Actualizar la vista principal //ACOMODAR LOGICA EN OTRA CLASE
+                                var obj = new object[1];
+                                borderList = Global.UIRuntime.CreatePanels(Global.DatbaseInstance.Items);
+                                obj[0] = borderList;
+                                Global.UIRuntime.redraw(MainViewer, "stackpanel", obj, "border");
                             }
                             else
                             {
@@ -214,7 +223,7 @@ namespace ItemInventoryApp
                         var id = dr.id;
                         if ( MessageBox.Show("Eliminar el registro con ID: " + id + "?", "Caption", MessageBoxButton.OKCancel).ToString().Equals("OK"))
                         {
-                            if (Global.DBHandler.edit_delete_item(dr, "delete", Global.DataGridList))
+                            if (Global.DBHandler.edit_delete_item(dr, "delete", Global.DataGridList, Global.UIRuntime))
                             {
                                 MessageBox.Show("Se elimino correctamente el registro con el id: "+id);
                             }
@@ -288,7 +297,7 @@ namespace ItemInventoryApp
                         theitem.Price = Convert.ToDouble(txtPriceE.Text);
                         theitem.ImagePath = txtImagePahE.Text;
 
-                        if (Global.DBHandler.edit_delete_item(theitem, "edit", Global.DataGridList))
+                        if (Global.DBHandler.edit_delete_item(theitem, "edit", Global.DataGridList, Global.UIRuntime))
                         {
                             MessageBox.Show("Se ha editado correctamente el producto con el id: " + theitem.id);
                         }
