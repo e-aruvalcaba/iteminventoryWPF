@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Models\DatabaseModel.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemQty.cs" />
     <Compile Include="Models\Pedido.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

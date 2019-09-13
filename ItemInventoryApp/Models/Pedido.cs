@@ -10,7 +10,7 @@ namespace ItemInventoryApp.Models
     {
         public int id { get; set; }
         public List<Item> Items { get; set; } = new List<Item>();
-        public int ItemsQuantity { get; set; }
+        public List<ItemQty> ItemsQuantity { get; set; } = new List<ItemQty>();
         public int Status { get; set; }
         public double Total { get; set; }
         public DateTime Date { get; set; }

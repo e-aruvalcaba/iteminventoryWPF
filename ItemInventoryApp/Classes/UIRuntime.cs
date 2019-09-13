@@ -450,7 +450,7 @@ namespace ItemInventoryApp.Classes
             // Create a panel that represents 1 item on a Pedido with the data, total, qty, name of item and number of item
             // Return: Canvas element to add on a Dockpanel
         */
-        public Canvas CreatePedidoPanels(Item data, int PedidoId)
+        public Canvas CreatePedidoPanels(Item data, int PedidoId, ItemQty qty)
         {
             #region Creating Canvas
 
@@ -491,7 +491,7 @@ namespace ItemInventoryApp.Classes
             Texto2.Padding = new Thickness(3);
             Texto2.VerticalAlignment = VerticalAlignment.Center;
             Texto2.HorizontalAlignment = HorizontalAlignment.Right;
-            Texto2.Text = "Cantidad x " + data.Qty;
+            Texto2.Text = "Cantidad x " + qty.Qty;
             Texto2.Name = "Texto2id_" + data.id;
             Grid.SetRow(Texto2, 0);
             DockPanel.SetDock(Texto2, Dock.Top);
@@ -515,9 +515,9 @@ namespace ItemInventoryApp.Classes
             Texto4.FontSize = 12;
             Texto4.Padding = new Thickness(5);
             Texto4.HorizontalAlignment = HorizontalAlignment.Right;
-            Texto4.Text = string.Format("Total: ${0} pesos", (data.Qty * data.Price));
+            Texto4.Text = string.Format("Total: ${0} pesos", (qty.Qty * qty.Price));
             Texto4.TextWrapping = TextWrapping.WrapWithOverflow;
-            Texto4.Text = "Total: $" + data.Price * data.Qty;
+            Texto4.Text = "Total: $" + qty.Price * qty.Qty;
             Texto4.Name = "Texto4id_" + data.id;
             Texto4.Background = myBrush;
             Texto4.Foreground = Brushes.White;

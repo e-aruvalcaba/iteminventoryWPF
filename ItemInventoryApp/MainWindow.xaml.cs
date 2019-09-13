@@ -116,11 +116,11 @@ namespace ItemInventoryApp
                         try
                         {
                             //FixMe cambiar esta logica al DBHndler
-                            //Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
                             if(Global.DBHandler.CreateItem(new Item
                             {
                                 //id = Global.DatbaseInstance.Items.Count.Equals(0) ? 1 : Global.DatbaseInstance.Items[Global.DatbaseInstance.Items.Count].id + 1,
-                                id = Global.DatbaseInstance.Items.Count + 1,
+                                id = Global.DBHandler.GenerateID("item", Global.DatbaseInstance),
                                 Name = txtBoxNombreC.Text,
                                 Description = richtext,
                                 Price = Convert.ToInt32(txtPrecioC.Text),

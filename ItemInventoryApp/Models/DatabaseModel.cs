@@ -11,5 +11,7 @@ namespace ItemInventoryApp.Models
         public List<Item> Items { get; set; }
         public List<Pedido> Pedidos { get; set; }
         public Pedido TempPedido { get; set; }
+        public int LastItemID { get; set; } = 1;
+        public int LastPedidoID { get; set; } = 1;
     }
 }

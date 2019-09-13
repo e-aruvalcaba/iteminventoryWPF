@@ -70,7 +70,7 @@ namespace ItemInventoryApp.DAL
                 }
 
                 var json = JsonConvert.DeserializeObject<DatabaseModel>(content);
-
+                validatePedidoAtInit(json);
                 return json;
             }
         }
@@ -290,13 +290,6 @@ namespace ItemInventoryApp.DAL
         }
         #endregion
 
-        public bool CreatePedido()
-        {
-            bool success = false;
-
-            return success;
-        }
-
         //public Pedido GeneratePedidoOnMemory(Item item, int pedidoId, DatabaseModel db) {
 
         //    pedidoId = pedidoId.Equals(0) ? 1 : pedidoId += 1;
@@ -312,33 +305,81 @@ namespace ItemInventoryApp.DAL
         //    return pedidoEnMemoria;
         //}
 
+        #region Pedido Functionality
+        /*
+            * // SUMMARY
+            * // Generates a new pedido to store the data on memory of the pedido in progress it memory is used until the user clicks Aceptar pedido or restart the app.
+            * // Return: Pedido object
+        */
         public Pedido GeneratePedidoOnMemory(Item item, int pedidoId, DatabaseModel db)
         {
-
-            pedidoId = pedidoId.Equals(0) ? 1 : pedidoId += 1;
-
-            //pedidoEnMemoria.id = pedidoId;
-            //pedidoEnMemoria.Items.Add(item);
-            //pedidoEnMemoria.ItemsQuantity = pedidoEnMemoria.Items.Count;
-            //pedidoEnMemoria.Status = new PedidoStatus().NotRegistered;
-            //pedidoEnMemoria.Total = item.Price * pedidoEnMemoria.ItemsQuantity;
-            //pedidoEnMemoria.Date = DateTime.Now.Date;
-
-            item.Qty++;
-
             Pedido newPedido = new Pedido();
-
             newPedido.id = pedidoId;
-            newPedido.ItemsQuantity = 1;
+            //newPedido.ItemsQuantity = 1;
             newPedido.Status = new PedidoStatus().NotRegistered;
             newPedido.Items.Add(item);
+            newPedido.ItemsQuantity.Add(new ItemQty {
+                Id = item.id,
+                Price = item.Price,
+                Qty = 0
+            });
             newPedido.Total = item.Price;
             newPedido.Date = DateTime.Now.Date;
+            incrementItemQty(newPedido, item);
 
-            return db.TempPedido=newPedido;
+            return db.TempPedido = newPedido;
         }
-        #region Dynamic Buttons Functionality
+        /*
+            * // SUMMARY
+            * // Draw the visual structure of a pedido on it space on screen from a list of pedidos.
+            * // Return: Void
+        */
+        private void DrawPedido(UIRuntime runtime, Pedido MPedido)
+        {
+            var el = (Window)Application.Current.MainWindow;
+            var element = (DockPanel)el.FindName("PanelPedidos");
+            element.Children.Clear();
 
+            for (int i = 0; i < MPedido.Items.Count; i++)
+            {
+                var a = MPedido.ItemsQuantity.Where(x => x.Id.Equals(MPedido.Items[i].id)).FirstOrDefault();
+
+                element.Children.Add(runtime.CreatePedidoPanels(MPedido.Items[i], i + 1, MPedido.ItemsQuantity.Where(x => x.Id.Equals(MPedido.Items[i].id)).FirstOrDefault()));
+            }
+        }
+        /*
+            * // SUMMARY
+            * // Increment the qty of 1 item on the pedido item list.
+            * // Return: Void
+        */
+        private void incrementItemQty(Pedido pedido, Item itemTarget)
+        {
+            var index = pedido.Items.FindIndex(x => x.id == itemTarget.id);
+
+            if (!index.Equals(null) && pedido.ItemsQuantity[index].Id.Equals(itemTarget.id)) {
+                pedido.ItemsQuantity[index].Qty++;
+            }
+        }
+
+        /*
+            * // SUMMARY
+            * // Insert a confirmed pedido on JSON DB
+            * // Return: bool (true/false)
+        */
+        public bool CreatePedido()
+        {
+            bool success = false;
+
+            return success;
+        }
+        #endregion
+
+        #region Dynamic Buttons Functionality
+        /*
+            * // SUMMARY
+            * // Manage the addition of an item to a current on memory pedido.
+            * // Return: Void
+        */
         public void addItemtoPedido(int ItemID, UIRuntime runtime)
         {
             Item item = new Item();
@@ -349,49 +390,69 @@ namespace ItemInventoryApp.DAL
             //Hay datos en el objeto en memoria??? Si no existen datos se inicializa el nuevo pedido...
             if (DBInstance.TempPedido.id.Equals(0))
             {
-                GeneratePedidoOnMemory(item, DBInstance.Pedidos.Count,DBInstance);
+                GeneratePedidoOnMemory(item, DBInstance.LastPedidoID, DBInstance);
                 SaveDB(DBInstance);
             }
             else // Si existe un pedido en memoria comenzamos las validaciones del producto en la lista
             {
-                int index = DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id);
                 //Si existe en la lista cargada en memoria entonces se actualiza, si no existe se agrega a la lista en memoria
                 if (DBInstance.TempPedido.Items.Find(x => x.id == item.id) != null) //Ya existe el producto
                 {
-                    DBInstance.TempPedido.Items[index].Qty++;
+                    //DBInstance.TempPedido.Items[index].Qty++;
+                    //int index = DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id);
+                    incrementItemQty(DBInstance.TempPedido, DBInstance.TempPedido.Items[DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id)]);
                     DBInstance.TempPedido.Total += item.Price;
-
-                    //DrawPedido(runtime, pedidoEnMemoria);
 
                 }
-                else // No existe el producto en la lista
+                else // No existe el producto en la lista lo agregamos
                 {
-                    item.Qty++;
                     DBInstance.TempPedido.Items.Add(item);
-                    DBInstance.TempPedido.ItemsQuantity = DBInstance.TempPedido.Items.Count;
+                    DBInstance.TempPedido.ItemsQuantity.Add(new ItemQty
+                    {
+                        Id = item.id,
+                        Price = item.Price,
+                        Qty = 0
+                    });
+                    incrementItemQty(DBInstance.TempPedido, DBInstance.TempPedido.Items[DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id)]);
                     DBInstance.TempPedido.Total += item.Price;
-
-                    //DrawPedido(runtime, pedidoEnMemoria);
                 }
                 SaveDB(DBInstance);
             }
             DrawPedido(runtime, DBInstance.TempPedido);
         }
-
-        private void DrawPedido(UIRuntime runtime, Pedido MemP)
+        /*
+            * // SUMMARY
+            * // Validate that when the software init temp pedido = new pedido.
+            * // Return: Void
+        */
+        public void validatePedidoAtInit(DatabaseModel instance)
         {
-            var el = (Window)Application.Current.MainWindow;
-            var element = (DockPanel)el.FindName("PanelPedidos");
-            //DockPanel element = UIHelper.FindChild<DockPanel>(Application.Current.MainWindow, "PanelPedidos");
-
-            element.Children.Clear();
-
-            for (int i = 0; i < MemP.Items.Count; i++)
+            if (!instance.TempPedido.id.Equals(0))
             {
-                element.Children.Add(runtime.CreatePedidoPanels(MemP.Items[i], i + 1));
+                instance.TempPedido = new Pedido();
+                SaveDB(instance);
             }
         }
         #endregion
+
+        public int GenerateID(string action, DatabaseModel DB)
+        {
+            int ret = 0;
+            action = action.ToLower();
+            switch (action)
+            {
+                case "item":
+                    ret = DB.LastItemID;
+                    DB.LastItemID++;
+                    break;
+                case "pedido":
+                    ret = DB.LastPedidoID;
+                    DB.LastPedidoID++;
+                    break;
+            }
+            SaveDB(DB);
+            return ret;
+        }
 
     } //End of way
 }
