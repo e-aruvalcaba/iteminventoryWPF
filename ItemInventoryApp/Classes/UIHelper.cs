@@ -28,6 +28,9 @@ namespace ItemInventoryApp.Classes
                 case "textblock":
                     var textblock = (TextBlock)el.FindName(childName);
                     return textblock;
+                case "button":
+                    var button = (Button)el.FindName(childName);
+                    return button;
                 default:
                     return new UIElement();
             }

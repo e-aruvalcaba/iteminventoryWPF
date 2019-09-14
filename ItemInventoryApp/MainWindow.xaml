@@ -30,12 +30,17 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="LightGray"/>
-                </Trigger>
                 <Trigger Property="IsPressed"  Value="True">
                     <Setter Property="Foreground" Value="Black"/>
                     <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>
+                <Trigger Property="IsEnabled"  Value="false">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter Property="Background" Value="DeepSkyBlue"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -104,7 +109,7 @@
 
                             <DockPanel x:Name="Pedidos" Background="White" Width="180" HorizontalAlignment="Left" >
                                 <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                  <!--A partir de aqui se clonaran los pedidos en tiempo real-->
+                                    <!--A partir de aqui se clonaran los pedidos en tiempo real-->
                                     <StackPanel x:Name="PedidosMainViewer" Background="#F6CE3E">
                                         <Border BorderBrush="#8860D0" DockPanel.Dock="Top">
                                             <DockPanel x:Name="PanelPedidos">
@@ -116,9 +121,11 @@
                                                             <RowDefinition Height="auto"/>
                                                         </Grid.RowDefinitions>
                                                         
-                                                        --><!--<TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
+                                                        -->
+                                                <!--<TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
                                                             Item #1
-                                                        </TextBlock>--><!--
+                                                        </TextBlock>-->
+                                                <!--
                                                         <Grid Grid.Row="0">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition/>
@@ -169,15 +176,15 @@
 
                             <!--Total del pedido en cuestion-->
                             <TextBlock x:Name="descTotalPedido" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14" Margin="0,0,15,0" Text="Total del pedido:" Visibility="Hidden"/>
-                            <TextBlock x:Name="TotalPedido" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="25" Margin="0,0,15,0" Text="$0" TextInput="TotalPedido_TextInput"/>
+                            <TextBlock x:Name="TotalPedido" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="25" Margin="0,0,15,0" Text="$0"/>
                             <!--Parte del boton para confirmar pedido-->
-                            <Button Grid.Row="2" Grid.Column="1" Content="Confirmar Pedido"  Style = "{StaticResource btnPedidos}">
+                            <Button x:Name="ConfirmarPedido" IsEnabled="False" Grid.Row="2" Grid.Column="1" Content="Confirmar Pedido"  Style = "{StaticResource btnPedidos}" Click="ConfirmarPedido_Click">
                                 <Button.Effect>
                                     <DropShadowEffect/>
                                 </Button.Effect>
                             </Button>
                         </Grid>
-                       
+
                     </Grid>
 
 
@@ -267,7 +274,7 @@
                                     <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
                                     <RichTextBox x:Name="txtDescC" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
                                     <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
-                                    <TextBox x:Name="txtPrecioC" Grid.Row="4" Margin="130,0,0,0" KeyDown="TxtPrecioC_KeyDown"></TextBox>
+                                    <TextBox x:Name="txtPrecioC" Grid.Row="4" Margin="130,0,0,0" PreviewTextInput="TxtPrecioC_PreviewTextInput"/>
                                     <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
                                     <TextBox x:Name="txtImagePahC" Grid.Row="5" Margin="130,0,0,0"></TextBox>
                                     <Button x:Name="btnCreateNewProduct" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click">Registrar item</Button>
@@ -303,7 +310,7 @@
                                         <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
                                         <RichTextBox x:Name="txtDescE" IsEnabled="False" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
                                         <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
-                                        <TextBox x:Name="txtPriceE" IsEnabled="False" Grid.Row="4" Margin="130,0,0,0"></TextBox>
+                                        <TextBox x:Name="txtPriceE" IsEnabled="False" Grid.Row="4" Margin="130,0,0,0" PreviewTextInput="TxtPriceE_PreviewTextInput"></TextBox>
                                         <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
                                         <TextBox IsEnabled="False" x:Name="txtImagePahE" Grid.Row="5" Margin="130,0,0,0"></TextBox>
                                         <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDE" Grid.Row="5"></TextBox>
@@ -326,7 +333,7 @@
                                             <ComboBoxItem Content="ID"/>
                                             <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130" KeyUp="TxtSearchE_KeyUp" IsEnabled="False" PreviewTextInput="TxtSearchE_PreviewTextInput"/>
+                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130" IsEnabled="False" PreviewTextInput="TxtSearchE_PreviewTextInput" KeyUp="TxtSearchE_KeyUp"/>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -393,7 +400,7 @@
                                             <ComboBoxItem Content="ID"/>
                                             <ComboBoxItem Content="Nombre"/>
                                         </ComboBox>
-                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130" IsEnabled="False"  KeyUp="TxtSearchDel_KeyUp" KeyDown="TxtSearchDel_KeyDown"></TextBox>
+                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130" IsEnabled="False" PreviewTextInput="TxtSearchDel_PreviewTextInput" KeyUp="TxtSearchDel_KeyUp"/>
                                     </Grid>
 
                                     <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -411,5 +418,33 @@
                 </Grid>
             </TabItem>
         </TabControl>
+
+        <!--PROMPT-->
+        <!-- It's important that this is in the end of the XAML as it needs to be on top of everything else! -->
+        <Grid x:Name="InputBox" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+            MinWidth="250"
+            Background="Orange" 
+            BorderBrush="Black" 
+            BorderThickness="1" 
+            CornerRadius="0,55,0,55" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Margin="5" Text="Input Box:" FontWeight="Bold" FontFamily="Cambria" />
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="YesButton" Margin="5" Content="Yes" Background="{x:Null}" Click="YesButton_Click"/>
+                        <Button x:Name="NoButton" Margin="5" Content="No" Background="{x:Null}" Click="NoButton_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+        
+        <!--TERMINA PROMPT-->
+        
     </Grid>
 </Window>
+    
+    

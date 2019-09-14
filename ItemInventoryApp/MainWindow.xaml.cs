@@ -441,55 +441,10 @@ namespace ItemInventoryApp
 
         #endregion
 
-        #region txtBoxValidations
-        private void TxtPrecioC_KeyDown(object sender, KeyEventArgs e)
-        {
-            //string[] accepted = new string[21];
-            //accepted[0] = "D0";
-            //accepted[1] = "D1";
-            //accepted[2] = "D2";
-            //accepted[3] = "D3";
-            //accepted[4] = "D4";
-            //accepted[5] = "D5";
-            //accepted[6] = "D6";
-            //accepted[7] = "D7";
-            //accepted[8] = "D8";
-            //accepted[9] = "D9";
-            //accepted[10] = ".";
-            //accepted[11] = "NumPad0";
-            //accepted[12] = "NumPad1";
-            //accepted[13] = "NumPad2";
-            //accepted[14] = "NumPad3";
-            //accepted[15] = "NumPad4";
-            //accepted[16] = "NumPad5";
-            //accepted[17] = "NumPad6";
-            //accepted[18] = "NumPad7";
-            //accepted[19] = "NumPad8";
-            //accepted[20] = "NumPad9";
-
-            //string noAccepted = "qwertyuiop´+asdfghjklñ{zxcvbnm,-!#$%%&/()=?[]*¨¨_:;¬{}¡*";
-
-            //if()
-
-
-        }
-
-        #endregion
-
         #region Validation for searchTextboxes
-        private void TxtSearchDel_KeyDown(object sender, KeyEventArgs e)
-        {
-          
-        }
-
-        private void TxtSearchE_KeyDown(object sender, KeyEventArgs e)
-        {
-
-        }
-
         private void TxtSearchE_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            Console.WriteLine("Letra presionandolo " + e.Text);
+            //Console.WriteLine("Letra presionandolo " + e.Text);
 
             if (ComboEdit.SelectedItem != null)
             {
@@ -497,15 +452,78 @@ namespace ItemInventoryApp
                 if (selection == "ID")
                 {
                     e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
-                    //e.Handled = !Global.ValidationsHandler.IsTextAllowed(e.Text);
                 }
             }
         }
+
+        private void TxtSearchDel_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (comboEliminar.SelectedItem != null)
+            {
+                string selection = ((ComboBoxItem)comboEliminar.SelectedItem).Content.ToString();
+                if (selection == "ID")
+                {
+                    e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
+                }
+            }
+        }
+
+        private void TxtPrecioC_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
+        }
+
+        private void TxtPriceE_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
+        }
+
         #endregion
 
-        private void TotalPedido_TextInput(object sender, TextCompositionEventArgs e)
+        #region Pedido Module
+        private void ConfirmarPedido_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(TotalPedido.Text);
+            InputBox.Visibility = System.Windows.Visibility.Visible;
+            //Global.DBHandler.CreatePedido();
         }
+
+
+
+        #endregion
+
+
+
+
+        #region PROMPT
+
+        private void YesButton_Click(object sender, RoutedEventArgs e)
+        {
+            // YesButton Clicked! Let's hide our InputBox and handle the input text.
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+
+            // Do something with the Input
+            String input = InputTextBox.Text;
+            if (!string.IsNullOrEmpty(input))
+            {
+                Global.DBHandler.CreatePedido(input);
+            }
+            else
+            {
+                Global.DBHandler.CreatePedido("Sin Nombre");
+            }
+            // Clear InputBox.
+            InputTextBox.Text = String.Empty;
+        }
+
+        private void NoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // NoButton Clicked! Let's hide our InputBox.
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+            // Clear InputBox.
+            InputTextBox.Text = String.Empty;
+        }
+
+        #endregion
+
     } //End of the way
 }

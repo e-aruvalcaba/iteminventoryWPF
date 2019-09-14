@@ -721,6 +721,20 @@ namespace ItemInventoryApp.Classes
         {
             var element = (TextBlock)new UIHelper().FindChildByName(Application.Current.MainWindow, "textblock", "TotalPedido");
             element.Text = "$ "+total.ToString();
+            var totaldesc = (TextBlock)new UIHelper().FindChildByName(Application.Current.MainWindow, "textblock", "descTotalPedido");
+            var btnConfirmarPedido = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "ConfirmarPedido");
+
+            if (total!= 0)
+            {
+                totaldesc.Visibility = Visibility.Visible;
+                btnConfirmarPedido.IsEnabled = true;
+
+            }
+            else
+            {
+                totaldesc.Visibility = Visibility.Hidden;
+                btnConfirmarPedido.IsEnabled = false;
+            }
         }
 
         #endregion

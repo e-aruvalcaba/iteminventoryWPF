@@ -15,10 +15,7 @@ namespace ItemInventoryApp.DAL
     class DBHandler
     {
         private DatabaseModel DBInstance;
-        //private UIRuntime runtime = new UIRuntime();
         private static string fileName = @"C:\InventoryApp\_InventoryDB.json";
-        private Pedido pedidoEnMemoria = new Pedido();
-        //private Library Lib = new Library();
 
         public DBHandler()
         {
@@ -119,6 +116,30 @@ namespace ItemInventoryApp.DAL
                 return success;
             }
         }
+        /*
+          * // SUMMARY
+          * // Simulated IDENTITY ID management for pedidos id and item id
+          * // Return: int new ID
+        */
+        public int GenerateID(string action, DatabaseModel DB)
+        {
+            int ret = 0;
+            action = action.ToLower();
+            switch (action)
+            {
+                case "item":
+                    ret = DB.LastItemID;
+                    DB.LastItemID++;
+                    break;
+                case "pedido":
+                    ret = DB.LastPedidoID;
+                    //DB.LastPedidoID++;
+                    break;
+            }
+            SaveDB(DB);
+            return ret;
+        }
+
         #endregion
 
         #region Searchs for item
@@ -290,41 +311,75 @@ namespace ItemInventoryApp.DAL
         }
         #endregion
 
-        //public Pedido GeneratePedidoOnMemory(Item item, int pedidoId, DatabaseModel db) {
-
-        //    pedidoId = pedidoId.Equals(0) ? 1 : pedidoId += 1;
-
-        //    pedidoEnMemoria.id = pedidoId;
-        //    item.Qty++;
-        //    pedidoEnMemoria.Items.Add(item);
-        //    pedidoEnMemoria.ItemsQuantity = pedidoEnMemoria.Items.Count;
-        //    pedidoEnMemoria.Status = new PedidoStatus().NotRegistered;
-        //    pedidoEnMemoria.Total = item.Price * pedidoEnMemoria.ItemsQuantity;
-        //    pedidoEnMemoria.Date = DateTime.Now.Date;
-
-        //    return pedidoEnMemoria;
-        //}
-
         #region Pedido Functionality
+        /*
+           * // SUMMARY
+           * // Manage the addition of an item to a current on memory pedido.
+           * // Return: Void
+       */
+        public void addItemtoPedido(int ItemID, UIRuntime runtime)
+        {
+            Item item = new Item();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            //se busca el producto que se agregara al pedido
+            item = SearchItembyID(Convert.ToInt32(ItemID));
+            //Hay datos en el objeto en memoria??? Si no existen datos se inicializa el nuevo pedido...
+            if (DBInstance.TempPedido.id.Equals(0))
+            {
+                GeneratePedidoOnMemory(item, DBInstance);
+
+                SaveDB(DBInstance);
+            }
+            else // Si existe un pedido en memoria comenzamos las validaciones del producto en la lista
+            {
+                //Si existe en la lista cargada en memoria entonces se actualiza, si no existe se agrega a la lista en memoria
+                if (DBInstance.TempPedido.Items.Find(x => x.id == item.id) != null) //Ya existe el producto
+                {
+                    incrementItemQty(DBInstance.TempPedido, DBInstance.TempPedido.Items[DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id)]);
+                    DBInstance.TempPedido.Total += item.Price;
+                }
+                else // No existe el producto en la lista lo agregamos
+                {
+                    DBInstance.TempPedido.Items.Add(item);
+                    DBInstance.TempPedido.ItemsQuantity.Add(new ItemQty
+                    {
+                        Id = item.id,
+                        Price = item.Price,
+                        Qty = 0
+                    });
+                    incrementItemQty(DBInstance.TempPedido, DBInstance.TempPedido.Items[DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id)]);
+                    DBInstance.TempPedido.Total += item.Price;
+                }
+                SaveDB(DBInstance);
+            }
+            runtime.updateTotals(DBInstance.TempPedido.Total);
+            DrawPedido(runtime, DBInstance.TempPedido);
+        }
+
         /*
             * // SUMMARY
             * // Generates a new pedido to store the data on memory of the pedido in progress it memory is used until the user clicks Aceptar pedido or restart the app.
             * // Return: Pedido object
         */
-        public Pedido GeneratePedidoOnMemory(Item item, int pedidoId, DatabaseModel db)
+        public Pedido GeneratePedidoOnMemory(Item item, DatabaseModel db)
         {
             Pedido newPedido = new Pedido();
-            newPedido.id = pedidoId;
+            newPedido.Name = "Sin Nombre";
+            newPedido.id = new DBHandler().GenerateID("pedido", db);
             //newPedido.ItemsQuantity = 1;
             newPedido.Status = new PedidoStatus().NotRegistered;
             newPedido.Items.Add(item);
-            newPedido.ItemsQuantity.Add(new ItemQty {
+            newPedido.ItemsQuantity.Add(new ItemQty
+            {
                 Id = item.id,
                 Price = item.Price,
                 Qty = 0
             });
             newPedido.Total = item.Price;
-            newPedido.Date = DateTime.Now.Date;
+            newPedido.Date = DateTime.Now.ToLongDateString();
+            newPedido.Time = DateTime.Now.ToLongTimeString();
+            newPedido.dateTime = DateTime.Now;
             incrementItemQty(newPedido, item);
 
             return db.TempPedido = newPedido;
@@ -357,7 +412,8 @@ namespace ItemInventoryApp.DAL
         {
             var index = pedido.Items.FindIndex(x => x.id == itemTarget.id);
 
-            if (!index.Equals(null) && pedido.ItemsQuantity[index].Id.Equals(itemTarget.id)) {
+            if (!index.Equals(null) && pedido.ItemsQuantity[index].Id.Equals(itemTarget.id))
+            {
                 pedido.ItemsQuantity[index].Qty++;
                 SaveDB(DBInstance);
             }
@@ -425,59 +481,41 @@ namespace ItemInventoryApp.DAL
             * // Insert a confirmed pedido on JSON DB
             * // Return: bool (true/false)
         */
-        public bool CreatePedido()
+        public bool CreatePedido(string name)
         {
             bool success = false;
+            DBInstance = UpdateDBObject();
+
+            if (DBInstance.TempPedido.id.Equals(0) || DBInstance.TempPedido.Items.Count.Equals(0))
+            {
+                MessageBox.Show("No se puede guardar un pedido vacio, por favor agregue items al pedido.");
+                return false;
+            }
+
+            try
+            {
+                DBInstance.TempPedido.Name = name;
+                DBInstance.TempPedido.Status = new PedidoStatus().Registered;
+                DBInstance.Pedidos.Add(DBInstance.TempPedido);
+                DBInstance.TempPedido = new Pedido();
+                var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "PanelPedidos");
+                element.Children.Clear();
+                new UIRuntime().updateTotals(DBInstance.TempPedido.Total);
+                DBInstance.LastPedidoID++;
+                SaveDB(DBInstance);
+                success = true;
+                MessageBox.Show("Se ha creado el pedido exitosamente");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ha habido un error creando el pedido: " + ex.Message);
+            }
 
             return success;
         }
         #endregion
 
         #region Dynamic Buttons Functionality
-        /*
-            * // SUMMARY
-            * // Manage the addition of an item to a current on memory pedido.
-            * // Return: Void
-        */
-        public void addItemtoPedido(int ItemID, UIRuntime runtime)
-        {
-            Item item = new Item();
-            //UpdateDBObject the databaseobject to get the most recent data
-            DBInstance = UpdateDBObject();
-            //se busca el producto que se agregara al pedido
-            item = SearchItembyID(Convert.ToInt32(ItemID));
-            //Hay datos en el objeto en memoria??? Si no existen datos se inicializa el nuevo pedido...
-            if (DBInstance.TempPedido.id.Equals(0))
-            {
-                GeneratePedidoOnMemory(item, DBInstance.LastPedidoID, DBInstance);
-
-                SaveDB(DBInstance);
-            }
-            else // Si existe un pedido en memoria comenzamos las validaciones del producto en la lista
-            {
-                //Si existe en la lista cargada en memoria entonces se actualiza, si no existe se agrega a la lista en memoria
-                if (DBInstance.TempPedido.Items.Find(x => x.id == item.id) != null) //Ya existe el producto
-                {
-                    incrementItemQty(DBInstance.TempPedido, DBInstance.TempPedido.Items[DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id)]);
-                    DBInstance.TempPedido.Total += item.Price;
-                }
-                else // No existe el producto en la lista lo agregamos
-                {
-                    DBInstance.TempPedido.Items.Add(item);
-                    DBInstance.TempPedido.ItemsQuantity.Add(new ItemQty
-                    {
-                        Id = item.id,
-                        Price = item.Price,
-                        Qty = 0
-                    });
-                    incrementItemQty(DBInstance.TempPedido, DBInstance.TempPedido.Items[DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id)]);
-                    DBInstance.TempPedido.Total += item.Price;
-                }
-                SaveDB(DBInstance);
-            }
-            runtime.updateTotals(DBInstance.TempPedido.Total);
-            DrawPedido(runtime, DBInstance.TempPedido);
-        }
 
         /*
            * // SUMMARY
@@ -519,24 +557,6 @@ namespace ItemInventoryApp.DAL
         }
         #endregion
 
-        public int GenerateID(string action, DatabaseModel DB)
-        {
-            int ret = 0;
-            action = action.ToLower();
-            switch (action)
-            {
-                case "item":
-                    ret = DB.LastItemID;
-                    DB.LastItemID++;
-                    break;
-                case "pedido":
-                    ret = DB.LastPedidoID;
-                    DB.LastPedidoID++;
-                    break;
-            }
-            SaveDB(DB);
-            return ret;
-        }
 
     } //End of way
 }
