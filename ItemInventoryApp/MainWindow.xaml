@@ -15,7 +15,7 @@
             <Setter Property = "Foreground" Value = "White" />
             <Setter Property = "FontWeight" Value = "Bold" />
             <Setter Property = "FontSize" Value = "12" />
-            <Setter Property = "Margin" Value = "30,35,30,50" />
+            <Setter Property = "Margin" Value = "30,20,30,30" />
             <Setter Property = "TextBlock.TextAlignment" Value="Center" />
             <Setter Property = "Background" Value="Black"/>
             <Setter Property = "HorizontalAlignment" Value="Left"/>
@@ -49,7 +49,7 @@
             <Setter Property = "FontWeight" Value = "Bold" />
             <Setter Property = "FontSize" Value = "11" />
             <Setter Property = "Background" Value="Black"/>
-            <Setter Property = "Margin" Value="15,5,5,5"/>
+            <Setter Property = "Margin" Value="15,0,5,5"/>
             <Setter Property = "HorizontalAlignment" Value="Left"/>
             <Setter Property = "VerticalAlignment" Value="Center"/>
             <Setter Property = "Template">
@@ -115,12 +115,25 @@
                                                             <RowDefinition Height="*"/>
                                                             <RowDefinition Height="auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
+                                                        
+                                                        --><!--<TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
                                                             Item #1
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                            Cantidad x 4
-                                                        </TextBlock>
+                                                        </TextBlock>--><!--
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            
+                                                            <Button Grid.Column="1" Content=" - " Margin="5,5,5,5" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#FFE84040" Style = "{StaticResource btnEliminarPedido}" />
+                                                            <Button Grid.Column="2" Content=" + " Margin="5,5,5,5" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#FF138F00" Style = "{StaticResource btnEliminarPedido}" />
+
+                                                            <TextBlock Grid.Column="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                            Cantidad x 450
+                                                            </TextBlock>
+
+                                                        </Grid>
                                                         <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
                                                             Orden de Tacos de Bisteck
                                                         </TextBlock>
@@ -139,20 +152,38 @@
                                 </ScrollViewer>
                             </DockPanel>
                             <!--TERMINAN LAS PRUEBAS PARA EL GRI DE LOS PEDIDOS-->
-
                         </Grid>
-                        <!--Parte del boton para confirmar pedido-->
-                        <Button Grid.Row="2" Content="Confirmar Pedido" Style = "{StaticResource btnPedidos}">
-                            <Button.Effect>
-                                <DropShadowEffect/>
-                            </Button.Effect>
-                        </Button>
+
+                        <Grid Grid.Row="2" Margin="0,0,0,0" HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Total del pedido en cuestion-->
+                            <TextBlock x:Name="descTotalPedido" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14" Margin="0,0,15,0" Text="Total del pedido:" Visibility="Hidden"/>
+                            <TextBlock x:Name="TotalPedido" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="25" Margin="0,0,15,0" Text="$0" TextInput="TotalPedido_TextInput"/>
+                            <!--Parte del boton para confirmar pedido-->
+                            <Button Grid.Row="2" Grid.Column="1" Content="Confirmar Pedido"  Style = "{StaticResource btnPedidos}">
+                                <Button.Effect>
+                                    <DropShadowEffect/>
+                                </Button.Effect>
+                            </Button>
+                        </Grid>
+                       
                     </Grid>
 
 
                     <!--GRID DE DERECHA-->
                     <Grid Background="#F6CE3E" Margin="704,0,0,0">
-                        <Button Content="Entregar Pedido" HorizontalAlignment="Right" Style = "{StaticResource btnPedidos}"  Margin="0,0,35,50"/>
+                        <Button Content="Entregar Pedido" HorizontalAlignment="Right" Style = "{StaticResource btnPedidos}"  Margin="0,0,35,30"/>
                     </Grid>
                     <!--GRID DEL CENTRO-->
                     <Grid Background="Bisque" Margin="180, 0, 180, 0">

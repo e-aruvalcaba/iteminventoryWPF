@@ -453,13 +453,13 @@ namespace ItemInventoryApp.Classes
         public Canvas CreatePedidoPanels(Item data, int PedidoId, ItemQty qty)
         {
             #region Creating Canvas
-
-
             Canvas Canv = new Canvas();
             Canv.Name = "Item" + PedidoId;
             Canv.Height = 100;
             DockPanel.SetDock(Canv, Dock.Top);
+            #endregion
 
+            #region Grid
             //Creating 1st Grid
             Grid Grid1 = new Grid();
 
@@ -476,14 +476,70 @@ namespace ItemInventoryApp.Classes
                 Height = new GridLength(100, GridUnitType.Auto),
             });
 
-            TextBlock Texto1 = new TextBlock();
-            Texto1.FontSize = 16;
-            Texto1.FontWeight = FontWeights.Bold;
-            Texto1.Padding = new Thickness(3);
-            Texto1.Text = "ITEM #" + PedidoId;
-            Texto1.Name = "Texto1id_" + data.id;
-            Grid.SetRow(Texto1, 0);
-            DockPanel.SetDock(Texto1, Dock.Top);
+            #endregion
+
+            #region Textboxes
+            //TextBlock Texto1 = new TextBlock();
+            //Texto1.FontSize = 16;
+            //Texto1.FontWeight = FontWeights.Bold;
+            //Texto1.Padding = new Thickness(3);
+            //Texto1.Text = "ITEM #" + PedidoId;
+            //Texto1.Name = "Texto1id_" + data.id;
+            //Grid.SetRow(Texto1, 0);
+            //DockPanel.SetDock(Texto1, Dock.Top);
+
+            Grid Grid2 = new Grid();
+            Grid2.ColumnDefinitions.Add(new ColumnDefinition
+            {
+                Width = new GridLength()
+            });
+            Grid2.ColumnDefinitions.Add(new ColumnDefinition {
+                Width = new GridLength(20, GridUnitType.Star)
+            });
+            Grid2.ColumnDefinitions.Add(new ColumnDefinition
+            {
+                Width = new GridLength(20, GridUnitType.Star)
+            });
+
+            Color color = (Color)ColorConverter.ConvertFromString("#FFE84040");
+            SolidColorBrush myBrush = new SolidColorBrush(color);
+            Button btnReduce = new Button();
+            btnReduce.Content = " - ";
+            btnReduce.Height = 20;
+            btnReduce.Width = 20;
+            btnReduce.FontFamily = new FontFamily("Comic Sans MS");
+            btnReduce.Foreground = Brushes.Black;
+            btnReduce.FontWeight = FontWeights.Bold;
+            btnReduce.FontSize = 11;
+            btnReduce.Background = myBrush; //#FFE84040
+            btnReduce.Margin = new Thickness(5, 5, 5, 5);
+            btnReduce.HorizontalAlignment = HorizontalAlignment.Right;
+            btnReduce.VerticalAlignment = VerticalAlignment.Center;
+            btnReduce.Uid = data.id.ToString();
+
+            btnReduce.Click += reduceItemQty;
+            Grid.SetColumn(btnReduce, 1);
+
+            color = (Color)ColorConverter.ConvertFromString("#FF138F00");
+            myBrush = new SolidColorBrush(color);
+            Button btnAddition = new Button();
+            btnAddition.Content = " + ";
+            btnAddition.Height = 20;
+            btnAddition.Width = 20;
+            btnAddition.FontFamily = new FontFamily("Comic Sans MS");
+            btnAddition.Foreground = Brushes.Black;
+            btnAddition.FontWeight = FontWeights.Bold;
+            btnAddition.FontSize = 11;
+            btnAddition.Background = myBrush;
+            btnAddition.Margin = new Thickness(5, 5, 5, 5);
+            btnAddition.HorizontalAlignment = HorizontalAlignment.Right;
+            btnAddition.VerticalAlignment = VerticalAlignment.Center;
+            btnAddition.Click += IncrementQty;
+            btnAddition.Uid = data.id.ToString();
+
+            Grid.SetColumn(btnAddition, 2);
+
+            Grid.SetRow(Grid2, 0);
 
             TextBlock Texto2 = new TextBlock();
             Texto2.FontSize = 12;
@@ -493,7 +549,8 @@ namespace ItemInventoryApp.Classes
             Texto2.HorizontalAlignment = HorizontalAlignment.Right;
             Texto2.Text = "Cantidad x " + qty.Qty;
             Texto2.Name = "Texto2id_" + data.id;
-            Grid.SetRow(Texto2, 0);
+            //Grid.SetRow(Texto2, 0);
+            Grid.SetColumn(Texto2, 0);
             DockPanel.SetDock(Texto2, Dock.Top);
 
             TextBlock Texto3 = new TextBlock();
@@ -509,8 +566,8 @@ namespace ItemInventoryApp.Classes
             Grid.SetRow(Texto3, 1);
             DockPanel.SetDock(Texto3, Dock.Top);
 
-            Color color = (Color)ColorConverter.ConvertFromString("#232D33");
-            SolidColorBrush myBrush = new SolidColorBrush(color);
+            color = (Color)ColorConverter.ConvertFromString("#232D33");
+            myBrush = new SolidColorBrush(color);
             TextBlock Texto4 = new TextBlock();
             Texto4.FontSize = 12;
             Texto4.Padding = new Thickness(5);
@@ -537,27 +594,87 @@ namespace ItemInventoryApp.Classes
             btnEliminar.Margin = new Thickness(15, 5, 5, 5);
             btnEliminar.HorizontalAlignment = HorizontalAlignment.Left;
             btnEliminar.VerticalAlignment = VerticalAlignment.Center;
-            btnEliminar.Click += eliminarItem;
+            btnEliminar.Click += deleteItemfromPedido;
+            btnEliminar.Uid = data.id.ToString();
             Grid.SetRow(btnEliminar, 2);
             #endregion
 
-            //Adding elements to canvas
-            Grid1.Children.Add(Texto1);
-            Grid1.Children.Add(Texto2);
+            #region Adding elements to canvas
+
+            //Grid1.Children.Add(Texto1);
+            Grid2.Children.Add(btnReduce);
+            Grid2.Children.Add(btnAddition);
+            Grid2.Children.Add(Texto2);
+            Grid1.Children.Add(Grid2);
+            //Grid1.Children.Add(Texto2);
             Grid1.Children.Add(Texto3);
             Grid1.Children.Add(Texto4);
             Grid1.Children.Add(btnEliminar);
             Canv.Children.Add(Grid1);
             return Canv;
+            #endregion
+        }
+        /*//
+           // SUMMARY
+           // Increment on 1 the qty of selected item
+           // Return: Void
+        */
+
+        private void IncrementQty(object sender, RoutedEventArgs e)
+        {
+            //MessageBox.Show("Increment item");
+            var s = (Button)sender;
+            DBHandler h = new DBHandler();
+            h.incrementqty(Convert.ToInt32(s.Uid));
+            redrawProcess(h);
+        }
+        /*//
+           // SUMMARY
+           // Decrement on 1 the qty of selected item
+           // Return: Void
+        */
+        private void reduceItemQty(object sender, RoutedEventArgs e)
+        {
+            //MessageBox.Show("Reduce Qty item");
+            var s = (Button)sender;
+            DBHandler h = new DBHandler();
+            h.decrementQty(Convert.ToInt32(s.Uid), this);
+            redrawProcess(h);
         }
 
-        private void eliminarItem(object sender, RoutedEventArgs e)
+        private void redrawProcess(DBHandler h)
         {
-            MessageBox.Show("Eliminar item");
-            //Si hay mas de 1 producto elimina solo 1 de la cantidad, en caso contrario elimina el producto de la lista de productos y se actualiza la lista.
+            List<Canvas> list = new List<Canvas>();
+            DatabaseModel DB = new DatabaseModel();
+            DB = h.UpdateDBObject();
+            foreach (var item in DB.TempPedido.Items)
+            {
+                list.Add(CreatePedidoPanels(item, DB.TempPedido.id, DB.TempPedido.ItemsQuantity.Find(x => x.Id.Equals(item.id))));
+            }
+            object[] obj = new object[1];
+            obj[0] = list;
+            redraw(new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "PanelPedidos"), "dockpanel", obj, "canvas");
+        }
+        /*//
+           // SUMMARY
+           // Deletes one item from the pedido ignoring the Qty of the item
+           // Return: Void
+        */
+        private void deleteItemfromPedido(object sender, RoutedEventArgs e)
+        {
+            //MessageBox.Show("Eliminar item");
+            var s = (Button)sender;
+            DBHandler h = new DBHandler();
+            h.removetemfromPedido(Convert.ToInt32(s.Uid), this);
         }
         #endregion
 
+        #region UI re-draw
+        /*//
+            // SUMMARY
+            // Redraw the elements of pedidos or items on its respective container in the UI
+            // Return: Void
+        */
         public void redraw(UIElement element, string typeElement, object[] list, string type)
         {
             typeElement = typeElement.ToLower();
@@ -596,8 +713,18 @@ namespace ItemInventoryApp.Classes
                     break;
             }
         }
+        #endregion
 
- 
+        #region TotalManagement
+        
+        public void updateTotals(double total)
+        {
+            var element = (TextBlock)new UIHelper().FindChildByName(Application.Current.MainWindow, "textblock", "TotalPedido");
+            element.Text = "$ "+total.ToString();
+        }
+
+        #endregion
+
 
     } //End limit of code
 }

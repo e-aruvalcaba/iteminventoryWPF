@@ -503,5 +503,9 @@ namespace ItemInventoryApp
         }
         #endregion
 
+        private void TotalPedido_TextInput(object sender, TextCompositionEventArgs e)
+        {
+            Console.WriteLine(TotalPedido.Text);
+        }
     } //End of the way
 }

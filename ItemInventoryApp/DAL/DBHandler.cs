@@ -336,8 +336,9 @@ namespace ItemInventoryApp.DAL
         */
         private void DrawPedido(UIRuntime runtime, Pedido MPedido)
         {
-            var el = (Window)Application.Current.MainWindow;
-            var element = (DockPanel)el.FindName("PanelPedidos");
+            //var el = (Window)Application.Current.MainWindow;
+            //var element = (DockPanel)el.FindName("PanelPedidos");
+            var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "PanelPedidos");
             element.Children.Clear();
 
             for (int i = 0; i < MPedido.Items.Count; i++)
@@ -358,9 +359,67 @@ namespace ItemInventoryApp.DAL
 
             if (!index.Equals(null) && pedido.ItemsQuantity[index].Id.Equals(itemTarget.id)) {
                 pedido.ItemsQuantity[index].Qty++;
+                SaveDB(DBInstance);
             }
         }
+        /*
+            * // SUMMARY
+            * // Decrement the qty of 1 item on the pedido item list.
+            * // Return: Void
+        */
+        private void decrementItemQty(Pedido pedido, Item itemTarget, UIRuntime runtime)
+        {
+            var index = pedido.Items.FindIndex(x => x.id == itemTarget.id);
 
+            if (!index.Equals(null) && pedido.ItemsQuantity[index].Id.Equals(itemTarget.id))
+            {
+                if (pedido.ItemsQuantity[index].Qty <= 1)
+                {
+                    //delete pedido
+                    removetemfromPedido(itemTarget.id, runtime);
+                }
+                else
+                {
+                    pedido.ItemsQuantity[index].Qty--;
+                    pedido.Total -= itemTarget.Price;
+                }
+                SaveDB(DBInstance);
+                runtime.updateTotals(DBInstance.TempPedido.Total);
+            }
+        }
+        /*
+            * // SUMMARY
+            * // Call private function decrementItemQty.
+            * // Return: Void
+        */
+        public void decrementQty(int id, UIRuntime runtime)
+        {
+            DBInstance = UpdateDBObject();
+            decrementItemQty(DBInstance.TempPedido, DBInstance.Items.Find(x => x.id.Equals(id)), runtime);
+        }
+        /*
+            * // SUMMARY
+            * // Call private function incrementItemQty.
+            * // Return: Void
+        */
+        public void incrementqty(int id)
+        {
+            DBInstance = UpdateDBObject();
+            incrementItemQty(DBInstance.TempPedido, DBInstance.Items.Find(x => x.id.Equals(id)));
+            DBInstance.TempPedido.Total += DBInstance.Items.Find(x => x.id.Equals(id)).Price;
+            SaveDB(DBInstance);
+            new UIRuntime().updateTotals(DBInstance.TempPedido.Total);
+        }
+        /*
+            * // SUMMARY
+            * // Call private function incrementItemQty.
+            * // Return: Void
+        */
+        public void CallDrawPedido(UIRuntime runtime)
+        {
+            DBInstance = UpdateDBObject();
+            DrawPedido(runtime, DBInstance.TempPedido);
+        }
         /*
             * // SUMMARY
             * // Insert a confirmed pedido on JSON DB
@@ -391,6 +450,7 @@ namespace ItemInventoryApp.DAL
             if (DBInstance.TempPedido.id.Equals(0))
             {
                 GeneratePedidoOnMemory(item, DBInstance.LastPedidoID, DBInstance);
+
                 SaveDB(DBInstance);
             }
             else // Si existe un pedido en memoria comenzamos las validaciones del producto en la lista
@@ -398,11 +458,8 @@ namespace ItemInventoryApp.DAL
                 //Si existe en la lista cargada en memoria entonces se actualiza, si no existe se agrega a la lista en memoria
                 if (DBInstance.TempPedido.Items.Find(x => x.id == item.id) != null) //Ya existe el producto
                 {
-                    //DBInstance.TempPedido.Items[index].Qty++;
-                    //int index = DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id);
                     incrementItemQty(DBInstance.TempPedido, DBInstance.TempPedido.Items[DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id)]);
                     DBInstance.TempPedido.Total += item.Price;
-
                 }
                 else // No existe el producto en la lista lo agregamos
                 {
@@ -418,8 +475,35 @@ namespace ItemInventoryApp.DAL
                 }
                 SaveDB(DBInstance);
             }
+            runtime.updateTotals(DBInstance.TempPedido.Total);
             DrawPedido(runtime, DBInstance.TempPedido);
         }
+
+        /*
+           * // SUMMARY
+           * // Manage the delete of an item on current memory pedido.
+           * // Return: Void
+       */
+        public void removetemfromPedido(int ItemID, UIRuntime runtime)
+        {
+            Item item = new Item();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            //se busca el producto que se agregara al pedido
+            item = SearchItembyID(Convert.ToInt32(ItemID));
+            //Restamos el costo total del item del total del pedido
+            int indexqty = DBInstance.TempPedido.ItemsQuantity.FindIndex(i => i.Id == item.id);
+            DBInstance.TempPedido.Total -= (DBInstance.TempPedido.ItemsQuantity[indexqty].Qty * item.Price);
+            //Elimino el item quantity correspondiente
+            DBInstance.TempPedido.ItemsQuantity.RemoveAt(indexqty);
+            //Se elimina el producto del pedido y tambien su quantity correspondiente
+            DBInstance.TempPedido.Items.RemoveAt(DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id));
+
+            runtime.updateTotals(DBInstance.TempPedido.Total);
+            SaveDB(DBInstance);
+            DrawPedido(runtime, DBInstance.TempPedido);
+        }
+
         /*
             * // SUMMARY
             * // Validate that when the software init temp pedido = new pedido.
