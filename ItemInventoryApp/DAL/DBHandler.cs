@@ -503,6 +503,9 @@ namespace ItemInventoryApp.DAL
                 new UIRuntime().updateTotals(DBInstance.TempPedido.Total);
                 DBInstance.LastPedidoID++;
                 SaveDB(DBInstance);
+
+                //Validar boton siguiente y atras
+
                 success = true;
                 MessageBox.Show("Se ha creado el pedido exitosamente");
             }
@@ -556,6 +559,192 @@ namespace ItemInventoryApp.DAL
             }
         }
         #endregion
+        /*
+            * // SUMMARY
+            * // Handle the next back pedido buttons
+            * // Return: int
+        */
+        public void HandlePedidoToDeliver(List<Pedido> listaPedidos, int newpedidoID, string action)
+        {
+            Pedido p = new Pedido();
+            action = action.ToLower();
+            //Filtrar la lista de todos los pedidos y solo los pedidos que estan confirmados, pero no entregados.
+            listaPedidos = listaPedidos.FindAll(x => x.Status.Equals(1));
+
+            //Obtener el index del pedido que esta dibujado actualmente
+            int pedidoActual = 0;
+
+            switch (action)
+            {
+                case "siguiente":
+                    pedidoActual = listaPedidos.FindIndex(x => x.id.Equals(newpedidoID - 1));
+                    break;
+                case "anterior":
+                    pedidoActual = listaPedidos.FindIndex(x => x.id.Equals(newpedidoID + 1));
+                    break;
+            }
+
+
+            //Obtener el total de los pedidos confirmados
+            int totalPedidosSinConfirmar = listaPedidos.Count;
+            var index = listaPedidos.FindIndex(x => x.id.Equals(newpedidoID));
+
+            //if (pedidoActual+1 >= totalPedidosSinConfirmar) //Es el ultimo pedido deshabilitar el boton siguiente pedido
+            //{
+            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
+            //    element.IsEnabled = false;
+            //}
+            //else
+            //{
+            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
+            //    element.IsEnabled = true;
+            //}
+
+            var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
+            //element.IsEnabled = pedidoActual + 1 >= totalPedidosSinConfirmar ? false : true;
+            var element2 = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
+            //element.IsEnabled = (pedidoActual).Equals(0) ? false : true;
+
+            //if (pedidoActual-1 == 0) //Es el primer pedido deshabilitar el boton anterior pedido
+            //{
+            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
+            //    element.IsEnabled = false;
+            //}else
+            //{
+            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
+            //    element.IsEnabled = true;
+            //}
+
+            //Pintar el nuevo pedido en pantalla
+
+            if (action.Equals("siguiente"))
+            {
+                element.IsEnabled = pedidoActual + 1 >= totalPedidosSinConfirmar-1 ? false : true;
+                element2.IsEnabled = (pedidoActual+1).Equals(0) ? false : true;
+                new UIRuntime().SetNextPedidoData(listaPedidos[pedidoActual + 1].id);
+                new UIRuntime().DrawSelectedPedido(listaPedidos[pedidoActual + 1]);
+
+            }
+            else
+            {
+                element.IsEnabled = pedidoActual - 1 >= totalPedidosSinConfirmar-1 ? false : true;
+                element2.IsEnabled = (pedidoActual - 1).Equals(0) ? false : true;
+                new UIRuntime().SetNextPedidoData(listaPedidos[pedidoActual - 1].id);
+                new UIRuntime().DrawSelectedPedido(listaPedidos[pedidoActual - 1]);
+            }
+
+        }
+
+        public List<Pedido> firstValidation(List<Pedido> pedidos)
+        {
+            List<Pedido> list = new List<Pedido>();
+
+            list = pedidos.FindAll(x => x.Status == 1);
+
+            if (list.Count > 0)
+            {
+
+                var response = MessageBox.Show("Se han encontrado sin completar, ¿Desea seguir trabajando con estos pedidos?", "Warning!!!", MessageBoxButton.YesNo);
+
+                if (response.ToString().Equals("Yes"))
+                {
+                    //Se cargan los pedidos en el panel de pedidos Flujo normal
+                    //INICIALIZAR COLA DE PEDIDOS
+                    new UIRuntime().InitPedidosQueue(pedidos);
+                }
+                else //Se cancelan todos los pedidos que tengan el estatus de confirmados.
+                {
+                    foreach (var item in list)
+                    {
+                        item.Status = new PedidoStatus().Canceled;
+                    }
+                }
+            }
+
+            return list;
+        }
+        /*
+            * // SUMMARY
+            * // Obtain the next confirmed pedido
+            * // Return: int
+        */
+        public int GetNextConfirmedPedido(string index_id)
+        {
+            index_id.ToLower();
+            int ret = 0;
+            DBInstance = UpdateDBObject();
+
+            switch (index_id)
+            {
+                case "id":
+                    ret = DBInstance.Pedidos.Find(x => x.Status.Equals(1)).id;
+                    break;
+                case "index":
+                    ret = DBInstance.Pedidos.FindIndex(x => x.Status.Equals(1));
+                    break;
+            }
+
+            return ret;
+        }
+
+        public bool DeletePedidoFromQueue(int index)
+        {
+            bool success = false;
+
+            try
+            {
+                DBInstance = UpdateDBObject();
+
+                DBInstance.Pedidos[index].Status = new PedidoStatus().Canceled;
+                success = SaveDB(DBInstance);
+
+                if (GetNextConfirmedPedido("index").Equals(-1))
+                {
+                    new UIRuntime().ShowHidePedidoData("", "hide");
+                }
+                return success;
+            }
+            catch (Exception)
+            {
+                return success;
+            }
+
+        }
+
+        public bool CompletarPedidoConfirmado(int pedidoId) {
+            var success = false;
+
+            if (pedidoId.Equals(0))
+            {
+                return success;
+            }
+
+            try
+            {
+                DBInstance = UpdateDBObject();
+
+                Pedido pedido = DBInstance.Pedidos.Find(x => x.id.Equals(pedidoId));
+                pedido.Status = new PedidoStatus().Completed;
+                SaveDB(DBInstance);
+                //Validar si quedan pedidos en la cola si no ocultar los paneles
+                if (GetNextConfirmedPedido("index").Equals(-1))
+                {
+                    new UIRuntime().ShowHidePedidoData("", "hide");
+                }
+                else
+                {
+                    new UIRuntime().validatebtnPedidoNextAndBack(DBInstance.Pedidos, DBInstance.Pedidos[GetNextConfirmedPedido("index")].id);
+                }
+
+                return success = true;
+
+            }
+            catch (Exception)
+            {
+
+                return success;
+            }
+        }
 
 
     } //End of way

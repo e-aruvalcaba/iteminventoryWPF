@@ -41,7 +41,7 @@ namespace ItemInventoryApp
             Global.ValidationsHandler = new Validations();
             Global.Elements = new List<UIElement>();
             //Create an instance of dbhandler        
-            
+
             //Create the mainObject to retrieve de json data
             Global.DatbaseInstance = Global.DBHandler.InitializeDB();
             //Create an instance of UIruntime class
@@ -64,6 +64,10 @@ namespace ItemInventoryApp
             //Poblate DatagridView with items
             Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
             Global.Elements.Add(PanelPedidos);
+
+            //First Validation to the 
+            Global.DBHandler.firstValidation(Global.DatbaseInstance.Pedidos);
+            //textPedidoInfo.Text = "5 x Orden de tacos de bisteck."+Environment.NewLine+"3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion";
         }
 
         #region ResponsiveElementsModule
@@ -117,7 +121,7 @@ namespace ItemInventoryApp
                         {
                             //FixMe cambiar esta logica al DBHndler
                             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-                            if(Global.DBHandler.CreateItem(new Item
+                            if (Global.DBHandler.CreateItem(new Item
                             {
                                 //id = Global.DatbaseInstance.Items.Count.Equals(0) ? 1 : Global.DatbaseInstance.Items[Global.DatbaseInstance.Items.Count].id + 1,
                                 id = Global.DBHandler.GenerateID("item", Global.DatbaseInstance),
@@ -153,7 +157,7 @@ namespace ItemInventoryApp
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Error creando nuevo producto: "+ex.Message);
+                            MessageBox.Show("Error creando nuevo producto: " + ex.Message);
                         }
 
                     }
@@ -221,11 +225,11 @@ namespace ItemInventoryApp
                         DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
                         Item dr = (Item)dgr.Item;
                         var id = dr.id;
-                        if ( MessageBox.Show("Eliminar el registro con ID: " + id + "?", "Caption", MessageBoxButton.OKCancel).ToString().Equals("OK"))
+                        if (MessageBox.Show("Eliminar el registro con ID: " + id + "?", "Caption", MessageBoxButton.OKCancel).ToString().Equals("OK"))
                         {
                             if (Global.DBHandler.edit_delete_item(dr, "delete", Global.DataGridList, Global.UIRuntime))
                             {
-                                MessageBox.Show("Se elimino correctamente el registro con el id: "+id);
+                                MessageBox.Show("Se elimino correctamente el registro con el id: " + id);
                             }
                             else
                             {
@@ -500,7 +504,6 @@ namespace ItemInventoryApp
         {
             // YesButton Clicked! Let's hide our InputBox and handle the input text.
             InputBox.Visibility = System.Windows.Visibility.Collapsed;
-
             // Do something with the Input
             String input = InputTextBox.Text;
             if (!string.IsNullOrEmpty(input))
@@ -511,6 +514,21 @@ namespace ItemInventoryApp
             {
                 Global.DBHandler.CreatePedido("Sin Nombre");
             }
+
+            //Validar si el padre de los pedidos tiene hijos activos
+
+            var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            if (element.Children.Count.Equals(0))
+            {
+                new UIRuntime().InitPedidosQueue(Global.DatbaseInstance.Pedidos);
+            }
+            else
+            {
+                //Validar botones siguiente y atras
+                Global.UIRuntime.validatebtnPedidoNextAndBack(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid));
+            }
+
             // Clear InputBox.
             InputTextBox.Text = String.Empty;
         }
@@ -524,6 +542,62 @@ namespace ItemInventoryApp
         }
 
         #endregion
+        private void BtnSiguientePedido_Click(object sender, RoutedEventArgs e)
+        {
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            Global.DBHandler.HandlePedidoToDeliver(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid)+1, "siguiente");
+        }
 
+        private void BtnAnteriorPedido_Click(object sender, RoutedEventArgs e)
+        {
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            Global.DBHandler.HandlePedidoToDeliver(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid)-1, "anterior");
+        }
+
+        private void BtnEliminarPedidoEnCola_Click(object sender, RoutedEventArgs e)
+        {
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            //Global.DatbaseInstance.Pedidos.RemoveAt();
+            //Pintar el primer pedido disponible o limpiar en caso de que no encuentre
+            try
+            {
+                if(Global.DBHandler.DeletePedidoFromQueue(Global.DatbaseInstance.Pedidos.FindIndex(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid)))))
+                {
+                    MessageBox.Show("Se ha eliminado correctamente el pedido de la lista de pedidos confirmados.");
+                }
+                Global.UIRuntime.DrawSelectedPedido(Global.DatbaseInstance.Pedidos[Global.DBHandler.GetNextConfirmedPedido("index")]);
+                Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                Global.UIRuntime.validatebtnPedidoNextAndBack(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid));
+            }
+            catch (Exception ex)
+            {
+                var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
+                element.Children.Clear();
+            }
+        }
+
+        private void BtnEditarPedidoEnCola_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Boton editar pedido");
+        }
+
+        private void BtnEntregarPedido_Click(object sender, RoutedEventArgs e)
+        {
+            //Cambiar estatus del pedido de 1 a 2
+            if (Global.DBHandler.CompletarPedidoConfirmado(Convert.ToInt32(CurrentPedidoInfo.Uid)))
+            {
+                MessageBox.Show("El pedido fue completado exitosamente.");
+                Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                if (!Global.DBHandler.GetNextConfirmedPedido("index").Equals(-1))
+                {
+                    Global.UIRuntime.InitPedidosQueue(Global.DatbaseInstance.Pedidos);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error completando el pedido.");
+            }
+
+        }
     } //End of the way
 }

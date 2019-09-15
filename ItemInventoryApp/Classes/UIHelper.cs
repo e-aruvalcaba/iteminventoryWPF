@@ -31,6 +31,10 @@ namespace ItemInventoryApp.Classes
                 case "button":
                     var button = (Button)el.FindName(childName);
                     return button;
+                case "grid":
+                    var grid = (Grid)el.FindName(childName);
+                    return grid;
+
                 default:
                     return new UIElement();
             }

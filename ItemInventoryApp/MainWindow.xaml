@@ -76,6 +76,39 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <!--HorizontalAlignment="Center" VerticalAlignment="Center" Background="DarkOrange" Foreground="Black" Margin="5,0,0,5" IsEnabled="True"-->
+
+        <!-- _____________________________________________________Boton Editar Pedido Style_________________________________________ -->
+        <Style x:Key = "btnEditarPedido" TargetType = "Button">
+            <Setter Property = "FontFamily"  Value="Comic Sans MS"/>
+            <Setter Property = "Foreground" Value = "Black" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property = "Background" Value="Orange"/>
+            <Setter Property = "Margin" Value="0,5,0,10"/>
+            <Setter Property = "HorizontalAlignment" Value="Center"/>
+            <Setter Property = "VerticalAlignment" Value="Center"/>
+            <Setter Property = "Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="3">
+                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="DarkOrange"/>
+
+                </Trigger>
+                <!--<Trigger Property="IsPressed"  Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>-->
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -189,9 +222,100 @@
 
 
                     <!--GRID DE DERECHA-->
-                    <Grid Background="#F6CE3E" Margin="704,0,0,0">
-                        <Button Content="Entregar Pedido" HorizontalAlignment="Right" Style = "{StaticResource btnPedidos}"  Margin="0,0,35,30"/>
+                    <Grid Background="#F6CE3E" HorizontalAlignment="Right" Width="175" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="100"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Botones para controlar pedido siguiente anterior-->
+                        <Grid Grid.Row="0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="btnAnteriorPedido"  Grid.Column="0" Margin="5,5,5,5" Width="75" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Anterior" Style = "{StaticResource btnPedidos}" IsEnabled="False" Click="BtnAnteriorPedido_Click"/>
+                            <Button x:Name="btnSiguientePedido" Grid.Column="1" Margin="5,5,5,5" Width="75" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Siguiente" Style = "{StaticResource btnPedidos}" IsEnabled="False" Click="BtnSiguientePedido_Click"/>
+
+                        </Grid>
+                        <!--Termina Botones para controlar pedido siguiente anterior-->
+
+                        <!--Informacion del pedido actual-->
+                        <Grid x:Name="PedidoViewer" Grid.Row="1" Margin="4,0,5,0"  Height="auto" MinHeight="300" Visibility="Hidden">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="textNombrePedido" Grid.Row="0" Foreground="Black" Margin="0,0,0,0" MaxWidth="140" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow">Nombre del pedido</TextBlock>
+                            <ScrollViewer Grid.Row="1" HorizontalAlignment="Left" Height="auto" Width="166">
+                                <DockPanel x:Name="CurrentPedidoInfo">
+                                    <!--A partir de aqui se clonaran los elementos para llenar la informacion del pedido que se esta atendiendo-->
+
+                                    <!--<Grid DockPanel.Dock="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="1"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Grid.Row="0" Background="#C9C8C8">
+                                            <TextBlock Foreground="Black" Margin="0,0,0,0" FontSize="14" FontWeight="Bold" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Center">32</TextBlock>
+                                        </Border>
+
+                                        <Border Grid.Column="1" Grid.Row="0" Background="#C9C8C8" DockPanel.Dock="Top" VerticalAlignment="Top">
+                                            <TextBlock Foreground="Black" Margin="5,0,0,0" FontSize="11" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="WrapWithOverflow">Ordenes de tacos de bisteck</TextBlock>
+                                        </Border>
+                                    </Grid>
+
+                                    <Grid DockPanel.Dock="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="1"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Grid.Row="0" Background="#E8E8E8" >
+                                            <TextBlock Foreground="Black" Margin="0,0,0,0" FontSize="12.5" FontWeight="Bold" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Center">5</TextBlock>
+                                        </Border>
+
+                                        <Border Grid.Column="1" Grid.Row="0" Background="#E8E8E8" DockPanel.Dock="Top" VerticalAlignment="Top">
+                                            <TextBlock Foreground="Black" Margin="5,0,0,0" FontSize="12.5" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="WrapWithOverflow">Ordenes de tacos de bisteck</TextBlock>
+                                        </Border>
+                                    </Grid>-->
+
+                                    <!--<Border Background="#E8E8E8" DockPanel.Dock="Top" VerticalAlignment="Top">
+                                        <TextBlock  Foreground="Black" Margin="5,0,0,0" FontSize="12.5" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="WrapWithOverflow">Orden information</TextBlock>
+                                    </Border>-->
+                                                                        
+                                    <!--Termina clonacion de los elementos para llenar la informacion del pedido que se esta atendiendo-->
+                                </DockPanel>
+                            </ScrollViewer>
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button x:Name="btnEditarPedidoEnCola" Grid.Column="0" Padding="3" FontSize="10" Content="Editar Pedido" Style = "{StaticResource btnEditarPedido}" Click="BtnEditarPedidoEnCola_Click"/>
+                                <Button x:Name="btnEliminarPedidoEnCola" Background="Red" Grid.Column="1" Padding="3"  FontSize="10" Content="Eliminar Pedido" Style = "{StaticResource btnEditarPedido}" Click="BtnEliminarPedidoEnCola_Click"/>
+
+                            </Grid>
+                        </Grid>
+
+                        <Button x:Name="btnEntregarPedido" Grid.Row="2" Content="Entregar Pedido" HorizontalAlignment="Right" Style = "{StaticResource btnPedidos}"  Margin="0,0,35,30" IsEnabled="False" Click="BtnEntregarPedido_Click"/>
                     </Grid>
+
+
                     <!--GRID DEL CENTRO-->
                     <Grid Background="Bisque" Margin="180, 0, 180, 0">
                         <!--A PARTIR DE AQUI SE CLONARA EL SIGUIENTE DOCK PANEL-->
@@ -428,22 +552,22 @@
             Background="Orange" 
             BorderBrush="Black" 
             BorderThickness="1" 
-            CornerRadius="0,55,0,55" 
+            CornerRadius="0,0,0,0" 
             HorizontalAlignment="Center" 
             VerticalAlignment="Center">
                 <StackPanel>
-                    <TextBlock Margin="5" Text="Input Box:" FontWeight="Bold" FontFamily="Cambria" />
+                    <TextBlock Margin="5" Text="Nombre de la Orden:" FontWeight="Bold" FontFamily="Cambria" />
                     <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="YesButton" Margin="5" Content="Yes" Background="{x:Null}" Click="YesButton_Click"/>
-                        <Button x:Name="NoButton" Margin="5" Content="No" Background="{x:Null}" Click="NoButton_Click" />
+                        <Button x:Name="YesButton" Margin="5" Width="80" Content="Confirmar" Click="YesButton_Click" Style = "{StaticResource btnPedidos}"/>
+                        <Button x:Name="NoButton" Margin="5" Width="80" Content="Cancelar"  Click="NoButton_Click" Style = "{StaticResource btnPedidos}" />
                     </StackPanel>
                 </StackPanel>
             </Border>
         </Grid>
-        
+
         <!--TERMINA PROMPT-->
-        
+
     </Grid>
 </Window>
     

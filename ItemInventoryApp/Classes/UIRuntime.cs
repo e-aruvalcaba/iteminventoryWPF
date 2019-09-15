@@ -493,7 +493,8 @@ namespace ItemInventoryApp.Classes
             {
                 Width = new GridLength()
             });
-            Grid2.ColumnDefinitions.Add(new ColumnDefinition {
+            Grid2.ColumnDefinitions.Add(new ColumnDefinition
+            {
                 Width = new GridLength(20, GridUnitType.Star)
             });
             Grid2.ColumnDefinitions.Add(new ColumnDefinition
@@ -692,7 +693,8 @@ namespace ItemInventoryApp.Classes
 
             }
 
-            switch (typeElement) {
+            switch (typeElement)
+            {
                 case "dockpanel":
                     var nElement = (DockPanel)element;
                     nElement.Children.Clear();
@@ -716,15 +718,15 @@ namespace ItemInventoryApp.Classes
         #endregion
 
         #region TotalManagement
-        
+
         public void updateTotals(double total)
         {
             var element = (TextBlock)new UIHelper().FindChildByName(Application.Current.MainWindow, "textblock", "TotalPedido");
-            element.Text = "$ "+total.ToString();
+            element.Text = "$ " + total.ToString();
             var totaldesc = (TextBlock)new UIHelper().FindChildByName(Application.Current.MainWindow, "textblock", "descTotalPedido");
             var btnConfirmarPedido = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "ConfirmarPedido");
 
-            if (total!= 0)
+            if (total != 0)
             {
                 totaldesc.Visibility = Visibility.Visible;
                 btnConfirmarPedido.IsEnabled = true;
@@ -739,6 +741,207 @@ namespace ItemInventoryApp.Classes
 
         #endregion
 
+        #region UI Cola de pedidos Creation
+
+        public List<Grid> CreateListaPedido(Pedido pedido)
+        {
+
+            List<Grid> list = new List<Grid>();
+            int loop = 1;
+            Color color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+            SolidColorBrush myBrush = new SolidColorBrush(color);
+
+            ////List<Item> 
+            //List<Pedido> PedidosConfirmados = (List<Pedido>)pedido.Where(x => x.Status.Equals(1));
+
+            //foreach (var item in PedidosConfirmados)
+            //{
+
+            //}
+
+            foreach (var item in pedido.Items)
+            {
+                if ((loop % 2).Equals(0))
+                {
+                    color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                }
+                else
+                {
+                    color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                }
+
+                myBrush = new SolidColorBrush(color);
+
+                #region Grid
+                //Creating 1st Grid
+                Grid Grid1 = new Grid();
+
+                var desc = pedido.Items.Find(x => x.id.Equals(item.id)).Description;
+
+                Grid1.RowDefinitions.Add(new RowDefinition
+                {
+                    Height = new GridLength(100, GridUnitType.Auto),
+                    ToolTip = desc
+                });
+                Grid1.RowDefinitions.Add(new RowDefinition
+                {
+                    Height = new GridLength(1, GridUnitType.Pixel),
+                    ToolTip = desc
+                });
+
+                Grid1.ColumnDefinitions.Add(new ColumnDefinition
+                {
+                    Width = new GridLength(20, GridUnitType.Pixel),
+                });
+                Grid1.ColumnDefinitions.Add(new ColumnDefinition
+                {
+                    Width = new GridLength(1, GridUnitType.Star),
+                });
+
+                DockPanel.SetDock(Grid1, Dock.Top);
+                #endregion
+
+                #region broder1Creation
+                Border bd1 = new Border();
+                bd1.Background = myBrush;
+                bd1.Child = new TextBlock
+                {
+                    Foreground = Brushes.Black,
+                    Margin = new Thickness(0),
+                    FontSize = 12.5,
+                    FontWeight = FontWeights.Bold,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Text = pedido.ItemsQuantity.Find(x => x.Id.Equals(item.id)).Qty.ToString()
+                };
+
+                Grid.SetRow(bd1, 0);
+                Grid.SetColumn(bd1, 0);
+                Grid1.Children.Add(bd1);
+                #endregion
+
+                #region broder2Creation
+                Border bd2 = new Border();
+                bd2.Background = myBrush;
+                bd2.Child = new TextBlock
+                {
+                    Foreground = Brushes.Black,
+                    Margin = new Thickness(0),
+                    FontSize = 11,
+                    FontWeight = FontWeights.Bold,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Text = pedido.Items.Find(x => x.id.Equals(item.id)).Name
+                };
+
+                Grid.SetRow(bd2, 0);
+                Grid.SetColumn(bd2, 1);
+                Grid1.Children.Add(bd2);
+                #endregion
+                list.Add(Grid1);
+            }
+            return list;
+        }
+        /*//
+           // SUMMARY
+           // Draw 1 pedido on the panel
+           // Return: Void
+        */
+        public void DrawSelectedPedido(Pedido selectedPedido)
+        {
+            List<Grid> elements = CreateListaPedido(selectedPedido);
+
+            ShowHidePedidoData(selectedPedido.Name, "show");
+            DockPanel ViewElement = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
+            ViewElement.Children.Clear();
+            SetNextPedidoData(selectedPedido.id);
+
+            foreach (var item in elements)
+            {
+                ViewElement.Children.Add(item);
+            }
+        }
+
+        public void ShowHidePedidoData(string name, string action) {
+
+            action.ToLower();
+            DockPanel ViewElement = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
+            ViewElement.Children.Clear();
+            Grid PedidoViewer = (Grid)new UIHelper().FindChildByName(Application.Current.MainWindow, "grid", "PedidoViewer");
+            TextBlock PedidoName = (TextBlock)new UIHelper().FindChildByName(Application.Current.MainWindow, "textblock", "textNombrePedido");
+            PedidoName.Text = name;
+
+            switch (action)
+            {
+                case "show":
+                    PedidoViewer.Visibility = Visibility.Visible;
+                    break;
+
+                case "hide":
+                    PedidoViewer.Visibility = Visibility.Hidden;
+                    break;
+            }
+        }
+
+        /*//
+           // SUMMARY
+           // Sets the pedido id that current drawed on the pedidos panel to get the info from other ui components
+           // Return: Void
+        */
+        public void SetNextPedidoData(int pedidoID)
+        {
+            DockPanel element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
+            element.Uid = pedidoID.ToString();
+        }
+
+        public void InitPedidosQueue(List<Pedido> pedidos)
+        {
+            pedidos = pedidos.Where(x => x.Status.Equals(1)).ToList();
+
+            DrawSelectedPedido(pedidos[0]);
+            //Setear datos del pedido en el panel
+            SetNextPedidoData(pedidos[0].id);
+            //Generar las validaciones de los botones editar, eliminar, siguiente, y atras.
+
+            var btn = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnEntregarPedido");
+            btn.IsEnabled = true;
+
+            if (pedidos.Count>1)
+            {
+                btn = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
+                btn.IsEnabled = true;
+            }
+        }
+
+        public void validatebtnPedidoNextAndBack(List<Pedido> list, int CurrentPedidoID)
+        {
+            list = list.Where(x => x.Status.Equals(1)).ToList();
+
+            var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
+            var element2 = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
+
+            int id = CurrentPedidoID;
+            CurrentPedidoID = list.FindIndex(x=> x.id.Equals(CurrentPedidoID));
+
+            bool siguiente = false;
+            try
+            {
+                var validate = list[CurrentPedidoID + 1];
+                siguiente = true;
+            }
+            catch (Exception)
+            {
+                siguiente = false;
+            }
+
+            if (true)
+            {
+                element.IsEnabled = siguiente ? true : false;
+                element2.IsEnabled =  list[0].id.Equals(id) ? false : true;
+            }
+
+        }
+        #endregion
 
     } //End limit of code
 }
