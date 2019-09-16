@@ -327,8 +327,7 @@ namespace ItemInventoryApp.DAL
             //Hay datos en el objeto en memoria??? Si no existen datos se inicializa el nuevo pedido...
             if (DBInstance.TempPedido.id.Equals(0))
             {
-                GeneratePedidoOnMemory(item, DBInstance);
-
+                GeneratePedidoOnMemory(item, DBInstance, "");
                 SaveDB(DBInstance);
             }
             else // Si existe un pedido en memoria comenzamos las validaciones del producto en la lista
@@ -362,11 +361,18 @@ namespace ItemInventoryApp.DAL
             * // Generates a new pedido to store the data on memory of the pedido in progress it memory is used until the user clicks Aceptar pedido or restart the app.
             * // Return: Pedido object
         */
-        public Pedido GeneratePedidoOnMemory(Item item, DatabaseModel db)
+        public Pedido GeneratePedidoOnMemory(Item item, DatabaseModel db, string editID)
         {
             Pedido newPedido = new Pedido();
             newPedido.Name = "Sin Nombre";
-            newPedido.id = new DBHandler().GenerateID("pedido", db);
+            //if (!DBInstance.EditOn)
+            //{
+                newPedido.id = new DBHandler().GenerateID("pedido", db);
+            //}
+            //else
+            //{
+            //    newPedido.id = Convert.ToInt32(editID);
+            //}
             //newPedido.ItemsQuantity = 1;
             newPedido.Status = new PedidoStatus().NotRegistered;
             newPedido.Items.Add(item);
@@ -503,9 +509,7 @@ namespace ItemInventoryApp.DAL
                 new UIRuntime().updateTotals(DBInstance.TempPedido.Total);
                 DBInstance.LastPedidoID++;
                 SaveDB(DBInstance);
-
-                //Validar boton siguiente y atras
-
+                
                 success = true;
                 MessageBox.Show("Se ha creado el pedido exitosamente");
             }
@@ -660,7 +664,9 @@ namespace ItemInventoryApp.DAL
                     }
                 }
             }
-
+            DBInstance = UpdateDBObject();
+            DBInstance.EditOn = false;
+            SaveDB(DBInstance);
             return list;
         }
         /*
@@ -746,6 +752,57 @@ namespace ItemInventoryApp.DAL
             }
         }
 
+        public bool LoadPedidoToEdit(Pedido pedido)
+        {
+            bool success = false;
+
+            try
+            {
+                DBInstance = UpdateDBObject();
+                DBInstance.TempPedido = pedido;
+                UIRuntime runtime = new UIRuntime();
+                DBInstance.EditOn = true;
+                SaveDB(DBInstance);
+                foreach (var item in DBInstance.TempPedido.Items)
+                {
+                    addItemtoPedido(item.id, runtime);
+                }
+                success = true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return success;
+        }
+
+        public bool EditPedido(int PedidoID)
+        {
+            var success = false;
+
+            try
+            {
+                DBInstance = UpdateDBObject();
+                int index = DBInstance.Pedidos.FindIndex(x => x.id.Equals(PedidoID));
+                DBInstance.Pedidos[index] = DBInstance.TempPedido;
+                DBInstance.TempPedido = new Pedido();
+                SaveDB(DBInstance);
+                var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "PanelPedidos");
+                element.Children.Clear();
+                UIRuntime runtime = new UIRuntime();
+                runtime.updateTotals(DBInstance.TempPedido.Total);
+                runtime.DrawSelectedPedido(DBInstance.Pedidos[index]);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error editando pedido.");
+
+            }
+
+            return success;
+        }
 
     } //End of way
 }

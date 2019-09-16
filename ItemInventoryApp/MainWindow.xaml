@@ -295,7 +295,7 @@
                                     <!--<Border Background="#E8E8E8" DockPanel.Dock="Top" VerticalAlignment="Top">
                                         <TextBlock  Foreground="Black" Margin="5,0,0,0" FontSize="12.5" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="WrapWithOverflow">Orden information</TextBlock>
                                     </Border>-->
-                                                                        
+
                                     <!--Termina clonacion de los elementos para llenar la informacion del pedido que se esta atendiendo-->
                                 </DockPanel>
                             </ScrollViewer>
@@ -570,5 +570,3 @@
 
     </Grid>
 </Window>
-    
-    

@@ -17,6 +17,8 @@ namespace ItemInventoryApp.Classes
 {
     class UIRuntime
     {
+        public bool isEdition = false;
+
         public UIRuntime()
         {
 
@@ -31,7 +33,9 @@ namespace ItemInventoryApp.Classes
         public List<Border> CreatePanels(List<Item> dataArray)
         {
             List<Border> borderRet = new List<Border>();
-
+            int loop = 1;
+            Color color = (Color)ColorConverter.ConvertFromString("#FFC1C8E4");
+            SolidColorBrush myBrush = new SolidColorBrush(color);
             foreach (var item in dataArray)
             {
                 #region First DockPanel
@@ -51,8 +55,7 @@ namespace ItemInventoryApp.Classes
                 #endregion
 
                 #region StackPanel
-                Color color = (Color)ColorConverter.ConvertFromString("#FFC1C8E4");
-                SolidColorBrush myBrush = new SolidColorBrush(color);
+
                 //Creating the stackpanel for content
                 StackPanel stack = new StackPanel();
                 stack.Name = "MainViewer";
@@ -84,8 +87,6 @@ namespace ItemInventoryApp.Classes
                 #region 2nd border
                 color = (Color)ColorConverter.ConvertFromString("#8860D0");
                 myBrush = new SolidColorBrush(color);
-
-
                 Border bd2 = new Border();
                 bd2.BorderBrush = myBrush;
                 bd2.BorderThickness = new Thickness(0, 0, 3, 0);
@@ -106,14 +107,27 @@ namespace ItemInventoryApp.Classes
                 #endregion
 
                 #region Canvas
+                //if ((loop % 2).Equals(0))
+                //{
+                //    color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                //}
+                //else
+                //{
+                //    color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                //}
+                //myBrush = new SolidColorBrush(color);
                 Canvas cnv = new Canvas();
                 cnv.Name = "CanvasDatos";
                 cnv.Height = 100;
+                //cnv.Background = myBrush;
 
                 //Adding the textblock to canvas
                 cnv.Children.Add(new TextBlock
                 {
+                    Name = "TextoTitulo",
                     Padding = new Thickness(5),
+                    TextWrapping = TextWrapping.WrapWithOverflow,
+                    Width = 300,
                     Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
                 });
                 cnv.Children.Add(new TextBlock
@@ -165,6 +179,7 @@ namespace ItemInventoryApp.Classes
                 bd.Child = panel2;
                 #endregion                
                 borderRet.Add(bd);
+                loop++;
             }
             return borderRet;
         }
@@ -186,143 +201,144 @@ namespace ItemInventoryApp.Classes
             // Create a panel dinamically based on 1 item::: i don't know if is in use or deprecated by createPanels function
             //Return 1 panel element with the required data
         */
-        public Border panel(Item item)
-        {
-            #region First DockPanel
-            //Creating the main panel dockpanel
-            DockPanel panel = new DockPanel();
-            panel.Name = "DockMain" + item.id;
-            panel.Uid = item.id.ToString();
-            panel.Background = Brushes.White;
+        //public Border panel(Item item)
+        //{
+        //    #region First DockPanel
+        //    //Creating the main panel dockpanel
+        //    DockPanel panel = new DockPanel();
+        //    panel.Name = "DockMain" + item.id;
+        //    panel.Uid = item.id.ToString();
+        //    panel.Background = Brushes.White;
 
-            #endregion
+        //    #endregion
 
-            #region ScrollViewer
-            //Creating the scrollviewer
-            ScrollViewer scroll = new ScrollViewer();
-            scroll.IsTabStop = true;
-            scroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            #endregion
+        //    #region ScrollViewer
+        //    //Creating the scrollviewer
+        //    ScrollViewer scroll = new ScrollViewer();
+        //    scroll.IsTabStop = true;
+        //    scroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+        //    #endregion
 
-            #region StackPanel
-            Color color = (Color)ColorConverter.ConvertFromString("#FFC1C8E4");
-            SolidColorBrush myBrush = new SolidColorBrush(color);
-            //Creating the stackpanel for content
-            StackPanel stack = new StackPanel();
-            stack.Name = "MainViewer";
-            stack.Background = myBrush;
-            #endregion
+        //    #region StackPanel
+        //    Color color = (Color)ColorConverter.ConvertFromString("#FFC1C8E4");
+        //    SolidColorBrush myBrush = new SolidColorBrush(color);
+        //    //Creating the stackpanel for content
+        //    StackPanel stack = new StackPanel();
+        //    stack.Name = "MainViewer";
+        //    stack.Background = myBrush;
+        //    #endregion
 
-            #region border
-            color = (Color)ColorConverter.ConvertFromString("#8860D0");
-            myBrush = new SolidColorBrush(color);
-            Thickness tk = new Thickness(3.0);
-            Thickness margin = new Thickness(0, 0, 0, 0);
-            Border bd = new Border();
-            bd.BorderBrush = myBrush;
-            bd.BorderThickness = tk;
-            bd.Height = 105;
-            bd.Margin = margin;
-            bd.Uid = "border" + item.id.ToString();
-            bd.Name = "border" + item.id.ToString();
+        //    #region border
+        //    color = (Color)ColorConverter.ConvertFromString("#8860D0");
+        //    myBrush = new SolidColorBrush(color);
+        //    Thickness tk = new Thickness(3.0);
+        //    Thickness margin = new Thickness(0, 0, 0, 0);
+        //    Border bd = new Border();
+        //    bd.BorderBrush = myBrush;
+        //    bd.BorderThickness = tk;
+        //    bd.Height = 105;
+        //    bd.Margin = margin;
+        //    bd.Uid = "border" + item.id.ToString();
+        //    bd.Name = "border" + item.id.ToString();
 
-            DockPanel.SetDock(bd, Dock.Top);
-            #endregion
+        //    DockPanel.SetDock(bd, Dock.Top);
+        //    #endregion
 
-            #region Second DockPanel
-            //Creating the main panel dockpanel
-            DockPanel panel2 = new DockPanel();
-            panel2.Height = 100;
-            #endregion
+        //    #region Second DockPanel
+        //    //Creating the main panel dockpanel
+        //    DockPanel panel2 = new DockPanel();
+        //    panel2.Height = 100;
+        //    #endregion
 
-            #region 2nd border
-            color = (Color)ColorConverter.ConvertFromString("#8860D0");
-            myBrush = new SolidColorBrush(color);
-
-
-            Border bd2 = new Border();
-            bd2.BorderBrush = myBrush;
-            bd2.BorderThickness = new Thickness(0, 0, 3, 0);
-            bd2.Height = 100;
-            bd2.Width = 100;
-            bd2.CornerRadius = new CornerRadius(5);
-            bd2.Padding = new Thickness(3);
-
-            Image img = new Image();
-            //Uri myUri = new Uri(@"C:\FTWh9O.png", UriKind.RelativeOrAbsolute);
-            //BmpBitmapDecoder decoder = new BmpBitmapDecoder(myUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-            //BitmapSource bitmapSource = decoder.Frames[0];
-            //img.Source = bitmapSource;
-            bd2.Child = img;
-
-            panel2.Children.Add(bd2);
-
-            #endregion
-
-            #region Canvas
-            Canvas cnv = new Canvas();
-            cnv.Name = "CanvasDatos";
-            cnv.Height = 100;
-
-            //Adding the textblock to canvas
-
-            cnv.Children.Add(new TextBlock
-            {
-                Padding = new Thickness(5),
-                Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
-            });
-
-            cnv.Children.Add(new TextBlock
-            {
-                Name = "TextoDescripcion",
-                Height = 70,
-                Width = 348,
-                Padding = new Thickness(5),
-                Margin = new Thickness(0, 30, 0, 0),
-                TextWrapping = TextWrapping.WrapWithOverflow,
-                Text = item.Description
-            });
-
-            //Adding Canvas to panel 2
-            panel2.Children.Add(cnv);
-            #endregion
-
-            #region 3er border
-            //Adding 3er border to panel2
-            panel2.Children.Add(new Border
-            {
-                Height = 100,
-                Width = 100,
-                BorderBrush = myBrush,
-                BorderThickness = new Thickness(3, 0, 0, 0),
-                CornerRadius = new CornerRadius(5),
-                Padding = new Thickness(3),
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Child = new Button
-                {
-                    Content = "Agregar",
-                    Width = 70,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Height = 30,
-                    Name = "btnAgregar"
-                }
-            });
-            #endregion
+        //    #region 2nd border
+        //    color = (Color)ColorConverter.ConvertFromString("#8860D0");
+        //    myBrush = new SolidColorBrush(color);
 
 
-            #region adding the remaining elements to the dockpanel
+        //    Border bd2 = new Border();
+        //    bd2.BorderBrush = myBrush;
+        //    bd2.BorderThickness = new Thickness(0, 0, 3, 0);
+        //    bd2.Height = 100;
+        //    bd2.Width = 100;
+        //    bd2.CornerRadius = new CornerRadius(5);
+        //    bd2.Padding = new Thickness(3);
 
-            bd.Child = panel2;
-            stack.Children.Add(bd);
-            scroll.Content = stack;
-            panel.Children.Add(scroll);
+        //    Image img = new Image();
+        //    //Uri myUri = new Uri(@"C:\FTWh9O.png", UriKind.RelativeOrAbsolute);
+        //    //BmpBitmapDecoder decoder = new BmpBitmapDecoder(myUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+        //    //BitmapSource bitmapSource = decoder.Frames[0];
+        //    //img.Source = bitmapSource;
+        //    bd2.Child = img;
+
+        //    panel2.Children.Add(bd2);
+
+        //    #endregion
+
+        //    #region Canvas
+        //    Canvas cnv = new Canvas();
+        //    cnv.Name = "CanvasDatos";
+        //    cnv.Height = 100;
 
 
-            #endregion
+        //    //Adding the textblock to canvas
 
-            return bd;
-        }
+        //    cnv.Children.Add(new TextBlock
+        //    {
+        //        Padding = new Thickness(5),
+        //        Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
+        //    });
+
+        //    cnv.Children.Add(new TextBlock
+        //    {
+        //        Name = "TextoDescripcion",
+        //        Height = 70,
+        //        Width = 348,
+        //        Padding = new Thickness(5),
+        //        Margin = new Thickness(0, 30, 0, 0),
+        //        TextWrapping = TextWrapping.WrapWithOverflow,
+        //        Text = item.Description
+        //    });
+
+        //    //Adding Canvas to panel 2
+        //    panel2.Children.Add(cnv);
+        //    #endregion
+
+        //    #region 3er border
+        //    //Adding 3er border to panel2
+        //    panel2.Children.Add(new Border
+        //    {
+        //        Height = 100,
+        //        Width = 100,
+        //        BorderBrush = myBrush,
+        //        BorderThickness = new Thickness(3, 0, 0, 0),
+        //        CornerRadius = new CornerRadius(5),
+        //        Padding = new Thickness(3),
+        //        HorizontalAlignment = HorizontalAlignment.Right,
+        //        Child = new Button
+        //        {
+        //            Content = "Agregar",
+        //            Width = 70,
+        //            HorizontalAlignment = HorizontalAlignment.Center,
+        //            VerticalAlignment = VerticalAlignment.Center,
+        //            Height = 30,
+        //            Name = "btnAgregar"
+        //        }
+        //    });
+        //    #endregion
+
+
+        //    #region adding the remaining elements to the dockpanel
+
+        //    bd.Child = panel2;
+        //    stack.Children.Add(bd);
+        //    scroll.Content = stack;
+        //    panel.Children.Add(scroll);
+
+
+        //    #endregion
+
+        //    return bd;
+        //}
         #endregion
 
         #region Textboxes Functionality
@@ -452,10 +468,28 @@ namespace ItemInventoryApp.Classes
         */
         public Canvas CreatePedidoPanels(Item data, int PedidoId, ItemQty qty)
         {
+
+            var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "PanelPedidos");
+            int loop = element.Children.Count;
+            Color color = (Color)ColorConverter.ConvertFromString("#FFE84040");
+            SolidColorBrush myBrush = new SolidColorBrush(color);
+
+            if ((loop % 2).Equals(0))
+            {
+                color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+            }
+            else
+            {
+                color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+            }
+            myBrush = new SolidColorBrush(color);
+
             #region Creating Canvas
             Canvas Canv = new Canvas();
             Canv.Name = "Item" + PedidoId;
             Canv.Height = 100;
+            Canv.Background = myBrush;
+            Canv.Margin = new Thickness(0, 0, 0, 0);
             DockPanel.SetDock(Canv, Dock.Top);
             #endregion
 
@@ -479,15 +513,6 @@ namespace ItemInventoryApp.Classes
             #endregion
 
             #region Textboxes
-            //TextBlock Texto1 = new TextBlock();
-            //Texto1.FontSize = 16;
-            //Texto1.FontWeight = FontWeights.Bold;
-            //Texto1.Padding = new Thickness(3);
-            //Texto1.Text = "ITEM #" + PedidoId;
-            //Texto1.Name = "Texto1id_" + data.id;
-            //Grid.SetRow(Texto1, 0);
-            //DockPanel.SetDock(Texto1, Dock.Top);
-
             Grid Grid2 = new Grid();
             Grid2.ColumnDefinitions.Add(new ColumnDefinition
             {
@@ -502,8 +527,8 @@ namespace ItemInventoryApp.Classes
                 Width = new GridLength(20, GridUnitType.Star)
             });
 
-            Color color = (Color)ColorConverter.ConvertFromString("#FFE84040");
-            SolidColorBrush myBrush = new SolidColorBrush(color);
+            color = (Color)ColorConverter.ConvertFromString("#FFE84040");
+            myBrush = new SolidColorBrush(color);
             Button btnReduce = new Button();
             btnReduce.Content = " - ";
             btnReduce.Height = 20;
@@ -571,7 +596,7 @@ namespace ItemInventoryApp.Classes
             myBrush = new SolidColorBrush(color);
             TextBlock Texto4 = new TextBlock();
             Texto4.FontSize = 12;
-            Texto4.Padding = new Thickness(5);
+            Texto4.Padding = new Thickness(2);
             Texto4.HorizontalAlignment = HorizontalAlignment.Right;
             Texto4.Text = string.Format("Total: ${0} pesos", (qty.Qty * qty.Price));
             Texto4.TextWrapping = TextWrapping.WrapWithOverflow;
@@ -580,6 +605,7 @@ namespace ItemInventoryApp.Classes
             Texto4.Background = myBrush;
             Texto4.Foreground = Brushes.White;
             Texto4.FontWeight = FontWeights.Bold;
+            Texto4.Height = 20;
             Grid.SetRow(Texto4, 2);
             DockPanel.SetDock(Texto4, Dock.Top);
 
@@ -812,7 +838,7 @@ namespace ItemInventoryApp.Classes
                     FontWeight = FontWeights.Bold,
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Text = pedido.ItemsQuantity.Find(x => x.Id.Equals(item.id)).Qty.ToString()
+                    Text = pedido.ItemsQuantity.Find(x => x.Id.Equals(item.id)).Qty.ToString(),
                 };
 
                 Grid.SetRow(bd1, 0);
@@ -825,19 +851,22 @@ namespace ItemInventoryApp.Classes
                 bd2.Background = myBrush;
                 bd2.Child = new TextBlock
                 {
+                    Width = 120,
                     Foreground = Brushes.Black,
                     Margin = new Thickness(0),
-                    FontSize = 11,
+                    FontSize = 10.5,
                     FontWeight = FontWeights.Bold,
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Text = pedido.Items.Find(x => x.id.Equals(item.id)).Name
+                    Text = pedido.Items.Find(x => x.id.Equals(item.id)).Name,
+                    TextWrapping = TextWrapping.WrapWithOverflow
                 };
 
                 Grid.SetRow(bd2, 0);
                 Grid.SetColumn(bd2, 1);
                 Grid1.Children.Add(bd2);
                 #endregion
+                loop++;
                 list.Add(Grid1);
             }
             return list;
@@ -921,7 +950,7 @@ namespace ItemInventoryApp.Classes
             var element2 = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
 
             int id = CurrentPedidoID;
-            CurrentPedidoID = list.FindIndex(x=> x.id.Equals(CurrentPedidoID));
+            CurrentPedidoID = list.FindIndex(x => x.id.Equals(CurrentPedidoID));
 
             bool siguiente = false;
             try
@@ -942,6 +971,7 @@ namespace ItemInventoryApp.Classes
 
         }
         #endregion
+
 
     } //End limit of code
 }

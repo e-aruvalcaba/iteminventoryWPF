@@ -65,7 +65,7 @@ namespace ItemInventoryApp
             Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
             Global.Elements.Add(PanelPedidos);
 
-            //First Validation to the 
+            //First Validation to the pedidos in progress
             Global.DBHandler.firstValidation(Global.DatbaseInstance.Pedidos);
             //textPedidoInfo.Text = "5 x Orden de tacos de bisteck."+Environment.NewLine+"3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion";
         }
@@ -79,12 +79,15 @@ namespace ItemInventoryApp
             {
                 foreach (var item in borderList)
                 {
-                    var element = LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
+                    var element =  (TextBlock)LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
+                    var element2 = (TextBlock)LogicalTreeHelper.FindLogicalNode(item, "TextoTitulo");
+
                     if (element != null)
                     {
-                        var newelement = (TextBlock)element;
-                        newelement.Width = DockMain.ActualWidth - 200;
-                        newelement.MaxWidth = newelement.Width;
+                        element.Width = DockMain.ActualWidth - 200;
+                        element.MaxWidth = element.Width;
+                        element2.Width = DockMain.ActualWidth - 200;
+                        element2.MaxWidth = element2.Width;
                     }
                 }
             }
@@ -92,12 +95,14 @@ namespace ItemInventoryApp
             {
                 foreach (var item in borderList)
                 {
-                    var element = LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
+                    var element = (TextBlock)LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
+                    var element2 = (TextBlock)LogicalTreeHelper.FindLogicalNode(item, "TextoTitulo");
                     if (element != null)
                     {
-                        var newelement = (TextBlock)element;
-                        newelement.Width = 300;
-                        newelement.MaxWidth = newelement.Width;
+                        element.Width = 300;
+                        element.MaxWidth = element.Width;
+                        element2.Width = 300;
+                        element2.MaxWidth = element2.Width;
                     }
                 }
             }
@@ -487,8 +492,15 @@ namespace ItemInventoryApp
         #region Pedido Module
         private void ConfirmarPedido_Click(object sender, RoutedEventArgs e)
         {
-            InputBox.Visibility = System.Windows.Visibility.Visible;
-            //Global.DBHandler.CreatePedido();
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            if (!Global.DatbaseInstance.EditOn)
+            {
+                InputBox.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                Global.DBHandler.EditPedido(Global.DatbaseInstance.TempPedido.id);
+            }
         }
 
 
@@ -506,6 +518,7 @@ namespace ItemInventoryApp
             InputBox.Visibility = System.Windows.Visibility.Collapsed;
             // Do something with the Input
             String input = InputTextBox.Text;
+
             if (!string.IsNullOrEmpty(input))
             {
                 Global.DBHandler.CreatePedido(input);
@@ -573,12 +586,16 @@ namespace ItemInventoryApp
             {
                 var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
                 element.Children.Clear();
+                btnEntregarPedido.IsEnabled = false;
             }
         }
 
         private void BtnEditarPedidoEnCola_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Boton editar pedido");
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            Pedido pedido = Global.DatbaseInstance.Pedidos.Find(x => x.id.Equals(Convert.ToInt32(new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo").Uid)));
+
+            Global.DBHandler.LoadPedidoToEdit(pedido);
         }
 
         private void BtnEntregarPedido_Click(object sender, RoutedEventArgs e)
@@ -592,6 +609,10 @@ namespace ItemInventoryApp
                 {
                     Global.UIRuntime.InitPedidosQueue(Global.DatbaseInstance.Pedidos);
                 }
+                else
+                {
+                    btnEntregarPedido.IsEnabled = false;
+                }
             }
             else
             {
@@ -599,5 +620,9 @@ namespace ItemInventoryApp
             }
 
         }
+
+
+
+
     } //End of the way
 }
