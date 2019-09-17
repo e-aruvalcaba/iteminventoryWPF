@@ -64,6 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\ImageHandler.cs" />
     <Compile Include="Classes\Library.cs" />
     <Compile Include="Classes\PedidoStatus.cs" />
     <Compile Include="Classes\UIHelper.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Models\DatabaseModel.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\ItemQty.cs" />
+    <Compile Include="Models\DGPedido.cs" />
     <Compile Include="Models\Pedido.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -114,6 +116,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

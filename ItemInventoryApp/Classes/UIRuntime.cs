@@ -12,6 +12,7 @@ using ItemInventoryApp.Models;
 using System.Windows.Media.Imaging;
 using System.Collections.ObjectModel;
 using ItemInventoryApp.DAL;
+using System.Data;
 
 namespace ItemInventoryApp.Classes
 {
@@ -63,12 +64,24 @@ namespace ItemInventoryApp.Classes
                 #endregion
 
                 #region border
-                color = (Color)ColorConverter.ConvertFromString("#8860D0");
+                if ((loop % 2).Equals(0))
+                {
+                    color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                }
+                else
+                {
+                    color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                }
+
                 myBrush = new SolidColorBrush(color);
+                Border bd = new Border();
+                bd.Background = myBrush;
+                //color = (Color)ColorConverter.ConvertFromString("#8860D0");
+                //myBrush = new SolidColorBrush(color);
                 Thickness tk = new Thickness(3.0);
                 Thickness margin = new Thickness(0, 0, 0, 0);
-                Border bd = new Border();
-                bd.BorderBrush = myBrush;
+
+                bd.BorderBrush = Brushes.Black;
                 bd.BorderThickness = tk;
                 bd.Height = 105;
                 bd.Margin = margin;
@@ -85,37 +98,30 @@ namespace ItemInventoryApp.Classes
                 #endregion
 
                 #region 2nd border
-                color = (Color)ColorConverter.ConvertFromString("#8860D0");
-                myBrush = new SolidColorBrush(color);
+                //color = (Color)ColorConverter.ConvertFromString("#8860D0");
+                //myBrush = new SolidColorBrush(color);
                 Border bd2 = new Border();
-                bd2.BorderBrush = myBrush;
+                bd2.BorderBrush = Brushes.Black;
                 bd2.BorderThickness = new Thickness(0, 0, 3, 0);
                 bd2.Height = 100;
                 bd2.Width = 100;
                 bd2.CornerRadius = new CornerRadius(5);
                 bd2.Padding = new Thickness(3);
 
-                Image img = new Image();
-                //Uri myUri = new Uri(@"C:\FTWh9O.png", UriKind.RelativeOrAbsolute);
-                //BmpBitmapDecoder decoder = new BmpBitmapDecoder(myUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-                //BitmapSource bitmapSource = decoder.Frames[0];
-                //img.Source = bitmapSource;
-                bd2.Child = img;
+                if (item.ImagePath != "")
+                {
+                    Image img = new Image();
+                    Uri uri = new Uri(item.ImagePath, UriKind.RelativeOrAbsolute);
+                    ImageSource source = new System.Windows.Media.Imaging.BitmapImage(uri);
+                    img.SetValue(Image.SourceProperty, source);
+                    bd2.Child = img;
+                }
 
                 panel2.Children.Add(bd2);
 
                 #endregion
 
                 #region Canvas
-                //if ((loop % 2).Equals(0))
-                //{
-                //    color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
-                //}
-                //else
-                //{
-                //    color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
-                //}
-                //myBrush = new SolidColorBrush(color);
                 Canvas cnv = new Canvas();
                 cnv.Name = "CanvasDatos";
                 cnv.Height = 100;
@@ -166,7 +172,7 @@ namespace ItemInventoryApp.Classes
                     Uid = "Border3",
                     Height = 100,
                     Width = 100,
-                    BorderBrush = myBrush,
+                    BorderBrush = Brushes.Black,
                     BorderThickness = new Thickness(3, 0, 0, 0),
                     CornerRadius = new CornerRadius(5),
                     Padding = new Thickness(3),
@@ -195,150 +201,6 @@ namespace ItemInventoryApp.Classes
             DBHandler handlers = new DBHandler();
             handlers.addItemtoPedido(Convert.ToInt32(element.Uid), this);
         }
-
-        /*//
-            // SUMMARY
-            // Create a panel dinamically based on 1 item::: i don't know if is in use or deprecated by createPanels function
-            //Return 1 panel element with the required data
-        */
-        //public Border panel(Item item)
-        //{
-        //    #region First DockPanel
-        //    //Creating the main panel dockpanel
-        //    DockPanel panel = new DockPanel();
-        //    panel.Name = "DockMain" + item.id;
-        //    panel.Uid = item.id.ToString();
-        //    panel.Background = Brushes.White;
-
-        //    #endregion
-
-        //    #region ScrollViewer
-        //    //Creating the scrollviewer
-        //    ScrollViewer scroll = new ScrollViewer();
-        //    scroll.IsTabStop = true;
-        //    scroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-        //    #endregion
-
-        //    #region StackPanel
-        //    Color color = (Color)ColorConverter.ConvertFromString("#FFC1C8E4");
-        //    SolidColorBrush myBrush = new SolidColorBrush(color);
-        //    //Creating the stackpanel for content
-        //    StackPanel stack = new StackPanel();
-        //    stack.Name = "MainViewer";
-        //    stack.Background = myBrush;
-        //    #endregion
-
-        //    #region border
-        //    color = (Color)ColorConverter.ConvertFromString("#8860D0");
-        //    myBrush = new SolidColorBrush(color);
-        //    Thickness tk = new Thickness(3.0);
-        //    Thickness margin = new Thickness(0, 0, 0, 0);
-        //    Border bd = new Border();
-        //    bd.BorderBrush = myBrush;
-        //    bd.BorderThickness = tk;
-        //    bd.Height = 105;
-        //    bd.Margin = margin;
-        //    bd.Uid = "border" + item.id.ToString();
-        //    bd.Name = "border" + item.id.ToString();
-
-        //    DockPanel.SetDock(bd, Dock.Top);
-        //    #endregion
-
-        //    #region Second DockPanel
-        //    //Creating the main panel dockpanel
-        //    DockPanel panel2 = new DockPanel();
-        //    panel2.Height = 100;
-        //    #endregion
-
-        //    #region 2nd border
-        //    color = (Color)ColorConverter.ConvertFromString("#8860D0");
-        //    myBrush = new SolidColorBrush(color);
-
-
-        //    Border bd2 = new Border();
-        //    bd2.BorderBrush = myBrush;
-        //    bd2.BorderThickness = new Thickness(0, 0, 3, 0);
-        //    bd2.Height = 100;
-        //    bd2.Width = 100;
-        //    bd2.CornerRadius = new CornerRadius(5);
-        //    bd2.Padding = new Thickness(3);
-
-        //    Image img = new Image();
-        //    //Uri myUri = new Uri(@"C:\FTWh9O.png", UriKind.RelativeOrAbsolute);
-        //    //BmpBitmapDecoder decoder = new BmpBitmapDecoder(myUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-        //    //BitmapSource bitmapSource = decoder.Frames[0];
-        //    //img.Source = bitmapSource;
-        //    bd2.Child = img;
-
-        //    panel2.Children.Add(bd2);
-
-        //    #endregion
-
-        //    #region Canvas
-        //    Canvas cnv = new Canvas();
-        //    cnv.Name = "CanvasDatos";
-        //    cnv.Height = 100;
-
-
-        //    //Adding the textblock to canvas
-
-        //    cnv.Children.Add(new TextBlock
-        //    {
-        //        Padding = new Thickness(5),
-        //        Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
-        //    });
-
-        //    cnv.Children.Add(new TextBlock
-        //    {
-        //        Name = "TextoDescripcion",
-        //        Height = 70,
-        //        Width = 348,
-        //        Padding = new Thickness(5),
-        //        Margin = new Thickness(0, 30, 0, 0),
-        //        TextWrapping = TextWrapping.WrapWithOverflow,
-        //        Text = item.Description
-        //    });
-
-        //    //Adding Canvas to panel 2
-        //    panel2.Children.Add(cnv);
-        //    #endregion
-
-        //    #region 3er border
-        //    //Adding 3er border to panel2
-        //    panel2.Children.Add(new Border
-        //    {
-        //        Height = 100,
-        //        Width = 100,
-        //        BorderBrush = myBrush,
-        //        BorderThickness = new Thickness(3, 0, 0, 0),
-        //        CornerRadius = new CornerRadius(5),
-        //        Padding = new Thickness(3),
-        //        HorizontalAlignment = HorizontalAlignment.Right,
-        //        Child = new Button
-        //        {
-        //            Content = "Agregar",
-        //            Width = 70,
-        //            HorizontalAlignment = HorizontalAlignment.Center,
-        //            VerticalAlignment = VerticalAlignment.Center,
-        //            Height = 30,
-        //            Name = "btnAgregar"
-        //        }
-        //    });
-        //    #endregion
-
-
-        //    #region adding the remaining elements to the dockpanel
-
-        //    bd.Child = panel2;
-        //    stack.Children.Add(bd);
-        //    scroll.Content = stack;
-        //    panel.Children.Add(scroll);
-
-
-        //    #endregion
-
-        //    return bd;
-        //}
         #endregion
 
         #region Textboxes Functionality
@@ -390,6 +252,55 @@ namespace ItemInventoryApp.Classes
                 dg.ItemsSource = data;
             }
 
+        }        /*
+           // SUMMARY
+           // Sets the itemSource (DataSource) of datagrid pedido from the JSON DB
+           // Return: Void
+       */
+        public void PopulatePedidosDataGrid(DataGrid dg, List<Pedido> list)
+        {
+            ObservableCollection<DGPedido> data = new ObservableCollection<DGPedido>();
+            foreach (var item in list)
+            {
+                DGPedido newPedido = new DGPedido();
+
+                string status = "";
+                switch (item.Status)
+                {
+                    case 0:
+                        status = "No Registrado";
+                        break;
+                    case 1:
+                        status = "Registrado";
+                        break;
+                    case 2:
+                        status = "Completado/Entregado";
+                        break;
+                    case 3:
+                        status = "Cancelado";
+                        break;
+
+                    default:
+                        status = "Indefinido";
+                        break;
+                }
+
+                newPedido.id = item.id;
+                newPedido.Name = item.Name;
+                newPedido.Status = status;
+                newPedido.Time = item.Time;
+                newPedido.Date = item.Date;
+                newPedido.dateTime = item.dateTime;
+                newPedido.Total = item.Total;
+
+                foreach (var z in item.Items)
+                {
+                    newPedido.Items += item.ItemsQuantity[0].Qty.ToString() + " " + z.Name + Environment.NewLine;
+                }
+
+                data.Add(newPedido);
+            }
+            dg.ItemsSource = data;
         }
         /*
              // SUMMARY
@@ -455,6 +366,33 @@ namespace ItemInventoryApp.Classes
             catch (Exception ex)
             {
                 list = handler.SearchByCriteria("Nombre", "");
+                dg.ItemsSource = list;
+            }
+        }
+        /*
+            // SUMMARY
+            // Sets the pedido datagrid datasource with the needed data from the textbox search
+            // Return: Void
+        */
+        public void searchPedido(ComboBox combo, DBHandler handler, string texto, DataGrid dg)
+        {
+            string criteria = ((ComboBoxItem)combo.SelectedItem).Content.ToString();
+            var list = handler.SearchPedidoByCriteria(criteria, texto);
+
+            try
+            {
+                //ObservableCollection<Pedido> datasource = new ObservableCollection<Pedido>();
+                PopulatePedidosDataGrid(dg, list);
+
+                //foreach (var item in list)
+                //{
+                //    datasource.Add(item);
+                //}
+                //dg.ItemsSource = datasource;
+            }
+            catch (Exception ex)
+            {
+                list = handler.SearchPedidoByCriteria("Nombre", "");
                 dg.ItemsSource = list;
             }
         }
@@ -891,7 +829,8 @@ namespace ItemInventoryApp.Classes
             }
         }
 
-        public void ShowHidePedidoData(string name, string action) {
+        public void ShowHidePedidoData(string name, string action)
+        {
 
             action.ToLower();
             DockPanel ViewElement = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
@@ -935,7 +874,7 @@ namespace ItemInventoryApp.Classes
             var btn = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnEntregarPedido");
             btn.IsEnabled = true;
 
-            if (pedidos.Count>1)
+            if (pedidos.Count > 1)
             {
                 btn = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
                 btn.IsEnabled = true;
@@ -966,12 +905,84 @@ namespace ItemInventoryApp.Classes
             if (true)
             {
                 element.IsEnabled = siguiente ? true : false;
-                element2.IsEnabled =  list[0].id.Equals(id) ? false : true;
+                element2.IsEnabled = list[0].id.Equals(id) ? false : true;
             }
 
         }
         #endregion
 
+        #region CopyImagetoLocal
 
+        public bool CopyImagetoLocal()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region FechaComboBoxPopulate
+        /*
+            // SUMMARY
+            // Sets the values on Pedido FechaCombobox to identify the hrs to search on the query
+            // Return: Void
+        */
+        public void PopulateComboFecha(ComboBox combo, int horainicio, string display)
+        {
+            if (horainicio > 23)
+            {
+                MessageBox.Show("Error solo puede mandar horas de 0 a 23 para inciializar el combo box");
+            }
+
+            display.ToLower();
+            string[] displayMember = new string[24];
+            switch (display)
+            {
+                case "inicio":
+                    for (int i = 0; i < 24; i++)
+                    {
+                        if (i < 10)
+                        {
+                            displayMember[i] = "0" + i + ":00";
+                        }
+                        else
+                        {
+                            displayMember[i] = i + ":00";
+                        }
+                    }
+                    break;
+                case "final":
+                    for (int i = horainicio; i < 24; i++)
+                    {
+                        if (i < 10)
+                        {
+                            displayMember[i] = "0" + i + ":59";
+                        }
+                        else
+                        {
+                            displayMember[i] = i + ":59";
+                        }
+                    }
+                    break;
+            }
+
+
+            //Dictionary<int, string> Dictionary = new Dictionary<int, string>();
+            DataTable dt = new DataTable();
+            dt.Columns.Add("c1", typeof(int));
+            dt.Columns.Add("c2");
+            //List<int> horas = new List<int>();
+
+            for (int i = horainicio; i < 24; i++)
+            {
+                dt.Rows.Add(i, displayMember[i]);
+            }
+
+            combo.ItemsSource = dt.DefaultView;
+            combo.DisplayMemberPath = "c2";
+            combo.SelectedValuePath = "c1";
+
+        }
+
+        #endregion
     } //End limit of code
 }

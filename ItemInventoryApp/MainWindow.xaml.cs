@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using System.Windows.Shapes;
 using ItemInventoryApp.Classes;
 using ItemInventoryApp.DAL;
 using ItemInventoryApp.Models;
+using Microsoft.Win32;
 
 namespace ItemInventoryApp
 {
@@ -47,6 +49,20 @@ namespace ItemInventoryApp
             //Create an instance of UIruntime class
             UIRuntime obj = new UIRuntime();
             //Create a list of border UIComponent dinamically that shows the app to the final user 
+            //Create 5000 generic products
+            //for (int i = 0; i < 5000; i++)
+            //{
+            //    Global.DatbaseInstance.Items.Add(
+            //    new Item
+            //    {
+            //        id = Global.DBHandler.GenerateID("item", Global.DatbaseInstance),
+            //        Name = "Item generado dinamicamente numero: " + i,
+            //        Description = "Descripcion del Item generado dinamicamente numero: " + i,
+            //        ImagePath = i.ToString()
+            //    }
+            //    );
+            //}
+
             /*List<Border> */
             borderList = obj.CreatePanels(Global.DatbaseInstance.Items);
             //Set the list on the content viewer
@@ -57,17 +73,14 @@ namespace ItemInventoryApp
             //Set the global main object
             //Global.DatbaseInstance = MainObject;
             Global.UIRuntime = obj;
-
             //Populate datagrid list
             Global.DataGridList.Add(DGEdit);
             Global.DataGridList.Add(DGDelete);
             //Poblate DatagridView with items
             Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
             Global.Elements.Add(PanelPedidos);
-
             //First Validation to the pedidos in progress
             Global.DBHandler.firstValidation(Global.DatbaseInstance.Pedidos);
-            //textPedidoInfo.Text = "5 x Orden de tacos de bisteck."+Environment.NewLine+"3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion" + Environment.NewLine + "3 Hamburguesa con queso Promocion";
         }
 
         #region ResponsiveElementsModule
@@ -79,7 +92,7 @@ namespace ItemInventoryApp
             {
                 foreach (var item in borderList)
                 {
-                    var element =  (TextBlock)LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
+                    var element = (TextBlock)LogicalTreeHelper.FindLogicalNode(item, "TextoDescripcion");
                     var element2 = (TextBlock)LogicalTreeHelper.FindLogicalNode(item, "TextoTitulo");
 
                     if (element != null)
@@ -208,6 +221,8 @@ namespace ItemInventoryApp
                         //Enable textboxes to edit
                         txtDescE.IsEnabled = true;
                         Global.UIRuntime.Enable_disableTextBoxes(txtlist, true);
+                        //Enable btn edit
+                        btnEditar.IsEnabled = true;
                     }
                 }
             }
@@ -322,6 +337,7 @@ namespace ItemInventoryApp
                         Global.UIRuntime.Enable_disableTextBoxes(txtlist, false);
                         Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
                         Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
+                        btnEditar.IsEnabled = false;
                     }
                     else
                     {
@@ -373,13 +389,13 @@ namespace ItemInventoryApp
             //var a = ((ComboBoxItem)comboEliminar.SelectedItem).Content.ToString();
             if (comboEliminar.SelectedItem != null)
             {
-                btnSearchDel.IsEnabled = true;
+                //btnSearchDel.IsEnabled = true;
                 txtSearchDel.IsEnabled = true;
             }
-            else
-            {
-                btnSearchDel.IsEnabled = false;
-            }
+            //else
+            //{
+            //    //btnSearchDel.IsEnabled = false;
+            //}
         }
 
         private void ComboEdit_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -387,7 +403,7 @@ namespace ItemInventoryApp
             //var a = ((ComboBoxItem)comboEliminar.SelectedItem).Content.ToString();
             if (ComboEdit.SelectedItem != null)
             {
-                btnSearchE.IsEnabled = true;
+                //btnSearchE.IsEnabled = true;
                 txtSearchE.IsEnabled = true;
             }
             else
@@ -558,13 +574,13 @@ namespace ItemInventoryApp
         private void BtnSiguientePedido_Click(object sender, RoutedEventArgs e)
         {
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-            Global.DBHandler.HandlePedidoToDeliver(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid)+1, "siguiente");
+            Global.DBHandler.HandlePedidoToDeliver(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid) + 1, "siguiente");
         }
 
         private void BtnAnteriorPedido_Click(object sender, RoutedEventArgs e)
         {
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-            Global.DBHandler.HandlePedidoToDeliver(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid)-1, "anterior");
+            Global.DBHandler.HandlePedidoToDeliver(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid) - 1, "anterior");
         }
 
         private void BtnEliminarPedidoEnCola_Click(object sender, RoutedEventArgs e)
@@ -574,7 +590,7 @@ namespace ItemInventoryApp
             //Pintar el primer pedido disponible o limpiar en caso de que no encuentre
             try
             {
-                if(Global.DBHandler.DeletePedidoFromQueue(Global.DatbaseInstance.Pedidos.FindIndex(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid)))))
+                if (Global.DBHandler.DeletePedidoFromQueue(Global.DatbaseInstance.Pedidos.FindIndex(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid)))))
                 {
                     MessageBox.Show("Se ha eliminado correctamente el pedido de la lista de pedidos confirmados.");
                 }
@@ -621,8 +637,104 @@ namespace ItemInventoryApp
 
         }
 
+        private void BtnLoadImage_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Uri fileUri = new Uri(openFileDialog.FileName);
+                txtImagePahC.Text = fileUri.ToString().Substring(8);
+                byte[] imageInfo = File.ReadAllBytes(fileUri.ToString().Substring(8));
+                txtImagePahC.Text = new ImageHandler().SaveImageToLocal(Global.DatbaseInstance.LastItemID, imageInfo);
+            }
+        }
+
+        private void ComboSearchPedido_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            txtSearchPedido.Clear();
+            PickerPedido.DisplayDate = DateTime.Now;
+            ComboHoraInicial.Items.Clear();
+            ComboHoraFinal.Items.Clear();
+
+            txtSearchPedido.IsEnabled = ComboSearchPedido.SelectedItem != null ? true : false;
+            string selection = ((ComboBoxItem)ComboSearchPedido.SelectedItem).Content.ToString();
+            PedidoDatetimeControls.Visibility = selection.Equals("Fecha") ? Visibility.Visible : Visibility.Hidden;
+            txtSearchPedido.Visibility = selection.Equals("Fecha") ? Visibility.Hidden : Visibility.Visible;
+
+            if (selection.Equals("Fecha"))
+            {
+                Global.UIRuntime.PopulateComboFecha(ComboHoraInicial, 0, "inicio");
+            }
+        }
+
+        private void TxtSearchPedido_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (ComboSearchPedido.SelectedItem != null)
+            {
+                string selection = ((ComboBoxItem)ComboSearchPedido.SelectedItem).Content.ToString();
+                if (selection == "ID")
+                {
+                    e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
+                }
+            }
+        }
+
+        private void TxtSearchPedido_KeyUp(object sender, KeyEventArgs e)
+        {
+            Global.UIRuntime.searchPedido(ComboSearchPedido, Global.DBHandler, txtSearchPedido.Text, DGSearchPedido);
+        }
+
+        private void TabItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            //MessageBox.Show("Pedidos cha cargado"); Cargar pedidos en el grid
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            Global.UIRuntime.PopulatePedidosDataGrid(DGSearchPedido, Global.DatbaseInstance.Pedidos);
+        }
+
+        private void BtnFechaPedido_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!ComboHoraInicial.SelectedItem.Equals(null) && !ComboHoraFinal.SelectedItem.Equals(null) && PickerPedido.SelectedDate != null)
+                {
+                    var hraInicial = (((DataRowView)ComboHoraInicial.SelectedItem).Row[1]).ToString();
+                    var hraFinal = (((DataRowView)ComboHoraFinal.SelectedItem).Row[1]).ToString();
+
+                    //Hacer la busqueda si la hora inicial y final es la misma, entonces bucar a esa hora de 00 a 59 mins ex manda 0 y 0 seria de 00:00 a 00:59
 
 
+                    DateTime date1 = new DateTime();
+                    char del = ':';
+                    var hora = hraInicial.Split(del);
+                    date1 = Convert.ToDateTime(PickerPedido.SelectedDate).Date + new TimeSpan(Convert.ToInt32(hora[0]), Convert.ToInt32(hora[1]), 0);
 
+                    DateTime date2 = new DateTime();
+                    hora = hraFinal.Split(del);
+                    date2 = Convert.ToDateTime(PickerPedido.SelectedDate).Date + new TimeSpan(Convert.ToInt32(hora[0]), Convert.ToInt32(hora[1]), 0);
+                    string data = date1.ToString() + "|" + date2.ToString();
+                    Global.UIRuntime.PopulatePedidosDataGrid(DGSearchPedido, Global.DBHandler.SearchPedidoByCriteria("Fecha", data));
+                }
+                else
+                {
+                    MessageBox.Show("Error buscando en los datos de hora inicial y final. Asegurese que selecciono la fecha y las horas correctamente antes de buscar.");
+                }
+            }
+            catch (Exception)
+            {
+
+                MessageBox.Show("Debe llenar todos los campos antes de buscar");
+            }
+        }
+
+        private void ComboHoraInicial_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboHoraFinal.ItemsSource = null;
+            ComboHoraFinal.Items.Clear();
+            int hraInicial = Convert.ToInt32(((DataRowView)ComboHoraInicial.SelectedItem).Row[0]);
+            if (ComboHoraFinal.Items.Count.Equals(0))
+            {
+                Global.UIRuntime.PopulateComboFecha(ComboHoraFinal, Convert.ToInt32(hraInicial), "final");
+            }
+        }
     } //End of the way
 }

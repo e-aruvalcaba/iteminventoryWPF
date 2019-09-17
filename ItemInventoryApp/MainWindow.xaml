@@ -108,7 +108,6 @@
                 </Trigger>-->
             </Style.Triggers>
         </Style>
-
     </Window.Resources>
 
     <Grid>
@@ -314,14 +313,12 @@
 
                         <Button x:Name="btnEntregarPedido" Grid.Row="2" Content="Entregar Pedido" HorizontalAlignment="Right" Style = "{StaticResource btnPedidos}"  Margin="0,0,35,30" IsEnabled="False" Click="BtnEntregarPedido_Click"/>
                     </Grid>
-
-
                     <!--GRID DEL CENTRO-->
-                    <Grid Background="Bisque" Margin="180, 0, 180, 0">
+                    <Grid Margin="180, 0, 180, 0">
                         <!--A PARTIR DE AQUI SE CLONARA EL SIGUIENTE DOCK PANEL-->
-                        <DockPanel x:Name="DockMain" Background="White" >
+                        <DockPanel x:Name="DockMain">
                             <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel x:Name="MainViewer" Background="#FFA6E0FF">
+                                <StackPanel x:Name="MainViewer">
                                     <!--<Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
                                         <DockPanel Height="100" >
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
@@ -336,9 +333,9 @@
                                                 </TextBlock >
                                             </Canvas>
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
-                                                -->
-                                    <!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>-->
-                                    <!--
+                                                
+                                    <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                    
                                                 <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
                                             </Border>
                                         </DockPanel>
@@ -357,9 +354,9 @@
                                                 </TextBlock >
                                             </Canvas>
                                             <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
-                                                -->
-                                    <!--<Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>-->
-                                    <!--
+                                                
+                                    <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                    
                                                 <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
                                             </Border>
                                         </DockPanel>
@@ -373,9 +370,9 @@
             </TabItem>
             <!-- TAB para Operaciones con Productos-->
             <TabItem Header="Productos">
-                <Grid x:Name="ProductMainViewer" >
+                <Grid x:Name="ProductMainViewer" Background="#F6CE3E">
                     <!--Tab para operaciones con productos-->
-                    <TabControl Background="#FFD3E7F9">
+                    <TabControl Background="#F6CE3E">
                         <TabItem Header="Crear Nuevo Producto">
                             <Grid x:Name="CreateForm" MaxWidth="400" Background="#FFAEC1D4" Margin="30,70,30,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Grid.RowDefinitions>
@@ -399,15 +396,25 @@
                                     <RichTextBox x:Name="txtDescC" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
                                     <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
                                     <TextBox x:Name="txtPrecioC" Grid.Row="4" Margin="130,0,0,0" PreviewTextInput="TxtPrecioC_PreviewTextInput"/>
-                                    <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
-                                    <TextBox x:Name="txtImagePahC" Grid.Row="5" Margin="130,0,0,0"></TextBox>
-                                    <Button x:Name="btnCreateNewProduct" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click">Registrar item</Button>
+                                    <Grid Grid.Row="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                        <Button x:Name="btnLoadImage" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30"  Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Cargar Imagen</Button>
+                                        <Button x:Name="ClearImage" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30" Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Quitar Imagen</Button>
+                                        <TextBox x:Name="txtImagePahC" Visibility="Hidden" IsEnabled="False"></TextBox>
+                                    </Grid>
+
+                                    <Button x:Name="btnCreateNewProduct" Grid.Row="6" Padding="5" Margin="0,10,0,10" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click" Style = "{StaticResource btnPedidos}" Background="#FF45B1C9" >Registrar item</Button>
                                 </Grid>
                             </Grid>
                         </TabItem>
                         <!--Tab para Editar productos-->
                         <TabItem Header="Editar Producto">
-                            <Grid Background="#FFAEC1D4">
+                            <Grid Background="#F6CE3E">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="350" />
                                     <ColumnDefinition Width="*"/>
@@ -438,7 +445,7 @@
                                         <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
                                         <TextBox IsEnabled="False" x:Name="txtImagePahE" Grid.Row="5" Margin="130,0,0,0"></TextBox>
                                         <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDE" Grid.Row="5"></TextBox>
-                                        <Button x:Name="btnEditar" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnEditar_Click">Editar item</Button>
+                                        <Button x:Name="btnEditar" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnEditar_Click" Style = "{StaticResource btnPedidos}" Background="Orange" IsEnabled="False">Editar item</Button>
                                     </Grid>
                                 </Grid>
                                 <!--Termina columna de la izquierda-->
@@ -460,9 +467,9 @@
                                         <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130" IsEnabled="False" PreviewTextInput="TxtSearchE_PreviewTextInput" KeyUp="TxtSearchE_KeyUp"/>
                                     </Grid>
 
-                                    <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <!--<Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Button IsEnabled="False" x:Name="btnSearchE" Click="BtnSearchE_Click">Buscar Ahora</Button>
-                                    </Grid>
+                                    </Grid>-->
                                     <!--DatagridView-->
                                     <DataGrid x:Name="DGEdit" Background="Gray" Margin="0,0,0,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGEdit_MouseDoubleClick">
                                     </DataGrid>
@@ -473,7 +480,7 @@
                         </TabItem>
                         <!--Tab para Eliminar productos-->
                         <TabItem Header="Eliminar Producto">
-                            <Grid Background="#FFAEC1D4">
+                            <Grid Background="#F6CE3E">
                                 <Grid.ColumnDefinitions>
                                     <!--<ColumnDefinition Width="350" />-->
                                     <ColumnDefinition Width="*"/>
@@ -514,7 +521,6 @@
                                 <Grid Grid.Column="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="70"/>
-                                        <RowDefinition Height="auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <!--Controles para consulta-->
@@ -527,9 +533,9 @@
                                         <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130" IsEnabled="False" PreviewTextInput="TxtSearchDel_PreviewTextInput" KeyUp="TxtSearchDel_KeyUp"/>
                                     </Grid>
 
-                                    <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <!--<Grid Visibility="Hidden" Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Button x:Name="btnSearchDel" IsEnabled="False" Click="BtnSearchDel_Click">Buscar Ahora</Button>
-                                    </Grid>
+                                    </Grid>-->
                                     <!--DatagridView-->
                                     <DataGrid x:Name="DGDelete" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick">
                                     </DataGrid>
@@ -539,6 +545,93 @@
                         </TabItem>
                         <!--Termina tab control para operaciones con productos-->
                     </TabControl>
+                </Grid>
+            </TabItem>
+            <!--Termina tab item para productos-->
+            <TabItem Header="Pedidos" Loaded="TabItem_Loaded">
+                <Grid Background="#F6CE3E">
+                    <Grid.ColumnDefinitions>
+                        <!--<ColumnDefinition Width="350" />-->
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Inicia columna de la izquierda-->
+                    <!--<Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Eliminar Producto</Label>
+                                    <Grid   Grid.Row="1" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14" >Nombre del Item:</Label>
+                                        <TextBox x:Name="txtNombreDel" Grid.Row="1" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                                        <RichTextBox x:Name="txtDescDel" Grid.Row="3" Margin="0,0,0,0" Height="100" IsEnabled="False"></RichTextBox>
+                                        <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                                        <TextBox x:Name="txtPriceDel" Grid.Row="4" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                        <TextBox x:Name="txtImgPahDel" Grid.Row="5" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDEDel" Grid.Row="5"></TextBox>
+                                        <Button x:Name="btnDeleteItem" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnDeleteItem_Click" >Eliminar item</Button>
+                                    </Grid>
+                                </Grid>-->
+                    <!--Termina columna de la izquierda-->
+
+                    <!--Inicia Columna de la derecha-->
+                    <!--<Grid Grid.Column="1">-->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <!--Controles para consulta-->
+                        <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,15,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" FontSize="13" FontWeight="Bold">Buscar por:</Label>
+                            <ComboBox Grid.Column="1" Width="100" x:Name="ComboSearchPedido" SelectionChanged="ComboSearchPedido_SelectionChanged">
+                                <ComboBoxItem Content="ID"/>
+                                <ComboBoxItem Content="Nombre"/>
+                                <ComboBoxItem Content="Fecha"/>
+                            </ComboBox>
+                            <TextBox Grid.Column="2" Width="100" Margin="0,0,0,0" x:Name="txtSearchPedido" IsEnabled="False" PreviewTextInput="TxtSearchPedido_PreviewTextInput" KeyUp="TxtSearchPedido_KeyUp"/>
+                        </Grid>
+                        <!--Parte para busqueda por fecha y hora en pedidos-->
+                        <Grid x:Name="PedidoDatetimeControls" Grid.Row="1" HorizontalAlignment="Center" Visibility="Hidden">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/> 
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <DatePicker x:Name="PickerPedido" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <!--Combo Hora inicial-->
+                            <ComboBox x:Name="ComboHoraInicial" Grid.Column="1" Width="100" Margin="10,0,0,0" SelectionChanged="ComboHoraInicial_SelectionChanged"/>
+                            <!--Combo Hora Final-->
+                            <ComboBox x:Name="ComboHoraFinal" Grid.Column="2" Width="100" Margin="10,0,0,0"/>
+                            <Button x:Name="btnFechaPedido" Content="Buscar" Grid.Column="3" Width="80" Height="30" Margin="10,0,0,0" Style = "{StaticResource btnPedidos}" Click="BtnFechaPedido_Click"/>
+                        </Grid>
+
+                        <!--DatagridView-->
+                        <DataGrid x:Name="DGSearchPedido" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick" Grid.ColumnSpan="2">
+                        </DataGrid>
+                    </Grid>
+                    <!--Termina Columna de la derecha-->
                 </Grid>
             </TabItem>
         </TabControl>

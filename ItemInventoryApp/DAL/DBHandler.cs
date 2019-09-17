@@ -152,6 +152,15 @@ namespace ItemInventoryApp.DAL
         {
             DBInstance = UpdateDBObject();
             return DBInstance.Items;
+        }/*
+          * // SUMMARY
+          * // Return all pedidos on the JSON Database
+          * // Return: List of Items
+        */
+        public List<Pedido> GetAllPedidos()
+        {
+            DBInstance = UpdateDBObject();
+            return DBInstance.Pedidos;
         }
         /*
           * // SUMMARY
@@ -173,7 +182,72 @@ namespace ItemInventoryApp.DAL
                 MessageBox.Show("No se pudo encontrar el item con el id especificado");
                 return item;
             }
+        }        /*
+          * // SUMMARY
+          * // Searchs for a specific Pedido with the ID received
+          * // Return: DatabaseModel object
+        */
+        public Pedido SearchPedidoByID(int id)
+        {
+            Pedido item = new Pedido();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            try
+            {
+                item = DBInstance.Pedidos.Find(x => x.id == id);
+                return item;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("No se pudo encontrar el Pedido con el id especificado");
+                return item;
+            }
         }
+        /*
+          * // SUMMARY
+          * // Searchs for a specific PedidoS wheres the Text coincidence from variable Name received
+          * // Return: DatabaseModel object
+        */
+        public List<Pedido> SearchPedidobyName(string Name)
+        {
+            List<Pedido> item = new List<Pedido>();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            try
+            {
+                //item = DBInstance.Items.Find(x => x.id == id);
+                var sitem = DBInstance.Pedidos.Where(it => it.Name.ToLower().StartsWith(Name.ToLower())).ToList();
+                item = sitem;
+                return item;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error en la busqueda : " + ex.Message);
+                return item;
+            }
+        }      /*
+          * // SUMMARY
+          * // Searchs for a specific PedidoS wheres the Text coincidence from variable Name received
+          * // Return: DatabaseModel object
+        */
+        public List<Pedido> SearchPedidobyDate(DateTime incio, DateTime final)
+        {
+            List<Pedido> item = new List<Pedido>();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            try
+            {
+                //item = DBInstance.Items.Find(x => x.id == id);
+                var sitem = DBInstance.Pedidos.Where(it => it.dateTime >= incio && it.dateTime <= final).ToList();
+                item = sitem;
+                return item;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error en la busqueda : " + ex.Message);
+                return item;
+            }
+        }        
         /*
           * // SUMMARY
           * // Searchs for a specific item wheres the Text coincidence from variable Name received
@@ -202,10 +276,72 @@ namespace ItemInventoryApp.DAL
           * // Manage the search functions and calls the searchbyID or searchbyName depending on criteria received
           * // Return: DatabaseModel object
         */
+        public List<Pedido> SearchPedidoByCriteria(string criteria, string data)
+        {
+            List<Pedido> List = new List<Pedido>();
+            DBInstance = UpdateDBObject();
+
+            if (string.IsNullOrEmpty(data))
+            {
+                return List = GetAllPedidos();
+            }
+
+            switch (criteria)
+            {
+                case "ID":
+                    try
+                    {
+                        List.Add(SearchPedidoByID(Convert.ToInt32(data)));
+                        //List.Add(SearchItembyID(Convert.ToInt32(data)));
+                        List = List[0] == null ? new List<Pedido>() : List;
+
+                        return List;
+                    }
+                    catch (Exception ex)
+                    {
+                        //MessageBox.Show("Error al buscar por ID, intente ingresando solo numeros de 0 a 9.");
+                    }
+                    break;
+                case "Nombre":
+                    try
+                    {
+                        List = SearchPedidobyName(data);
+                        return List;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al buscar por ID error: " + ex.Message);
+                    }
+                    break;
+                case "Fecha":
+                    try
+                    {
+                        char delimiterChars =  '|';
+                        string[] reg = data.Split(delimiterChars);
+
+                        DateTime date1 = Convert.ToDateTime(reg[0]);
+                        DateTime date2 = Convert.ToDateTime(reg[1]);
+
+
+                        List = SearchPedidobyDate(date1, date2);
+                        return List;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al buscar por Fecha error: " + ex.Message);
+                    }
+                    break;
+            }
+
+            return List;
+        }/*
+          * // SUMMARY
+          * // Manage the search functions and calls the searchbyID or searchbyName depending on criteria received for ITEMS
+          * // Return: DatabaseModel object
+        */
         public List<Item> SearchByCriteria(string criteria, string data)
         {
             List<Item> List = new List<Item>();
-            //UpdateDBObject the databaseobject to get the most recent data
             DBInstance = UpdateDBObject();
 
             if (string.IsNullOrEmpty(data))
@@ -592,32 +728,8 @@ namespace ItemInventoryApp.DAL
             //Obtener el total de los pedidos confirmados
             int totalPedidosSinConfirmar = listaPedidos.Count;
             var index = listaPedidos.FindIndex(x => x.id.Equals(newpedidoID));
-
-            //if (pedidoActual+1 >= totalPedidosSinConfirmar) //Es el ultimo pedido deshabilitar el boton siguiente pedido
-            //{
-            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
-            //    element.IsEnabled = false;
-            //}
-            //else
-            //{
-            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
-            //    element.IsEnabled = true;
-            //}
-
             var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnSiguientePedido");
-            //element.IsEnabled = pedidoActual + 1 >= totalPedidosSinConfirmar ? false : true;
             var element2 = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
-            //element.IsEnabled = (pedidoActual).Equals(0) ? false : true;
-
-            //if (pedidoActual-1 == 0) //Es el primer pedido deshabilitar el boton anterior pedido
-            //{
-            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
-            //    element.IsEnabled = false;
-            //}else
-            //{
-            //    var element = (Button)new UIHelper().FindChildByName(Application.Current.MainWindow, "button", "btnAnteriorPedido");
-            //    element.IsEnabled = true;
-            //}
 
             //Pintar el nuevo pedido en pantalla
 
