@@ -247,7 +247,7 @@ namespace ItemInventoryApp.DAL
                 MessageBox.Show("Error en la busqueda : " + ex.Message);
                 return item;
             }
-        }        
+        }
         /*
           * // SUMMARY
           * // Searchs for a specific item wheres the Text coincidence from variable Name received
@@ -316,7 +316,7 @@ namespace ItemInventoryApp.DAL
                 case "Fecha":
                     try
                     {
-                        char delimiterChars =  '|';
+                        char delimiterChars = '|';
                         string[] reg = data.Split(delimiterChars);
 
                         DateTime date1 = Convert.ToDateTime(reg[0]);
@@ -503,7 +503,7 @@ namespace ItemInventoryApp.DAL
             newPedido.Name = "Sin Nombre";
             //if (!DBInstance.EditOn)
             //{
-                newPedido.id = new DBHandler().GenerateID("pedido", db);
+            newPedido.id = new DBHandler().GenerateID("pedido", db);
             //}
             //else
             //{
@@ -645,7 +645,7 @@ namespace ItemInventoryApp.DAL
                 new UIRuntime().updateTotals(DBInstance.TempPedido.Total);
                 DBInstance.LastPedidoID++;
                 SaveDB(DBInstance);
-                
+
                 success = true;
                 MessageBox.Show("Se ha creado el pedido exitosamente");
             }
@@ -735,15 +735,15 @@ namespace ItemInventoryApp.DAL
 
             if (action.Equals("siguiente"))
             {
-                element.IsEnabled = pedidoActual + 1 >= totalPedidosSinConfirmar-1 ? false : true;
-                element2.IsEnabled = (pedidoActual+1).Equals(0) ? false : true;
+                element.IsEnabled = pedidoActual + 1 >= totalPedidosSinConfirmar - 1 ? false : true;
+                element2.IsEnabled = (pedidoActual + 1).Equals(0) ? false : true;
                 new UIRuntime().SetNextPedidoData(listaPedidos[pedidoActual + 1].id);
                 new UIRuntime().DrawSelectedPedido(listaPedidos[pedidoActual + 1]);
 
             }
             else
             {
-                element.IsEnabled = pedidoActual - 1 >= totalPedidosSinConfirmar-1 ? false : true;
+                element.IsEnabled = pedidoActual - 1 >= totalPedidosSinConfirmar - 1 ? false : true;
                 element2.IsEnabled = (pedidoActual - 1).Equals(0) ? false : true;
                 new UIRuntime().SetNextPedidoData(listaPedidos[pedidoActual - 1].id);
                 new UIRuntime().DrawSelectedPedido(listaPedidos[pedidoActual - 1]);
@@ -829,7 +829,8 @@ namespace ItemInventoryApp.DAL
 
         }
 
-        public bool CompletarPedidoConfirmado(int pedidoId) {
+        public bool CompletarPedidoConfirmado(int pedidoId)
+        {
             var success = false;
 
             if (pedidoId.Equals(0))
@@ -915,6 +916,221 @@ namespace ItemInventoryApp.DAL
 
             return success;
         }
+
+        #region Reporting
+
+        public IList<DGPedido> CreateDGPedidoList(List<Pedido> list)
+        {
+            IList<DGPedido> data = new List<DGPedido>();
+
+            foreach (var item in list)
+            {
+                DGPedido newPedido = new DGPedido();
+
+                string status = "";
+                switch (item.Status)
+                {
+                    case 0:
+                        status = "No Registrado";
+                        break;
+                    case 1:
+                        status = "Registrado";
+                        break;
+                    case 2:
+                        status = "Completado/Entregado";
+                        break;
+                    case 3:
+                        status = "Cancelado";
+                        break;
+
+                    default:
+                        status = "Indefinido";
+                        break;
+                }
+
+                newPedido.id = item.id;
+                newPedido.Name = item.Name;
+                newPedido.Status = status;
+                newPedido.Time = item.Time;
+                newPedido.Date = item.Date;
+                newPedido.dateTime = item.dateTime;
+                newPedido.Total = item.Total;
+
+                foreach (var z in item.Items)
+                {
+                    newPedido.Items += item.ItemsQuantity[0].Qty.ToString() + " " + z.Name + Environment.NewLine;
+                }
+
+                data.Add(newPedido);
+            }
+            return data;
+        }
+      
+        public IList<DGPedido> UtilityReport(DatabaseModel db, string texto, DateTime? fecha1, DateTime? fecha2)
+        {
+            IList<DGPedido> list = new List<DGPedido>();
+
+            list = CreateDGPedidoList(db.Pedidos);
+
+            if (!fecha2.Equals(new DateTime(01, 01, 0001)))
+            {
+                list = list.Where(x => (x.dateTime >= fecha1.Value.Date && x.dateTime <= fecha2.Value.Date.AddDays(1)) && (x.Status != "Cancelado")).ToList();
+            }
+            else if (!fecha1.Equals(new DateTime(01, 01, 0001)))
+            {
+                list = list.Where(x => (x.dateTime.Date.Equals(fecha1.Value.Date)) && (x.Status != "Cancelado")).ToList();
+            }else
+            {
+                list = list.Where(x => x.Status != "Cancelado").ToList();
+            }
+
+            double total = 0;
+
+            foreach (var item in list)
+            {
+                total += item.Total;
+            }
+
+            list.Add(new DGPedido
+            {
+                id = 0,
+                Name = "Total General " + texto,
+                Total = total,
+                dateTime = System.DateTime.Now
+            });
+
+            return list;
+        }
+
+        public IList<PopularItem> PopularProduct(DatabaseModel db, string texto, DateTime? fecha1, DateTime? fecha2)
+        {
+            IList<PopularItem> list = new List<PopularItem>();
+
+            //list = CreateDGPedidoList(db.Pedidos);
+
+            int totalItems = db.Items.Count;
+
+            List<PopularItem> popular = new List<PopularItem>();
+            List<Pedido> ped = new List<Pedido>();
+            if (!fecha2.Equals(new DateTime(01, 01, 0001)))
+            {
+                ped = db.Pedidos.Where(x => x.dateTime > fecha1.Value.Date && x.dateTime < fecha2.Value.Date.AddDays(1)).ToList();
+            }
+            else if (!fecha1.Equals(new DateTime(01, 01, 0001)))
+            {
+                ped = db.Pedidos.Where(x => x.dateTime.Date.Equals(fecha1.Value.Date)).ToList();
+            }
+            else
+            {
+                ped = db.Pedidos;
+            }
+
+            //inicializar la lista de pedidos con total
+            foreach (var item in db.Items)
+            {
+                popular.Add(new PopularItem {
+                    id = item.id,
+                    Name = item.Name,
+                    Description = item.Description,
+                    Price = item.Price,
+                    TotalInPedidos = 0
+                });
+            }
+
+            foreach (var pedido in ped)
+            {
+                foreach (var item in pedido.ItemsQuantity)
+                {
+                    popular.Find(x => x.id.Equals(item.Id)).TotalInPedidos += 1;
+                }
+            }
+
+            Comparador c = new Comparador();
+
+            popular = popular.Where(x => !x.TotalInPedidos.Equals(0)).ToList();
+
+            popular.Sort(c);
+            popular.Reverse();
+
+            string pedidos_popularitem="Pedidos por ID: ";
+            foreach (var item in ped)
+            {
+                foreach (var i in item.Items)
+                {
+                    if (i.id == popular[0].id)
+                        pedidos_popularitem += item.id.ToString() + " a nombre de: " + item.Name + "." + Environment.NewLine;
+                }
+            }
+            
+            popular.Add(new PopularItem
+            {
+                id = 0,
+                Name = "Productos populares " + texto,
+                Description = string.Format("El item mas popular es el item {0}, encontrado {1} veces en los siguientes pedidos. {2}", popular[0].Name, popular[0].TotalInPedidos, pedidos_popularitem)
+            });
+
+            Console.WriteLine(popular);
+            return popular;
+        }
+
+        public string SaveReport(string type, string path, string name, string fechas)
+        {
+            char sp = '|';
+                var a = fechas.Split(sp);
+            string texto = "";
+            try
+            {
+                if (!string.IsNullOrEmpty(a[0]) && !string.IsNullOrEmpty(a[1]))
+                {
+                    texto = "Del dia: " + a[0] + " al dia " + Convert.ToDateTime(a[1]).ToShortDateString();
+                }
+                else if (!string.IsNullOrEmpty(a[0]) && string.IsNullOrEmpty(a[1]))
+                {
+                    texto = "Del dia: " + Convert.ToDateTime(a[0]).ToShortDateString();
+                    a[1] = null;
+                }
+                else
+                {
+                    a[0] = null;
+                    a[1] = null;
+                }
+            }
+            catch (Exception)
+            {
+                texto = "De todos los pedidos";
+            }
+
+            try
+            {
+                DBInstance = UpdateDBObject();
+                IList<DGPedido> Pedidos = new List<DGPedido>();
+                IList<PopularItem> Items = new List<PopularItem>();
+                type = type.ToLower();
+
+                switch (type)
+                {
+                    case "utilidades":
+                        Pedidos = UtilityReport(DBInstance, texto, Convert.ToDateTime(a[0]), Convert.ToDateTime(a[1]));
+                        var DT = new ExcelGenerator().ToDataTable<DGPedido>(Pedidos);
+                        new ExcelGenerator().GenerateExcel(DT, path, name);
+                        break;
+                    case "producto popular":
+                        Items = PopularProduct(DBInstance, texto, Convert.ToDateTime(a[0]), Convert.ToDateTime(a[1]));
+                        var DTP = new ExcelGenerator().ToDataTable<PopularItem>(Items);
+                        new ExcelGenerator().GenerateExcel(DTP, path, name);
+                        break;
+                    case "personalizado":
+
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error Generado el reporte. Error:"+ex.Message);
+            }
+            return path;
+        }
+        #endregion
 
     } //End of way
 }

@@ -260,45 +260,9 @@ namespace ItemInventoryApp.Classes
         public void PopulatePedidosDataGrid(DataGrid dg, List<Pedido> list)
         {
             ObservableCollection<DGPedido> data = new ObservableCollection<DGPedido>();
-            foreach (var item in list)
+            foreach (var item in new DBHandler().CreateDGPedidoList(list))
             {
-                DGPedido newPedido = new DGPedido();
-
-                string status = "";
-                switch (item.Status)
-                {
-                    case 0:
-                        status = "No Registrado";
-                        break;
-                    case 1:
-                        status = "Registrado";
-                        break;
-                    case 2:
-                        status = "Completado/Entregado";
-                        break;
-                    case 3:
-                        status = "Cancelado";
-                        break;
-
-                    default:
-                        status = "Indefinido";
-                        break;
-                }
-
-                newPedido.id = item.id;
-                newPedido.Name = item.Name;
-                newPedido.Status = status;
-                newPedido.Time = item.Time;
-                newPedido.Date = item.Date;
-                newPedido.dateTime = item.dateTime;
-                newPedido.Total = item.Total;
-
-                foreach (var z in item.Items)
-                {
-                    newPedido.Items += item.ItemsQuantity[0].Qty.ToString() + " " + z.Name + Environment.NewLine;
-                }
-
-                data.Add(newPedido);
+                data.Add(item);
             }
             dg.ItemsSource = data;
         }
@@ -714,14 +678,6 @@ namespace ItemInventoryApp.Classes
             int loop = 1;
             Color color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
             SolidColorBrush myBrush = new SolidColorBrush(color);
-
-            ////List<Item> 
-            //List<Pedido> PedidosConfirmados = (List<Pedido>)pedido.Where(x => x.Status.Equals(1));
-
-            //foreach (var item in PedidosConfirmados)
-            //{
-
-            //}
 
             foreach (var item in pedido.Items)
             {

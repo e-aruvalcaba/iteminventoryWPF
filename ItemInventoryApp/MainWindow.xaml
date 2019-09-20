@@ -551,42 +551,9 @@
             <TabItem Header="Pedidos" Loaded="TabItem_Loaded">
                 <Grid Background="#F6CE3E">
                     <Grid.ColumnDefinitions>
-                        <!--<ColumnDefinition Width="350" />-->
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <!-- Inicia columna de la izquierda-->
-                    <!--<Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Eliminar Producto</Label>
-                                    <Grid   Grid.Row="1" >
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14" >Nombre del Item:</Label>
-                                        <TextBox x:Name="txtNombreDel" Grid.Row="1" Margin="130,0,0,0" IsEnabled="False"></TextBox>
-                                        <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
-                                        <RichTextBox x:Name="txtDescDel" Grid.Row="3" Margin="0,0,0,0" Height="100" IsEnabled="False"></RichTextBox>
-                                        <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
-                                        <TextBox x:Name="txtPriceDel" Grid.Row="4" Margin="130,0,0,0" IsEnabled="False"></TextBox>
-                                        <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
-                                        <TextBox x:Name="txtImgPahDel" Grid.Row="5" Margin="130,0,0,0" IsEnabled="False"></TextBox>
-                                        <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDEDel" Grid.Row="5"></TextBox>
-                                        <Button x:Name="btnDeleteItem" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnDeleteItem_Click" >Eliminar item</Button>
-                                    </Grid>
-                                </Grid>-->
-                    <!--Termina columna de la izquierda-->
-
                     <!--Inicia Columna de la derecha-->
-                    <!--<Grid Grid.Column="1">-->
                     <Grid Grid.Column="0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
@@ -615,7 +582,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/> 
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
@@ -634,13 +601,66 @@
                     <!--Termina Columna de la derecha-->
                 </Grid>
             </TabItem>
+
+            <!--REPORTING ANALITYCS-->
+            <!--Termina tab item para productos-->
+            <TabItem Header="Reportes">
+                <Grid Background="#F6CE3E">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Inicia Columna de la derecha-->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <!--Controles para consulta-->
+                        <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,15,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" FontSize="13" FontWeight="Bold">Generar reporte:</Label>
+                            <ComboBox Grid.Column="1" Width="100" x:Name="ComboReporte" SelectionChanged="ComboReporte_SelectionChanged">
+                                <ComboBoxItem Content="Utilidades"/>
+                                <ComboBoxItem Content="Producto popular"/>
+                                <ComboBoxItem Content="Reporte personalizado"/>
+                            </ComboBox>
+                        </Grid>
+                        <!--Parte para busqueda por fecha y hora en pedidos-->
+                        <Grid x:Name="ReporteDatetimeControls" Grid.Row="1" HorizontalAlignment="Center" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" FontWeight="Bold">De: </Label>
+                            <DatePicker x:Name="PickerReporteInicio" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" SelectedDateChanged="PickerReporteInicio_SelectedDateChanged"/>
+                            <Label Grid.Column="2" FontWeight="Bold">a:</Label>
+                            <DatePicker x:Name="PickerReporteFinal" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="False" SelectedDateChanged="PickerReporteFinal_SelectedDateChanged"/>
+                            <Button x:Name="btnGenerarReporte" Content="Generar" Grid.Column="4" Width="80" Height="30" Margin="10,0,0,0" Style = "{StaticResource btnPedidos}" Click="BtnGenerarReporte_Click" IsEnabled="False"/>
+                        </Grid>
+
+                        <!--DatagridView-->
+                        <DataGrid x:Name="DGReporte" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick" Grid.ColumnSpan="2"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
         </TabControl>
 
-        <!--PROMPT-->
-        <!-- It's important that this is in the end of the XAML as it needs to be on top of everything else! -->
-        <Grid x:Name="InputBox" Visibility="Collapsed">
-            <Grid Background="Black" Opacity="0.5"/>
-            <Border
+            <!--PROMPT-->
+            <!-- It's important that this is in the end of the XAML as it needs to be on top of everything else! -->
+            <Grid x:Name="InputBox" Visibility="Collapsed">
+                <Grid Background="Black" Opacity="0.5"/>
+                <Border
             MinWidth="250"
             Background="Orange" 
             BorderBrush="Black" 
@@ -648,18 +668,18 @@
             CornerRadius="0,0,0,0" 
             HorizontalAlignment="Center" 
             VerticalAlignment="Center">
-                <StackPanel>
-                    <TextBlock Margin="5" Text="Nombre de la Orden:" FontWeight="Bold" FontFamily="Cambria" />
-                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="YesButton" Margin="5" Width="80" Content="Confirmar" Click="YesButton_Click" Style = "{StaticResource btnPedidos}"/>
-                        <Button x:Name="NoButton" Margin="5" Width="80" Content="Cancelar"  Click="NoButton_Click" Style = "{StaticResource btnPedidos}" />
+                    <StackPanel>
+                        <TextBlock Margin="5" Text="Nombre de la Orden:" FontWeight="Bold" FontFamily="Cambria" />
+                        <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button x:Name="YesButton" Margin="5" Width="80" Content="Confirmar" Click="YesButton_Click" Style = "{StaticResource btnPedidos}"/>
+                            <Button x:Name="NoButton" Margin="5" Width="80" Content="Cancelar"  Click="NoButton_Click" Style = "{StaticResource btnPedidos}" />
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </Border>
-        </Grid>
+                </Border>
+            </Grid>
 
-        <!--TERMINA PROMPT-->
+            <!--TERMINA PROMPT-->
 
     </Grid>
 </Window>

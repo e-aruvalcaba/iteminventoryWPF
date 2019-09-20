@@ -41,6 +41,10 @@
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -64,6 +68,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Comparador.cs" />
+    <Compile Include="Classes\ExcelGenerator.cs" />
     <Compile Include="Classes\ImageHandler.cs" />
     <Compile Include="Classes\Library.cs" />
     <Compile Include="Classes\PedidoStatus.cs" />
@@ -86,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\DatabaseModel.cs" />
+    <Compile Include="Models\PopularItem.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\ItemQty.cs" />
     <Compile Include="Models\DGPedido.cs" />

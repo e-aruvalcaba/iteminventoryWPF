@@ -693,6 +693,15 @@ namespace ItemInventoryApp
 
         private void BtnFechaPedido_Click(object sender, RoutedEventArgs e)
         {
+            //PARA GENERAR REPORTE DE QUERY A EXCEL
+            //IList<Pedido> Pedidos = new List<Pedido>();
+            //foreach (var item in Global.DBHandler.GetAllPedidos())
+            //{
+            //    Pedidos.Add(item);
+            //}
+            //var DT = new ExcelGenerator().ToDataTable<Pedido>(Pedidos);
+            //new ExcelGenerator().GenerateExcel(DT);
+
             try
             {
                 if (!ComboHoraInicial.SelectedItem.Equals(null) && !ComboHoraFinal.SelectedItem.Equals(null) && PickerPedido.SelectedDate != null)
@@ -701,8 +710,6 @@ namespace ItemInventoryApp
                     var hraFinal = (((DataRowView)ComboHoraFinal.SelectedItem).Row[1]).ToString();
 
                     //Hacer la busqueda si la hora inicial y final es la misma, entonces bucar a esa hora de 00 a 59 mins ex manda 0 y 0 seria de 00:00 a 00:59
-
-
                     DateTime date1 = new DateTime();
                     char del = ':';
                     var hora = hraInicial.Split(del);
@@ -734,6 +741,68 @@ namespace ItemInventoryApp
             if (ComboHoraFinal.Items.Count.Equals(0))
             {
                 Global.UIRuntime.PopulateComboFecha(ComboHoraFinal, Convert.ToInt32(hraInicial), "final");
+            }
+        }
+
+        #region Reporting
+
+        private void BtnGenerarReporte_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(PickerReporteFinal.SelectedDate < PickerReporteInicio.SelectedDate))
+            {
+                string reportType = ((ComboBoxItem)ComboReporte.SelectedItem).Content.ToString();
+                //Generar el reporte
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Excel Document|*.xlsx|PDF Document|*.pdf";
+                saveFileDialog.Title = "Guardar Reporte";
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filename = saveFileDialog.SafeFileName;
+                    string path = saveFileDialog.FileName.Substring(0, (saveFileDialog.FileName.Length - saveFileDialog.SafeFileName.Length));
+
+                    string fechas = "";
+                    if (PickerReporteInicio.SelectedDate != null)
+                    {
+                        fechas = PickerReporteInicio.SelectedDate.ToString() + "|" + PickerReporteFinal.SelectedDate.ToString();
+                    }
+
+                    var pathFinal = Global.DBHandler.SaveReport(reportType, path, filename, fechas);
+
+                    MessageBox.Show("Se ha generado el reporte correctamente en la ruta: "+pathFinal);
+                }
+            }
+            else
+            {
+                MessageBox.Show("La fecha de inicio del reporte no puede ser menor a la final. Seleccione una fecha posterior a la inicial.");
+            }
+        }
+
+        #endregion
+
+        private void PickerReporteInicio_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!PickerReporteInicio.SelectedDate.Equals(null))
+            {
+                PickerReporteFinal.IsEnabled = true;
+            }
+        }
+
+        private void PickerReporteFinal_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            bool ver = PickerReporteFinal.SelectedDate < PickerReporteInicio.SelectedDate;
+
+            if (PickerReporteFinal.SelectedDate < PickerReporteInicio.SelectedDate)
+            {
+                MessageBox.Show("La fecha de inicio del reporte no puede ser menor a la final. Seleccione una fecha posterior a la inicial.");
+            }
+        }
+
+        private void ComboReporte_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboReporte.SelectedItem != null)
+            {
+                btnGenerarReporte.IsEnabled = true;
             }
         }
     } //End of the way
