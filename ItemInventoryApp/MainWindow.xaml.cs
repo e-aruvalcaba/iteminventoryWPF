@@ -526,6 +526,7 @@ namespace ItemInventoryApp
             {
                 Global.DBHandler.EditPedido(Global.DatbaseInstance.TempPedido.id);
                 ConfirmarPedido.IsEnabled = false;
+                btnEntregarPedido.IsEnabled = true;
             }
         }
 
@@ -630,8 +631,8 @@ namespace ItemInventoryApp
             if (!Global.DatbaseInstance.EditOn)
             {
                 Pedido pedido = Global.DatbaseInstance.Pedidos.Find(x => x.id.Equals(Convert.ToInt32(new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo").Uid)));
-
                 Global.DBHandler.LoadPedidoToEdit(pedido);
+                btnEntregarPedido.IsEnabled = false;
             }
             else
             {

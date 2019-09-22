@@ -4,8 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ItemInventoryApp"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="499.047" Width="692.267" MinHeight="500" MinWidth="881.992" SizeChanged="Window_SizeChanged">
+        mc:Ignorable="d" Height="499.047" Width="692.267" MinHeight="500" MinWidth="881.992" SizeChanged="Window_SizeChanged" Title="Sin titulo Provisional">
 
     <Window.Resources>
         <Style x:Key = "btnPedidos" TargetType = "Button">
