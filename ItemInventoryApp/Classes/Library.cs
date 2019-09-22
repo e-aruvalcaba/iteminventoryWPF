@@ -19,5 +19,6 @@ namespace ItemInventoryApp.Classes
         public List<DataGrid> DataGridList;
         public List<TextBox> TextBoxList;
         public List<UIElement> Elements;
+        public LDrive DriveService;
     }
 }

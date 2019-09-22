@@ -501,15 +501,7 @@ namespace ItemInventoryApp.DAL
         {
             Pedido newPedido = new Pedido();
             newPedido.Name = "Sin Nombre";
-            //if (!DBInstance.EditOn)
-            //{
             newPedido.id = new DBHandler().GenerateID("pedido", db);
-            //}
-            //else
-            //{
-            //    newPedido.id = Convert.ToInt32(editID);
-            //}
-            //newPedido.ItemsQuantity = 1;
             newPedido.Status = new PedidoStatus().NotRegistered;
             newPedido.Items.Add(item);
             newPedido.ItemsQuantity.Add(new ItemQty
@@ -523,6 +515,9 @@ namespace ItemInventoryApp.DAL
             newPedido.Time = DateTime.Now.ToLongTimeString();
             newPedido.dateTime = DateTime.Now;
             incrementItemQty(newPedido, item);
+
+            //Set bandera on to control the edit or creation of pedido.
+            db.EditOn = true;
 
             return db.TempPedido = newPedido;
         }
@@ -575,6 +570,7 @@ namespace ItemInventoryApp.DAL
                 {
                     //delete pedido
                     removetemfromPedido(itemTarget.id, runtime);
+                   
                 }
                 else
                 {
@@ -644,6 +640,7 @@ namespace ItemInventoryApp.DAL
                 element.Children.Clear();
                 new UIRuntime().updateTotals(DBInstance.TempPedido.Total);
                 DBInstance.LastPedidoID++;
+                DBInstance.EditOn = false;
                 SaveDB(DBInstance);
 
                 success = true;
@@ -681,6 +678,10 @@ namespace ItemInventoryApp.DAL
             DBInstance.TempPedido.Items.RemoveAt(DBInstance.TempPedido.Items.FindIndex(x => x.id == item.id));
 
             runtime.updateTotals(DBInstance.TempPedido.Total);
+            if (DBInstance.TempPedido.Items.Count.Equals(0))
+            {
+                DBInstance.EditOn = false;
+            }
             SaveDB(DBInstance);
             DrawPedido(runtime, DBInstance.TempPedido);
         }
@@ -880,6 +881,8 @@ namespace ItemInventoryApp.DAL
                 {
                     addItemtoPedido(item.id, runtime);
                 }
+                //Set true the bandera edit on to manage the editions and creation of pedido at same time
+                DBInstance.EditOn = true;
                 success = true;
             }
             catch (Exception)
@@ -900,6 +903,7 @@ namespace ItemInventoryApp.DAL
                 int index = DBInstance.Pedidos.FindIndex(x => x.id.Equals(PedidoID));
                 DBInstance.Pedidos[index] = DBInstance.TempPedido;
                 DBInstance.TempPedido = new Pedido();
+                DBInstance.EditOn = false;
                 SaveDB(DBInstance);
                 var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "PanelPedidos");
                 element.Children.Clear();
@@ -965,7 +969,7 @@ namespace ItemInventoryApp.DAL
             }
             return data;
         }
-      
+
         public IList<DGPedido> UtilityReport(DatabaseModel db, string texto, DateTime? fecha1, DateTime? fecha2)
         {
             IList<DGPedido> list = new List<DGPedido>();
@@ -979,7 +983,8 @@ namespace ItemInventoryApp.DAL
             else if (!fecha1.Equals(new DateTime(01, 01, 0001)))
             {
                 list = list.Where(x => (x.dateTime.Date.Equals(fecha1.Value.Date)) && (x.Status != "Cancelado")).ToList();
-            }else
+            }
+            else
             {
                 list = list.Where(x => x.Status != "Cancelado").ToList();
             }
@@ -1028,7 +1033,8 @@ namespace ItemInventoryApp.DAL
             //inicializar la lista de pedidos con total
             foreach (var item in db.Items)
             {
-                popular.Add(new PopularItem {
+                popular.Add(new PopularItem
+                {
                     id = item.id,
                     Name = item.Name,
                     Description = item.Description,
@@ -1052,7 +1058,7 @@ namespace ItemInventoryApp.DAL
             popular.Sort(c);
             popular.Reverse();
 
-            string pedidos_popularitem="Pedidos por ID: ";
+            string pedidos_popularitem = "Pedidos por ID: " + Environment.NewLine;
             foreach (var item in ped)
             {
                 foreach (var i in item.Items)
@@ -1061,7 +1067,7 @@ namespace ItemInventoryApp.DAL
                         pedidos_popularitem += item.id.ToString() + " a nombre de: " + item.Name + "." + Environment.NewLine;
                 }
             }
-            
+
             popular.Add(new PopularItem
             {
                 id = 0,
@@ -1073,10 +1079,10 @@ namespace ItemInventoryApp.DAL
             return popular;
         }
 
-        public string SaveReport(string type, string path, string name, string fechas)
+        public void SaveReport(string type, string path, string name, string fechas)
         {
             char sp = '|';
-                var a = fechas.Split(sp);
+            var a = fechas.Split(sp);
             string texto = "";
             try
             {
@@ -1123,14 +1129,138 @@ namespace ItemInventoryApp.DAL
 
                         break;
                 }
+
+                MessageBox.Show("Se ha generado el reporte correctamente en la ruta: " + path);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error Generado el reporte. Error:"+ex.Message);
+                MessageBox.Show("Error Generado el reporte. Error:" + ex.Message);
             }
-            return path;
         }
         #endregion
+
+        #region GoogleDrive
+
+        public async Task<bool> RestoreGoogleDriveDB(LDrive DriveService)
+        {
+            var success = false;
+            if (DriveService.IsDriveSync())
+            {
+                try
+                {
+                    List<DriveFileModel> list = new List<DriveFileModel>();
+                    list = await DriveService.DBExistsOnDrive();
+
+                    if (list.Count > 0)
+                    {
+                        String stream = await DriveService.DownloadStream(list[0].Fileid);
+                        var newDB = JsonConvert.DeserializeObject<DatabaseModel>(stream);
+                        DBInstance = newDB;
+
+                        success = SaveDB(newDB);
+                        if (success)
+                        {
+                            MessageBox.Show("Se ha restaurado la base de datos guardada en Google Drive Correctamente.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se ha podido restaurar la base de datos guardada en Google Drive .");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No existen copias de seguridad de la base de datos en la cuenta de Google Drive vinculada a la aplicacion.");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Ha ocurrido un error mientras se intentaba restaurar la base de datos desde Google Drive. Error: " + ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay cuentas de Google Drive vinculadas a esta aplicacion, por favor vincule una cuenta antes de intentar operaciones como guardar y restaurar la base de datos.");
+            }
+
+            return success;
+        }
+        #endregion
+
+        #region DBSAVE_RESTORE LOCAL
+
+        public bool SaveDBLocal(string path, string fileName)
+        {
+            bool success = false;
+
+            try
+            {
+                DBInstance = UpdateDBObject();
+                var data = JsonConvert.SerializeObject(DBInstance);
+                fileName = path + fileName;
+                using (FileStream fs = File.Create(fileName))
+                {
+                    Byte[] title = new UTF8Encoding(true).GetBytes(data);
+                    fs.Write(title, 0, title.Length);
+                }
+
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se ha podido guardar la BD local. Error: "+ex.Message);
+            }
+
+            return success;
+        }
+
+        public bool RestoreDBLocal(string fullpath)
+        {
+            bool success = false;
+
+            try
+            {
+                string fileName = string.Format("@{0}", fullpath);//@"C:\InventoryApp\_InventoryDB.json";
+                string content = "";
+
+                using (StreamReader sr = File.OpenText(fileName))
+                {
+                    using (StreamReader r = new StreamReader(fileName))
+                    {
+                        content = r.ReadToEnd();
+                    }
+                }
+
+                DBInstance = JsonConvert.DeserializeObject<DatabaseModel>(content);
+                success = SaveDB(DBInstance);
+                if (success)
+                {
+                    MessageBox.Show("Se ha restaurado la BD local exitosamente.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se ha podido restaurar la BD local. Error: " + ex.Message);
+            }
+
+            return success;
+        }
+
+        #endregion
+
+        public bool EditOnStatus()
+        {
+            DBInstance = UpdateDBObject();
+            return DBInstance.EditOn;
+        }
+
+        public bool SetEditOnStatus(bool status)
+        {
+            DBInstance = UpdateDBObject();
+            DBInstance.EditOn = status;
+            return SaveDB(DBInstance);
+        }
 
     } //End of way
 }

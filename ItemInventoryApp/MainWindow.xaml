@@ -119,7 +119,7 @@
                 </LinearGradientBrush>
             </Rectangle.Fill>
         </Rectangle>
-        <TabControl Margin="0,0,0,0">
+        <TabControl Margin="0,0,0,0" Background="#F6CE3E">
             <!--PESTAÑA MAIN VIEW-->
             <TabItem Header="Vista Principal">
                 <!--GRID PRINCIPAL DE LA PESTAÑA-->
@@ -603,7 +603,7 @@
             </TabItem>
 
             <!--REPORTING ANALITYCS-->
-            <!--Termina tab item para productos-->
+            <!--Inicia tab item para reportes-->
             <TabItem Header="Reportes">
                 <Grid Background="#F6CE3E">
                     <Grid.ColumnDefinitions>
@@ -631,6 +631,8 @@
                                 <ComboBoxItem Content="Producto popular"/>
                                 <ComboBoxItem Content="Reporte personalizado"/>
                             </ComboBox>
+
+                            <Button x:Name="btnLimpiarCamposReporte" Content="Limpiar busqueda" Grid.Column="2" Width="120" Height="30" Margin="10,0,0,0" Style = "{StaticResource btnPedidos}" IsEnabled="False" Click="BtnLimpiarCamposReporte_Click"/>
                         </Grid>
                         <!--Parte para busqueda por fecha y hora en pedidos-->
                         <Grid x:Name="ReporteDatetimeControls" Grid.Row="1" HorizontalAlignment="Center" >
@@ -642,7 +644,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" FontWeight="Bold">De: </Label>
+                            <Label Grid.Column="0" FontWeight="Bold">De:</Label>
                             <DatePicker x:Name="PickerReporteInicio" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" SelectedDateChanged="PickerReporteInicio_SelectedDateChanged"/>
                             <Label Grid.Column="2" FontWeight="Bold">a:</Label>
                             <DatePicker x:Name="PickerReporteFinal" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="False" SelectedDateChanged="PickerReporteFinal_SelectedDateChanged"/>
@@ -654,13 +656,101 @@
                     </Grid>
                 </Grid>
             </TabItem>
+            <!--Inicia tab item para backups-->
+            <TabItem Header="Base de Datos" GotFocus="TabItem_GotFocus">
+
+                <Grid x:Name="CreatesForm" MaxWidth="500" Margin="30,0,30,0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Padding="5" BorderBrush="Black" BorderThickness="3,3,3,3" CornerRadius="30,30,30,30" >
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                <GradientStop Color="Black" Offset="1"/>
+                                <GradientStop Color="#FF81ABF3" Offset="0.932"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect/>
+                        </Border.Effect>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Respaldo y Restauracion de Base de Datos</Label>
+                            <Label Grid.Row="1" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Guardar la base de datos en esta computadora:</Label>
+                            <Button x:Name="btnGuardarDBFile" Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,0,0" Height="30" Width="180" Style = "{StaticResource btnPedidos}" Background="#FF01B60A" Click="BtnGuardarDBFile_Click">Guardar BD en disco duro</Button>
+                            <Button x:Name="btnRestoreDBFile" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,0,0" Height="30" Width="200" Style = "{StaticResource btnPedidos}" Background="#FF6E11BB" Click="BtnRestoreDBFile_Click">Restablecer BD desde archivo</Button>
+
+                            <Border Grid.Row="3" BorderBrush="Black" BorderThickness="3" Padding="3" Margin="10,20,10,20">
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+
+                                    <Label  Grid.Row="0" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Guardar base de datos en Google Drive:</Label>
+                                    <Button x:Name="btnRespaldarGoogleDrive" Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,0" Height="30" Width="350" Style = "{StaticResource btnPedidos}" Click="BtnRespaldarGoogleDrive_Click">Guardar BD en Google Drive</Button>
+                                    <Button x:Name="btnRestaurarGoogleDrive" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,0" Height="30" Width="350" Style = "{StaticResource btnPedidos}" Background="#FF6E11BB" Click="BtnRestaurarGoogleDrive_Click">Restablecer BD desde Google Drive</Button>
+
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="4" BorderBrush="Black" BorderThickness="3" Padding="3" Margin="10,20,10,20">
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+
+                                    <Label Grid.Row="0" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Opciones de Google Drive:</Label>
+                                    <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14" FontWeight="Bold">Cuenta Actual:</Label>
+                                    <Label x:Name="lblActualGDAccount" Grid.Row="1" HorizontalAlignment="Right" FontSize="13">No hay cuentas vinculadas a la aplicacion.</Label>
+                                    <Button x:Name="btnSetGoogleDrive" Width="350" Grid.Row="2"  HorizontalAlignment="Center" Margin="0,0,0,0" Height="30"  Style = "{StaticResource btnPedidos}" Background="#FF2CA7CB" Click="BtnSetGoogleDrive_Click">Establecer Cuenta Google Drive</Button>
+                                    <Button x:Name="btnEliminarGoogleDrive" Width="350" Background="#FFDA3636" Grid.Row="3" HorizontalAlignment="Center" Margin="0,0,00,0" Height="30" Style = "{StaticResource btnPedidos}" Click="BtnEliminarGoogleDrive_Click">Desvincular Cuenta Google Drive</Button>
+
+                                </Grid>
+                            </Border>
+                            <!--<Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                            <RichTextBox x:Name="ww" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                            <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                            <TextBox x:Name="dd" Grid.Row="4" Margin="130,0,0,0" PreviewTextInput="TxtPrecioC_PreviewTextInput"/>
+                            <Grid Grid.Row="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                <Button x:Name="aa" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30"  Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Cargar Imagen</Button>
+                                <Button x:Name="s" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30" Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Quitar Imagen</Button>
+                                <TextBox x:Name="txtIagePahC" Visibility="Hidden" IsEnabled="False"></TextBox>
+                            </Grid>-->
+
+                            <!--<Button x:Name="sd1234" Grid.Row="6" Padding="5" Margin="0,10,0,10" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click" Style = "{StaticResource btnPedidos}" Background="#FF45B1C9" >Registrar item</Button>-->
+                        </Grid>
+                    </Border>
+
+                </Grid>
+            </TabItem>
         </TabControl>
 
-            <!--PROMPT-->
-            <!-- It's important that this is in the end of the XAML as it needs to be on top of everything else! -->
-            <Grid x:Name="InputBox" Visibility="Collapsed">
-                <Grid Background="Black" Opacity="0.5"/>
-                <Border
+        <!--PROMPT-->
+        <!-- It's important that this is in the end of the XAML as it needs to be on top of everything else! -->
+        <Grid x:Name="InputBox" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
             MinWidth="250"
             Background="Orange" 
             BorderBrush="Black" 
@@ -668,18 +758,18 @@
             CornerRadius="0,0,0,0" 
             HorizontalAlignment="Center" 
             VerticalAlignment="Center">
-                    <StackPanel>
-                        <TextBlock Margin="5" Text="Nombre de la Orden:" FontWeight="Bold" FontFamily="Cambria" />
-                        <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button x:Name="YesButton" Margin="5" Width="80" Content="Confirmar" Click="YesButton_Click" Style = "{StaticResource btnPedidos}"/>
-                            <Button x:Name="NoButton" Margin="5" Width="80" Content="Cancelar"  Click="NoButton_Click" Style = "{StaticResource btnPedidos}" />
-                        </StackPanel>
+                <StackPanel>
+                    <TextBlock Margin="5" Text="Nombre de la Orden:" FontWeight="Bold" FontFamily="Cambria" />
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="YesButton" Margin="5" Width="80" Content="Confirmar" Click="YesButton_Click" Style = "{StaticResource btnPedidos}"/>
+                        <Button x:Name="NoButton" Margin="5" Width="80" Content="Cancelar"  Click="NoButton_Click" Style = "{StaticResource btnPedidos}" />
                     </StackPanel>
-                </Border>
-            </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
 
-            <!--TERMINA PROMPT-->
+        <!--TERMINA PROMPT-->
 
     </Grid>
 </Window>

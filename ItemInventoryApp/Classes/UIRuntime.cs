@@ -199,7 +199,18 @@ namespace ItemInventoryApp.Classes
             var element = (Button)sender;
             //MessageBox.Show(element.Uid);
             DBHandler handlers = new DBHandler();
-            handlers.addItemtoPedido(Convert.ToInt32(element.Uid), this);
+
+            DatabaseModel DBInstance = new DatabaseModel();
+            DBInstance = handlers.UpdateDBObject();
+
+            if (!DBInstance.EditOn || DBInstance.TempPedido.id==DBInstance.LastPedidoID)
+            {
+                handlers.addItemtoPedido(Convert.ToInt32(element.Uid), this);
+            }
+            else
+            {
+                MessageBox.Show("Hay un pedido en edicion o creacion en este momento, se debe completar esa tarea primeramente para poder iniciar un pedido nuevo.");
+            }
         }
         #endregion
 
@@ -594,7 +605,11 @@ namespace ItemInventoryApp.Classes
             //MessageBox.Show("Eliminar item");
             var s = (Button)sender;
             DBHandler h = new DBHandler();
+            DatabaseModel DB = new DatabaseModel();
+            DB = h.UpdateDBObject();
+
             h.removetemfromPedido(Convert.ToInt32(s.Uid), this);
+            
         }
         #endregion
 

@@ -42,6 +42,7 @@ namespace ItemInventoryApp
             Global.TextBoxList = new List<TextBox>();
             Global.ValidationsHandler = new Validations();
             Global.Elements = new List<UIElement>();
+            Global.DriveService = new LDrive();
             //Create an instance of dbhandler        
 
             //Create the mainObject to retrieve de json data
@@ -81,6 +82,14 @@ namespace ItemInventoryApp
             Global.Elements.Add(PanelPedidos);
             //First Validation to the pedidos in progress
             Global.DBHandler.firstValidation(Global.DatbaseInstance.Pedidos);
+
+            DriveExists();
+
+        }
+
+        public void DriveExists()
+        {
+            lblActualGDAccount.Content = Directory.Exists("token.json") ? "Ya existe una cuenta Google Drive Vinculada" : "No hay cuentas vinculadas a la aplicacion.";
         }
 
         #region ResponsiveElementsModule
@@ -509,13 +518,14 @@ namespace ItemInventoryApp
         private void ConfirmarPedido_Click(object sender, RoutedEventArgs e)
         {
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-            if (!Global.DatbaseInstance.EditOn)
+            if (!Global.DatbaseInstance.EditOn || Global.DatbaseInstance.TempPedido.id == Global.DatbaseInstance.LastPedidoID)
             {
                 InputBox.Visibility = System.Windows.Visibility.Visible;
             }
             else
             {
                 Global.DBHandler.EditPedido(Global.DatbaseInstance.TempPedido.id);
+                ConfirmarPedido.IsEnabled = false;
             }
         }
 
@@ -588,30 +598,45 @@ namespace ItemInventoryApp
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
             //Global.DatbaseInstance.Pedidos.RemoveAt();
             //Pintar el primer pedido disponible o limpiar en caso de que no encuentre
-            try
+            if (!Global.DatbaseInstance.EditOn)
             {
-                if (Global.DBHandler.DeletePedidoFromQueue(Global.DatbaseInstance.Pedidos.FindIndex(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid)))))
+                try
                 {
-                    MessageBox.Show("Se ha eliminado correctamente el pedido de la lista de pedidos confirmados.");
+                    if (Global.DBHandler.DeletePedidoFromQueue(Global.DatbaseInstance.Pedidos.FindIndex(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid)))))
+                    {
+                        MessageBox.Show("Se ha eliminado correctamente el pedido de la lista de pedidos confirmados.");
+                    }
+                    Global.UIRuntime.DrawSelectedPedido(Global.DatbaseInstance.Pedidos[Global.DBHandler.GetNextConfirmedPedido("index")]);
+                    Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                    Global.UIRuntime.validatebtnPedidoNextAndBack(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid));
                 }
-                Global.UIRuntime.DrawSelectedPedido(Global.DatbaseInstance.Pedidos[Global.DBHandler.GetNextConfirmedPedido("index")]);
-                Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-                Global.UIRuntime.validatebtnPedidoNextAndBack(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid));
+                catch (Exception ex)
+                {
+                    var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
+                    element.Children.Clear();
+                    btnEntregarPedido.IsEnabled = false;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
-                element.Children.Clear();
-                btnEntregarPedido.IsEnabled = false;
+                MessageBox.Show("Hay un pedido en Creacion o Edicion, debe completar ese pedido primero antes de eliminar registros.");
             }
         }
 
         private void BtnEditarPedidoEnCola_Click(object sender, RoutedEventArgs e)
         {
+            
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-            Pedido pedido = Global.DatbaseInstance.Pedidos.Find(x => x.id.Equals(Convert.ToInt32(new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo").Uid)));
+            if (!Global.DatbaseInstance.EditOn)
+            {
+                Pedido pedido = Global.DatbaseInstance.Pedidos.Find(x => x.id.Equals(Convert.ToInt32(new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo").Uid)));
 
-            Global.DBHandler.LoadPedidoToEdit(pedido);
+                Global.DBHandler.LoadPedidoToEdit(pedido);
+            }
+            else
+            {
+                MessageBox.Show("Hay un pedido en edicion o creacion en este momento, se debe completar esa tarea primeramente para poder editar este pedido.");
+            }
         }
 
         private void BtnEntregarPedido_Click(object sender, RoutedEventArgs e)
@@ -653,8 +678,16 @@ namespace ItemInventoryApp
         {
             txtSearchPedido.Clear();
             PickerPedido.DisplayDate = DateTime.Now;
-            ComboHoraInicial.Items.Clear();
-            ComboHoraFinal.Items.Clear();
+
+            try
+            {
+                ComboHoraInicial.Items.Clear();
+                ComboHoraFinal.Items.Clear();
+            }
+            catch (Exception)
+            {
+
+            }
 
             txtSearchPedido.IsEnabled = ComboSearchPedido.SelectedItem != null ? true : false;
             string selection = ((ComboBoxItem)ComboSearchPedido.SelectedItem).Content.ToString();
@@ -693,15 +726,6 @@ namespace ItemInventoryApp
 
         private void BtnFechaPedido_Click(object sender, RoutedEventArgs e)
         {
-            //PARA GENERAR REPORTE DE QUERY A EXCEL
-            //IList<Pedido> Pedidos = new List<Pedido>();
-            //foreach (var item in Global.DBHandler.GetAllPedidos())
-            //{
-            //    Pedidos.Add(item);
-            //}
-            //var DT = new ExcelGenerator().ToDataTable<Pedido>(Pedidos);
-            //new ExcelGenerator().GenerateExcel(DT);
-
             try
             {
                 if (!ComboHoraInicial.SelectedItem.Equals(null) && !ComboHoraFinal.SelectedItem.Equals(null) && PickerPedido.SelectedDate != null)
@@ -735,12 +759,19 @@ namespace ItemInventoryApp
 
         private void ComboHoraInicial_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboHoraFinal.ItemsSource = null;
-            ComboHoraFinal.Items.Clear();
-            int hraInicial = Convert.ToInt32(((DataRowView)ComboHoraInicial.SelectedItem).Row[0]);
-            if (ComboHoraFinal.Items.Count.Equals(0))
+            try
             {
-                Global.UIRuntime.PopulateComboFecha(ComboHoraFinal, Convert.ToInt32(hraInicial), "final");
+                ComboHoraFinal.ItemsSource = null;
+                ComboHoraFinal.Items.Clear();
+                int hraInicial = Convert.ToInt32(((DataRowView)ComboHoraInicial.SelectedItem).Row[0]);
+                if (ComboHoraFinal.Items.Count.Equals(0))
+                {
+                    Global.UIRuntime.PopulateComboFecha(ComboHoraFinal, Convert.ToInt32(hraInicial), "final");
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -765,11 +796,21 @@ namespace ItemInventoryApp
                     if (PickerReporteInicio.SelectedDate != null)
                     {
                         fechas = PickerReporteInicio.SelectedDate.ToString() + "|" + PickerReporteFinal.SelectedDate.ToString();
+
+                        Global.DBHandler.SaveReport(reportType, path, filename, fechas);
+
+                    }
+                    else
+                    {
+                        var resp = MessageBox.Show("No se ha seleccionado una fecha para el reporte, si los campos estan vacios buscaran datos desde la fecha inicial " +
+                                        "a dia de hoy, ¿Desea continuar generando el reporte? Esta accion puede tomar tiempos largos de respuesta.", "Advertencia", MessageBoxButton.YesNo);
+                        if (resp.ToString().Equals("Yes"))
+                        {
+                            fechas = new DateTime(1990, 01, 01).ToString() + "|" +DateTime.Now.ToString();
+                            Global.DBHandler.SaveReport(reportType, path, filename, fechas);
+                        }
                     }
 
-                    var pathFinal = Global.DBHandler.SaveReport(reportType, path, filename, fechas);
-
-                    MessageBox.Show("Se ha generado el reporte correctamente en la ruta: "+pathFinal);
                 }
             }
             else
@@ -778,13 +819,12 @@ namespace ItemInventoryApp
             }
         }
 
-        #endregion
-
         private void PickerReporteInicio_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!PickerReporteInicio.SelectedDate.Equals(null))
             {
                 PickerReporteFinal.IsEnabled = true;
+                btnLimpiarCamposReporte.IsEnabled = true;
             }
         }
 
@@ -804,6 +844,131 @@ namespace ItemInventoryApp
             {
                 btnGenerarReporte.IsEnabled = true;
             }
+        }
+
+        private void BtnLimpiarCamposReporte_Click(object sender, RoutedEventArgs e)
+        {
+            PickerReporteInicio.SetCurrentValue(DatePicker.SelectedDateProperty, null);
+            PickerReporteFinal.SetCurrentValue(DatePicker.SelectedDateProperty, null);
+            btnGenerarReporte.IsEnabled = false;
+        }
+
+        #endregion
+
+        #region GoogleDriveModule
+        private async void BtnSetGoogleDrive_Click(object sender, RoutedEventArgs e)
+        {
+            if (Directory.Exists("token.json"))
+            {
+                var resp = MessageBox.Show("Ya existe una cuenta de Google Drive vinculada a la aplicacion, ¿Desea vincular una nueva cuenta?", "Advertencia", MessageBoxButton.YesNo);
+
+                if (resp.ToString().Equals("Yes"))
+                {
+                    try
+                    {
+                        //Delete cuenta
+                        Directory.Delete("token.json", true);
+                        //Generar cuenta nueva
+                        await Global.DriveService.inizialiceDriveServiceAsync();
+                        lblActualGDAccount.Content = "Vinculando Cuenta...";
+                        MessageBox.Show("Se ha vinculado exitosamente la cuenta.");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ha ocurrido un error tratando de eliminar la cuenta actual de google drive. Error: "+ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                Global.DriveService.inizialiceDriveService();
+            }
+        }
+        
+
+        private void BtnEliminarGoogleDrive_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Directory.Delete("token.json", true);
+                MessageBox.Show("Se ha desvinculado la cuenta exitosamente.");
+                DriveExists();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ha ocurrido un error tratando de eliminar la cuenta actual de google drive. Error: " + ex.Message);
+            }
+        }
+
+        private async void BtnRespaldarGoogleDrive_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                    //Upload el archivo
+                    string path = @"C:\InventoryApp\_InventoryDB.json";
+                    
+                    if (await Global.DriveService.upload(path, "_InventoryDB.json"))
+                    {
+                        MessageBox.Show("Se ha guardado exitosamente la BD actual en el Google Drive vinculado a la aplicacion.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se ha pudo guardar la BD actual en el Google Drive vinculado a la aplicacion.");
+                    }
+                
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show("Ha ocurrido un error en el proceso de respaldo. Error: " + ex.Message);
+
+            }
+        }
+
+        private async void BtnRestaurarGoogleDrive_Click(object sender, RoutedEventArgs e)
+        {
+            await Global.DBHandler.RestoreGoogleDriveDB(Global.DriveService);
+        }
+        #endregion
+
+        #region DBLocal
+        private void BtnGuardarDBFile_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "LocalDatabase|*.json";
+            saveFileDialog.Title = "Guardar Base de Datos Local";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filename = saveFileDialog.SafeFileName;
+                string path = saveFileDialog.FileName.Substring(0, (saveFileDialog.FileName.Length - saveFileDialog.SafeFileName.Length));
+
+                if(Global.DBHandler.SaveDBLocal(path, filename))
+                {
+                    MessageBox.Show("Se ha guardado correctamente la BD en el disco duro.");
+                }
+                else
+                {
+                    MessageBox.Show("No se ha podido crear el archivo en la computadora, verifique que tenga acceso de escritura en la ruta especificada o intente guardarla en otra ubicacion del disco duro.");
+                }
+            }
+        }
+
+        private void BtnRestoreDBFile_Click(object sender, RoutedEventArgs e)
+        {
+        
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string fullpath = openFileDialog.FileName;
+                Global.DBHandler.RestoreDBLocal(fullpath);
+            }
+        }
+        #endregion
+
+        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            DriveExists();
         }
     } //End of the way
 }
