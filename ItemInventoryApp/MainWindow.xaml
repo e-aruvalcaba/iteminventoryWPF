@@ -4,9 +4,771 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ItemInventoryApp"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        mc:Ignorable="d" Height="499.047" Width="692.267" MinHeight="500" MinWidth="881.992" SizeChanged="Window_SizeChanged" Title="Sin titulo Provisional">
+
+    <Window.Resources>
+        <Style x:Key = "btnPedidos" TargetType = "Button">
+            <Setter Property = "Height" Value = "35" />
+            <Setter Property = "Width" Value = "120" />
+            <Setter Property = "FontFamily"  Value="Comic Sans MS"/>
+            <Setter Property = "Foreground" Value = "White" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property = "FontSize" Value = "12" />
+            <Setter Property = "Margin" Value = "30,20,30,30" />
+            <Setter Property = "TextBlock.TextAlignment" Value="Center" />
+            <Setter Property = "Background" Value="Black"/>
+            <Setter Property = "HorizontalAlignment" Value="Left"/>
+            <Setter Property = "VerticalAlignment" Value="Bottom"/>
+            <Setter Property = "Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" BorderThickness="1,1,1,1" >
+                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsPressed"  Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>
+                <Trigger Property="IsEnabled"  Value="false">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter Property="Background" Value="DeepSkyBlue"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- _____________________________________________________Boton Eliminar Pedido Style_________________________________________ -->
+        <Style x:Key = "btnEliminarPedido" TargetType = "Button">
+            <Setter Property = "Height" Value = "20" />
+            <Setter Property = "Width" Value = "50" />
+            <Setter Property = "FontFamily"  Value="Comic Sans MS"/>
+            <Setter Property = "Foreground" Value = "White" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property = "FontSize" Value = "11" />
+            <Setter Property = "Background" Value="Black"/>
+            <Setter Property = "Margin" Value="15,0,5,5"/>
+            <Setter Property = "HorizontalAlignment" Value="Left"/>
+            <Setter Property = "VerticalAlignment" Value="Center"/>
+            <Setter Property = "Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="3">
+                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsPressed"  Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!--HorizontalAlignment="Center" VerticalAlignment="Center" Background="DarkOrange" Foreground="Black" Margin="5,0,0,5" IsEnabled="True"-->
+
+        <!-- _____________________________________________________Boton Editar Pedido Style_________________________________________ -->
+        <Style x:Key = "btnEditarPedido" TargetType = "Button">
+            <Setter Property = "FontFamily"  Value="Comic Sans MS"/>
+            <Setter Property = "Foreground" Value = "Black" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property = "Background" Value="Orange"/>
+            <Setter Property = "Margin" Value="0,5,0,10"/>
+            <Setter Property = "HorizontalAlignment" Value="Center"/>
+            <Setter Property = "VerticalAlignment" Value="Center"/>
+            <Setter Property = "Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="3">
+                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="DarkOrange"/>
+
+                </Trigger>
+                <!--<Trigger Property="IsPressed"  Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="LightBlue"/>
+                </Trigger>-->
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FFC10000" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <TabControl Margin="0,0,0,0" Background="#F6CE3E">
+            <!--PESTAÑA MAIN VIEW-->
+            <TabItem Header="Vista Principal">
+                <!--GRID PRINCIPAL DE LA PESTAÑA-->
+                <Grid Background="#FF7A7A7A">
+                    <!--GRID DE IZQUIERDA-->
+                    <Grid Background="#F6CE3E">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <!--Tabla para los items de los pedidos-->
+                        <Grid x:Name="GridPedidos" Background="#F6CE3E" Grid.Row="0">
+                            <!--<Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>-->
+
+                            <!--COMIENZAN LAS PRUEBAS PARA EL GRID DE LOS PEDIDOS-->
+
+                            <DockPanel x:Name="Pedidos" Background="White" Width="180" HorizontalAlignment="Left" >
+                                <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <!--A partir de aqui se clonaran los pedidos en tiempo real-->
+                                    <StackPanel x:Name="PedidosMainViewer" Background="#F6CE3E">
+                                        <Border BorderBrush="#8860D0" DockPanel.Dock="Top">
+                                            <DockPanel x:Name="PanelPedidos">
+                                                <!--<Canvas DockPanel.Dock="Top" Height="100">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*"/>
+                                                            <RowDefinition Height="*"/>
+                                                            <RowDefinition Height="auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        
+                                                        -->
+                                                <!--<TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
+                                                            Item #1
+                                                        </TextBlock>-->
+                                                <!--
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            
+                                                            <Button Grid.Column="1" Content=" - " Margin="5,5,5,5" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#FFE84040" Style = "{StaticResource btnEliminarPedido}" />
+                                                            <Button Grid.Column="2" Content=" + " Margin="5,5,5,5" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#FF138F00" Style = "{StaticResource btnEliminarPedido}" />
+
+                                                            <TextBlock Grid.Column="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                            Cantidad x 450
+                                                            </TextBlock>
+
+                                                        </Grid>
+                                                        <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
+                                                            Orden de Tacos de Bisteck
+                                                        </TextBlock>
+                                                        <TextBlock Background="#232D33" Foreground="White" FontWeight="Bold" Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
+                                                            Total: $345
+                                                        </TextBlock>
+                                                        <Button Grid.Row="2" Content="Eliminar" Style = "{StaticResource btnEliminarPedido}"/>
+                                                    </Grid>
+                                                </Canvas>-->
+
+                                            </DockPanel>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <!--Termina clonacion de pedidos en tiempo real-->
+                                </ScrollViewer>
+                            </DockPanel>
+                            <!--TERMINAN LAS PRUEBAS PARA EL GRI DE LOS PEDIDOS-->
+                        </Grid>
+
+                        <Grid Grid.Row="2" Margin="0,0,0,0" HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Total del pedido en cuestion-->
+                            <TextBlock x:Name="descTotalPedido" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14" Margin="0,0,15,0" Text="Total del pedido:" Visibility="Hidden"/>
+                            <TextBlock x:Name="TotalPedido" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="25" Margin="0,0,15,0" Text="$0"/>
+                            <!--Parte del boton para confirmar pedido-->
+                            <Button x:Name="ConfirmarPedido" IsEnabled="False" Grid.Row="2" Grid.Column="1" Content="Confirmar Pedido"  Style = "{StaticResource btnPedidos}" Click="ConfirmarPedido_Click">
+                                <Button.Effect>
+                                    <DropShadowEffect/>
+                                </Button.Effect>
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+
+
+                    <!--GRID DE DERECHA-->
+                    <Grid Background="#F6CE3E" HorizontalAlignment="Right" Width="175" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="100"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Botones para controlar pedido siguiente anterior-->
+                        <Grid Grid.Row="0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="btnAnteriorPedido"  Grid.Column="0" Margin="5,5,5,5" Width="75" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Anterior" Style = "{StaticResource btnPedidos}" IsEnabled="False" Click="BtnAnteriorPedido_Click"/>
+                            <Button x:Name="btnSiguientePedido" Grid.Column="1" Margin="5,5,5,5" Width="75" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Siguiente" Style = "{StaticResource btnPedidos}" IsEnabled="False" Click="BtnSiguientePedido_Click"/>
+
+                        </Grid>
+                        <!--Termina Botones para controlar pedido siguiente anterior-->
+
+                        <!--Informacion del pedido actual-->
+                        <Grid x:Name="PedidoViewer" Grid.Row="1" Margin="4,0,5,0"  Height="auto" MinHeight="300" Visibility="Hidden">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="textNombrePedido" Grid.Row="0" Foreground="Black" Margin="0,0,0,0" MaxWidth="140" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow">Nombre del pedido</TextBlock>
+                            <ScrollViewer Grid.Row="1" HorizontalAlignment="Left" Height="auto" Width="166">
+                                <DockPanel x:Name="CurrentPedidoInfo">
+                                    <!--A partir de aqui se clonaran los elementos para llenar la informacion del pedido que se esta atendiendo-->
+
+                                    <!--<Grid DockPanel.Dock="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="1"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Grid.Row="0" Background="#C9C8C8">
+                                            <TextBlock Foreground="Black" Margin="0,0,0,0" FontSize="14" FontWeight="Bold" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Center">32</TextBlock>
+                                        </Border>
+
+                                        <Border Grid.Column="1" Grid.Row="0" Background="#C9C8C8" DockPanel.Dock="Top" VerticalAlignment="Top">
+                                            <TextBlock Foreground="Black" Margin="5,0,0,0" FontSize="11" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="WrapWithOverflow">Ordenes de tacos de bisteck</TextBlock>
+                                        </Border>
+                                    </Grid>
+
+                                    <Grid DockPanel.Dock="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="1"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Grid.Row="0" Background="#E8E8E8" >
+                                            <TextBlock Foreground="Black" Margin="0,0,0,0" FontSize="12.5" FontWeight="Bold" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Center">5</TextBlock>
+                                        </Border>
+
+                                        <Border Grid.Column="1" Grid.Row="0" Background="#E8E8E8" DockPanel.Dock="Top" VerticalAlignment="Top">
+                                            <TextBlock Foreground="Black" Margin="5,0,0,0" FontSize="12.5" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="WrapWithOverflow">Ordenes de tacos de bisteck</TextBlock>
+                                        </Border>
+                                    </Grid>-->
+
+                                    <!--<Border Background="#E8E8E8" DockPanel.Dock="Top" VerticalAlignment="Top">
+                                        <TextBlock  Foreground="Black" Margin="5,0,0,0" FontSize="12.5" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="WrapWithOverflow">Orden information</TextBlock>
+                                    </Border>-->
+
+                                    <!--Termina clonacion de los elementos para llenar la informacion del pedido que se esta atendiendo-->
+                                </DockPanel>
+                            </ScrollViewer>
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button x:Name="btnEditarPedidoEnCola" Grid.Column="0" Padding="3" FontSize="10" Content="Editar Pedido" Style = "{StaticResource btnEditarPedido}" Click="BtnEditarPedidoEnCola_Click"/>
+                                <Button x:Name="btnEliminarPedidoEnCola" Background="Red" Grid.Column="1" Padding="3"  FontSize="10" Content="Eliminar Pedido" Style = "{StaticResource btnEditarPedido}" Click="BtnEliminarPedidoEnCola_Click"/>
+
+                            </Grid>
+                        </Grid>
+
+                        <Button x:Name="btnEntregarPedido" Grid.Row="2" Content="Entregar Pedido" HorizontalAlignment="Right" Style = "{StaticResource btnPedidos}"  Margin="0,0,35,30" IsEnabled="False" Click="BtnEntregarPedido_Click"/>
+                    </Grid>
+                    <!--GRID DEL CENTRO-->
+                    <Grid Margin="180, 0, 180, 0">
+                        <!--A PARTIR DE AQUI SE CLONARA EL SIGUIENTE DOCK PANEL-->
+                        <DockPanel x:Name="DockMain">
+                            <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel x:Name="MainViewer">
+                                    <!--<Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
+                                        <DockPanel Height="100" >
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
+                                                <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                            </Border>
+                                            <Canvas x:Name="CanvasDatos" Height="100" SizeChanged="CanvasDatos_SizeChanged">
+                                                <TextBlock Padding="5">
+                                                    Tacos al Vapor $ 35
+                                                </TextBlock >
+                                                <TextBlock x:Name="TextoDescripcion" Height="70" Width="348" Padding="5" Margin="0,30,0,0" TextWrapping="WrapWithOverflow">
+                                                    5 Deliciosos tacos bañados en salsa de habanero. asdjaksd akjsd jkasdjask ajskasdk
+                                                </TextBlock >
+                                            </Canvas>
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
+                                                
+                                    <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                    
+                                                <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
+                                            </Border>
+                                        </DockPanel>
+                                    </Border>
+                                    <Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
+                                        <DockPanel Height="100" >
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="0,0,3,0" CornerRadius="5" Padding="3">
+                                                <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                            </Border>
+                                            <Canvas x:Name="CanvasDsatos" Height="100">
+                                                <TextBlock Padding="5">
+                                                    Tacos al Vapor $ 35
+                                                </TextBlock >
+                                                <TextBlock x:Name="TexstoDescripcion" Height="70" Width="348" Padding="5" Margin="0,30,0,0" TextWrapping="WrapWithOverflow">
+                                                    5 Deliciosos tacos bañados en salsa de habanero. asdjaksd akjsd jkasdjask ajskasdk
+                                                </TextBlock >
+                                            </Canvas>
+                                            <Border Height="100" Width="100" BorderBrush="#8860D0" BorderThickness="3,0,0,0" CornerRadius="5" Padding="3" HorizontalAlignment="Right">
+                                                
+                                    <Image Source="https://upload.wikimedia.org/wikipedia/commons/3/30/Googlelogo.png"/>
+                                    
+                                                <Button Content="Agregar" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30"/>
+                                            </Border>
+                                        </DockPanel>
+                                    </Border>-->
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                        <!--TERMINA CLONACION DE LOS DOCK PANELS PRINCIPALES DEL CENTRO-->
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <!-- TAB para Operaciones con Productos-->
+            <TabItem Header="Productos">
+                <Grid x:Name="ProductMainViewer" Background="#F6CE3E">
+                    <!--Tab para operaciones con productos-->
+                    <TabControl Background="#F6CE3E">
+                        <TabItem Header="Crear Nuevo Producto">
+                            <Grid x:Name="CreateForm" MaxWidth="400" Background="#FFAEC1D4" Margin="30,70,30,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Crear Nuevo Producto</Label>
+                                <Grid   Grid.Row="1" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
+                                    <TextBox x:Name="txtBoxNombreC" Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                    <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                                    <RichTextBox x:Name="txtDescC" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                    <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                                    <TextBox x:Name="txtPrecioC" Grid.Row="4" Margin="130,0,0,0" PreviewTextInput="TxtPrecioC_PreviewTextInput"/>
+                                    <Grid Grid.Row="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                        <Button x:Name="btnLoadImage" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30"  Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Cargar Imagen</Button>
+                                        <Button x:Name="ClearImage" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30" Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Quitar Imagen</Button>
+                                        <TextBox x:Name="txtImagePahC" Visibility="Hidden" IsEnabled="False"></TextBox>
+                                    </Grid>
+
+                                    <Button x:Name="btnCreateNewProduct" Grid.Row="6" Padding="5" Margin="0,10,0,10" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click" Style = "{StaticResource btnPedidos}" Background="#FF45B1C9" >Registrar item</Button>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+                        <!--Tab para Editar productos-->
+                        <TabItem Header="Editar Producto">
+                            <Grid Background="#F6CE3E">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="350" />
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Inicia columna de la izquierda-->
+                                <Grid x:Name="EditForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Editar Producto</Label>
+                                    <Grid   Grid.Row="1" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14">Nombre del Item:</Label>
+                                        <TextBox x:Name="txtNombreE" IsEnabled="False" Grid.Row="1" Margin="130,0,0,0"></TextBox>
+                                        <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                                        <RichTextBox x:Name="txtDescE" IsEnabled="False" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                                        <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                                        <TextBox x:Name="txtPriceE" IsEnabled="False" Grid.Row="4" Margin="130,0,0,0" PreviewTextInput="TxtPriceE_PreviewTextInput"></TextBox>
+                                        <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                        <TextBox IsEnabled="False" x:Name="txtImagePahE" Grid.Row="5" Margin="130,0,0,0"></TextBox>
+                                        <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDE" Grid.Row="5"></TextBox>
+                                        <Button x:Name="btnEditar" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnEditar_Click" Style = "{StaticResource btnPedidos}" Background="Orange" IsEnabled="False">Editar item</Button>
+                                    </Grid>
+                                </Grid>
+                                <!--Termina columna de la izquierda-->
+
+                                <!--Inicia Columna de la derecha-->
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="70"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <!--Controles para consulta-->
+                                    <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Label FontSize="13" Margin="0,20,200,20" Width="80" >Buscar por:</Label>
+                                        <ComboBox x:Name="ComboEdit" Margin="0,20,20,20" Width="100" SelectionChanged="ComboEdit_SelectionChanged">
+                                            <ComboBoxItem Content="ID"/>
+                                            <ComboBoxItem Content="Nombre"/>
+                                        </ComboBox>
+                                        <TextBox x:Name="txtSearchE" Margin="235, 20, 20, 20" Width="130" IsEnabled="False" PreviewTextInput="TxtSearchE_PreviewTextInput" KeyUp="TxtSearchE_KeyUp"/>
+                                    </Grid>
+
+                                    <!--<Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Button IsEnabled="False" x:Name="btnSearchE" Click="BtnSearchE_Click">Buscar Ahora</Button>
+                                    </Grid>-->
+                                    <!--DatagridView-->
+                                    <DataGrid x:Name="DGEdit" Background="Gray" Margin="0,0,0,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGEdit_MouseDoubleClick">
+                                    </DataGrid>
+
+                                </Grid>
+                                <!--Termina Columna de la derecha-->
+                            </Grid>
+                        </TabItem>
+                        <!--Tab para Eliminar productos-->
+                        <TabItem Header="Eliminar Producto">
+                            <Grid Background="#F6CE3E">
+                                <Grid.ColumnDefinitions>
+                                    <!--<ColumnDefinition Width="350" />-->
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Inicia columna de la izquierda-->
+                                <!--<Grid x:Name="DeleteForm" MaxWidth="400" Background="#FFAEC1D4" Margin="10,70,10,70" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Eliminar Producto</Label>
+                                    <Grid   Grid.Row="1" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14" >Nombre del Item:</Label>
+                                        <TextBox x:Name="txtNombreDel" Grid.Row="1" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                                        <RichTextBox x:Name="txtDescDel" Grid.Row="3" Margin="0,0,0,0" Height="100" IsEnabled="False"></RichTextBox>
+                                        <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                                        <TextBox x:Name="txtPriceDel" Grid.Row="4" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <Label Grid.Row="5" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                        <TextBox x:Name="txtImgPahDel" Grid.Row="5" Margin="130,0,0,0" IsEnabled="False"></TextBox>
+                                        <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDEDel" Grid.Row="5"></TextBox>
+                                        <Button x:Name="btnDeleteItem" Grid.Row="6" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnDeleteItem_Click" >Eliminar item</Button>
+                                    </Grid>
+                                </Grid>-->
+                                <!--Termina columna de la izquierda-->
+
+                                <!--Inicia Columna de la derecha-->
+                                <!--<Grid Grid.Column="1">-->
+                                <Grid Grid.Column="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="70"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <!--Controles para consulta-->
+                                    <Grid Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Label FontSize="13" Margin="0,20,200,20" Width="80" >Buscar por:</Label>
+                                        <ComboBox x:Name="comboEliminar"  Margin="0,20,20,20" Width="100" SelectionChanged="ComboEliminar_SelectionChanged">
+                                            <ComboBoxItem Content="ID"/>
+                                            <ComboBoxItem Content="Nombre"/>
+                                        </ComboBox>
+                                        <TextBox x:Name="txtSearchDel" Margin="235, 20, 20, 20" Width="130" IsEnabled="False" PreviewTextInput="TxtSearchDel_PreviewTextInput" KeyUp="TxtSearchDel_KeyUp"/>
+                                    </Grid>
+
+                                    <!--<Grid Visibility="Hidden" Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Button x:Name="btnSearchDel" IsEnabled="False" Click="BtnSearchDel_Click">Buscar Ahora</Button>
+                                    </Grid>-->
+                                    <!--DatagridView-->
+                                    <DataGrid x:Name="DGDelete" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick">
+                                    </DataGrid>
+                                </Grid>
+                                <!--Termina Columna de la derecha-->
+                            </Grid>
+                        </TabItem>
+                        <!--Termina tab control para operaciones con productos-->
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <!--Termina tab item para productos-->
+            <TabItem Header="Pedidos" Loaded="TabItem_Loaded">
+                <Grid Background="#F6CE3E">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Inicia Columna de la derecha-->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <!--Controles para consulta-->
+                        <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,15,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" FontSize="13" FontWeight="Bold">Buscar por:</Label>
+                            <ComboBox Grid.Column="1" Width="100" x:Name="ComboSearchPedido" SelectionChanged="ComboSearchPedido_SelectionChanged">
+                                <ComboBoxItem Content="ID"/>
+                                <ComboBoxItem Content="Nombre"/>
+                                <ComboBoxItem Content="Fecha"/>
+                            </ComboBox>
+                            <TextBox Grid.Column="2" Width="100" Margin="0,0,0,0" x:Name="txtSearchPedido" IsEnabled="False" PreviewTextInput="TxtSearchPedido_PreviewTextInput" KeyUp="TxtSearchPedido_KeyUp"/>
+                        </Grid>
+                        <!--Parte para busqueda por fecha y hora en pedidos-->
+                        <Grid x:Name="PedidoDatetimeControls" Grid.Row="1" HorizontalAlignment="Center" Visibility="Hidden">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <DatePicker x:Name="PickerPedido" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <!--Combo Hora inicial-->
+                            <ComboBox x:Name="ComboHoraInicial" Grid.Column="1" Width="100" Margin="10,0,0,0" SelectionChanged="ComboHoraInicial_SelectionChanged"/>
+                            <!--Combo Hora Final-->
+                            <ComboBox x:Name="ComboHoraFinal" Grid.Column="2" Width="100" Margin="10,0,0,0"/>
+                            <Button x:Name="btnFechaPedido" Content="Buscar" Grid.Column="3" Width="80" Height="30" Margin="10,0,0,0" Style = "{StaticResource btnPedidos}" Click="BtnFechaPedido_Click"/>
+                        </Grid>
+
+                        <!--DatagridView-->
+                        <DataGrid x:Name="DGSearchPedido" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick" Grid.ColumnSpan="2">
+                        </DataGrid>
+                    </Grid>
+                    <!--Termina Columna de la derecha-->
+                </Grid>
+            </TabItem>
+
+            <!--REPORTING ANALITYCS-->
+            <!--Inicia tab item para reportes-->
+            <TabItem Header="Reportes">
+                <Grid Background="#F6CE3E">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Inicia Columna de la derecha-->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <!--Controles para consulta-->
+                        <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,15,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" FontSize="13" FontWeight="Bold">Generar reporte:</Label>
+                            <ComboBox Grid.Column="1" Width="100" x:Name="ComboReporte" SelectionChanged="ComboReporte_SelectionChanged">
+                                <ComboBoxItem Content="Utilidades"/>
+                                <ComboBoxItem Content="Producto popular"/>
+                                <ComboBoxItem Content="Reporte personalizado"/>
+                            </ComboBox>
+
+                            <Button x:Name="btnLimpiarCamposReporte" Content="Limpiar busqueda" Grid.Column="2" Width="120" Height="30" Margin="10,0,0,0" Style = "{StaticResource btnPedidos}" IsEnabled="False" Click="BtnLimpiarCamposReporte_Click"/>
+                        </Grid>
+                        <!--Parte para busqueda por fecha y hora en pedidos-->
+                        <Grid x:Name="ReporteDatetimeControls" Grid.Row="1" HorizontalAlignment="Center" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" FontWeight="Bold">De:</Label>
+                            <DatePicker x:Name="PickerReporteInicio" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" SelectedDateChanged="PickerReporteInicio_SelectedDateChanged"/>
+                            <Label Grid.Column="2" FontWeight="Bold">a:</Label>
+                            <DatePicker x:Name="PickerReporteFinal" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="False" SelectedDateChanged="PickerReporteFinal_SelectedDateChanged"/>
+                            <Button x:Name="btnGenerarReporte" Content="Generar" Grid.Column="4" Width="80" Height="30" Margin="10,0,0,0" Style = "{StaticResource btnPedidos}" Click="BtnGenerarReporte_Click" IsEnabled="False"/>
+                        </Grid>
+
+                        <!--DatagridView-->
+                        <DataGrid x:Name="DGReporte" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick" Grid.ColumnSpan="2"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <!--Inicia tab item para backups-->
+            <TabItem Header="Base de Datos" GotFocus="TabItem_GotFocus">
+
+                <Grid x:Name="CreatesForm" MaxWidth="500" Margin="30,0,30,0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Padding="5" BorderBrush="Black" BorderThickness="3,3,3,3" CornerRadius="30,30,30,30" >
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                <GradientStop Color="Black" Offset="1"/>
+                                <GradientStop Color="#FF81ABF3" Offset="0.932"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect/>
+                        </Border.Effect>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Label FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0">Respaldo y Restauracion de Base de Datos</Label>
+                            <Label Grid.Row="1" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Guardar la base de datos en esta computadora:</Label>
+                            <Button x:Name="btnGuardarDBFile" Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,0,0" Height="30" Width="180" Style = "{StaticResource btnPedidos}" Background="#FF01B60A" Click="BtnGuardarDBFile_Click">Guardar BD en disco duro</Button>
+                            <Button x:Name="btnRestoreDBFile" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,0,0" Height="30" Width="200" Style = "{StaticResource btnPedidos}" Background="#FF6E11BB" Click="BtnRestoreDBFile_Click">Restablecer BD desde archivo</Button>
+
+                            <Border Grid.Row="3" BorderBrush="Black" BorderThickness="3" Padding="3" Margin="10,20,10,20">
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+
+                                    <Label  Grid.Row="0" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Guardar base de datos en Google Drive:</Label>
+                                    <Button x:Name="btnRespaldarGoogleDrive" Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,0" Height="30" Width="350" Style = "{StaticResource btnPedidos}" Click="BtnRespaldarGoogleDrive_Click">Guardar BD en Google Drive</Button>
+                                    <Button x:Name="btnRestaurarGoogleDrive" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,0" Height="30" Width="350" Style = "{StaticResource btnPedidos}" Background="#FF6E11BB" Click="BtnRestaurarGoogleDrive_Click">Restablecer BD desde Google Drive</Button>
+
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="4" BorderBrush="Black" BorderThickness="3" Padding="3" Margin="10,20,10,20">
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+
+                                    <Label Grid.Row="0" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Opciones de Google Drive:</Label>
+                                    <Label Grid.Row="1" HorizontalAlignment="Left" FontSize="14" FontWeight="Bold">Cuenta Actual:</Label>
+                                    <Label x:Name="lblActualGDAccount" Grid.Row="1" HorizontalAlignment="Right" FontSize="13">No hay cuentas vinculadas a la aplicacion.</Label>
+                                    <Button x:Name="btnSetGoogleDrive" Width="350" Grid.Row="2"  HorizontalAlignment="Center" Margin="0,0,0,0" Height="30"  Style = "{StaticResource btnPedidos}" Background="#FF2CA7CB" Click="BtnSetGoogleDrive_Click">Establecer Cuenta Google Drive</Button>
+                                    <Button x:Name="btnEliminarGoogleDrive" Width="350" Background="#FFDA3636" Grid.Row="3" HorizontalAlignment="Center" Margin="0,0,00,0" Height="30" Style = "{StaticResource btnPedidos}" Click="BtnEliminarGoogleDrive_Click">Desvincular Cuenta Google Drive</Button>
+
+                                </Grid>
+                            </Border>
+                            <!--<Label Grid.Row="2" HorizontalAlignment="Left" FontSize="14">Descripcion del Item:</Label>
+                            <RichTextBox x:Name="ww" Grid.Row="3" Margin="0,0,0,0" Height="100"></RichTextBox>
+                            <Label Grid.Row="4" HorizontalAlignment="Left" FontSize="14">Precio del Item:</Label>
+                            <TextBox x:Name="dd" Grid.Row="4" Margin="130,0,0,0" PreviewTextInput="TxtPrecioC_PreviewTextInput"/>
+                            <Grid Grid.Row="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" HorizontalAlignment="Left" FontSize="14">Imagen:</Label>
+                                <Button x:Name="aa" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30"  Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Cargar Imagen</Button>
+                                <Button x:Name="s" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0" Height="30" Style = "{StaticResource btnPedidos}" Click="BtnLoadImage_Click">Quitar Imagen</Button>
+                                <TextBox x:Name="txtIagePahC" Visibility="Hidden" IsEnabled="False"></TextBox>
+                            </Grid>-->
+
+                            <!--<Button x:Name="sd1234" Grid.Row="6" Padding="5" Margin="0,10,0,10" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click" Style = "{StaticResource btnPedidos}" Background="#FF45B1C9" >Registrar item</Button>-->
+                        </Grid>
+                    </Border>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!--PROMPT-->
+        <!-- It's important that this is in the end of the XAML as it needs to be on top of everything else! -->
+        <Grid x:Name="InputBox" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+            MinWidth="250"
+            Background="Orange" 
+            BorderBrush="Black" 
+            BorderThickness="1" 
+            CornerRadius="0,0,0,0" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Margin="5" Text="Nombre de la Orden:" FontWeight="Bold" FontFamily="Cambria" />
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="YesButton" Margin="5" Width="80" Content="Confirmar" Click="YesButton_Click" Style = "{StaticResource btnPedidos}"/>
+                        <Button x:Name="NoButton" Margin="5" Width="80" Content="Cancelar"  Click="NoButton_Click" Style = "{StaticResource btnPedidos}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!--TERMINA PROMPT-->
+
     </Grid>
 </Window>
