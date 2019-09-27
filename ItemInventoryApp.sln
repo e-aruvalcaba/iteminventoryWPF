@@ -5,6 +5,12 @@ VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemInventoryApp", "ItemInventoryApp\ItemInventoryApp.csproj", "{BE2C0C61-F612-40E0-B7F1-353850BB44A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntemInventoryDomain", "IntemInventoryDomain\IntemInventoryDomain.csproj", "{7A202678-90E8-4ECB-914D-FD9730AF7A67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemRepository", "ItemRepository\ItemRepository.csproj", "{45F8458D-0760-4EF3-93C5-11E25D4274C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PedidoRepository", "PedidoRepository\PedidoRepository.csproj", "{53648532-3B4E-4257-A4DB-DA4F7C133259}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{BE2C0C61-F612-40E0-B7F1-353850BB44A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE2C0C61-F612-40E0-B7F1-353850BB44A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE2C0C61-F612-40E0-B7F1-353850BB44A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A202678-90E8-4ECB-914D-FD9730AF7A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A202678-90E8-4ECB-914D-FD9730AF7A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A202678-90E8-4ECB-914D-FD9730AF7A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A202678-90E8-4ECB-914D-FD9730AF7A67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45F8458D-0760-4EF3-93C5-11E25D4274C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45F8458D-0760-4EF3-93C5-11E25D4274C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45F8458D-0760-4EF3-93C5-11E25D4274C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45F8458D-0760-4EF3-93C5-11E25D4274C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53648532-3B4E-4257-A4DB-DA4F7C133259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53648532-3B4E-4257-A4DB-DA4F7C133259}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53648532-3B4E-4257-A4DB-DA4F7C133259}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53648532-3B4E-4257-A4DB-DA4F7C133259}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
