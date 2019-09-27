@@ -182,7 +182,8 @@ namespace ItemInventoryApp.DAL
                 MessageBox.Show("No se pudo encontrar el item con el id especificado");
                 return item;
             }
-        }        /*
+        }        
+        /*
           * // SUMMARY
           * // Searchs for a specific Pedido with the ID received
           * // Return: DatabaseModel object
@@ -271,6 +272,24 @@ namespace ItemInventoryApp.DAL
                 return item;
             }
         }
+        public Item SearchOneItembyCode(string code)
+        {
+            code = code.ToLower();
+            Item item = new Item();
+            //UpdateDBObject the databaseobject to get the most recent data
+            DBInstance = UpdateDBObject();
+            try
+            {
+                item = DBInstance.Items.Find(x => x.Code.ToLower() == code);
+                return item;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo encontrar el item con el codigo especificado error: "+ex.Message);
+                return item;
+            }
+        }
+
         /*
           * // SUMMARY
           * // Manage the search functions and calls the searchbyID or searchbyName depending on criteria received
@@ -292,14 +311,13 @@ namespace ItemInventoryApp.DAL
                     try
                     {
                         List.Add(SearchPedidoByID(Convert.ToInt32(data)));
-                        //List.Add(SearchItembyID(Convert.ToInt32(data)));
                         List = List[0] == null ? new List<Pedido>() : List;
 
                         return List;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        //MessageBox.Show("Error al buscar por ID, intente ingresando solo numeros de 0 a 9.");
+                        MessageBox.Show("Error al buscar por ID, intente ingresando solo numeros de 0 a 9.");
                     }
                     break;
                 case "Nombre":
@@ -360,7 +378,7 @@ namespace ItemInventoryApp.DAL
 
                         return List;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         //MessageBox.Show("Error al buscar por ID, intente ingresando solo numeros de 0 a 9.");
                     }
@@ -369,6 +387,17 @@ namespace ItemInventoryApp.DAL
                     try
                     {
                         List = SearchItembyName(data);
+                        return List;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al buscar por ID error: " + ex.Message);
+                    }
+                    break;
+                case "codigo":
+                    try
+                    {
+                        List.Add(SearchOneItembyCode(data));
                         return List;
                     }
                     catch (Exception ex)
@@ -912,7 +941,7 @@ namespace ItemInventoryApp.DAL
                 runtime.DrawSelectedPedido(DBInstance.Pedidos[index]);
                 success = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Error editando pedido.");
 

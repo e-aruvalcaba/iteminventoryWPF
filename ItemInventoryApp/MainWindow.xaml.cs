@@ -152,6 +152,7 @@ namespace ItemInventoryApp
                             {
                                 //id = Global.DatbaseInstance.Items.Count.Equals(0) ? 1 : Global.DatbaseInstance.Items[Global.DatbaseInstance.Items.Count].id + 1,
                                 id = Global.DBHandler.GenerateID("item", Global.DatbaseInstance),
+                                Code = txtBoxCodigo.Text,
                                 Name = txtBoxNombreC.Text,
                                 Description = richtext,
                                 Price = Convert.ToInt32(txtPrecioC.Text),
@@ -529,59 +530,8 @@ namespace ItemInventoryApp
                 btnEntregarPedido.IsEnabled = true;
             }
         }
-
-
-
         #endregion
 
-
-
-
-        #region PROMPT
-
-        private void YesButton_Click(object sender, RoutedEventArgs e)
-        {
-            // YesButton Clicked! Let's hide our InputBox and handle the input text.
-            InputBox.Visibility = System.Windows.Visibility.Collapsed;
-            // Do something with the Input
-            String input = InputTextBox.Text;
-
-            if (!string.IsNullOrEmpty(input))
-            {
-                Global.DBHandler.CreatePedido(input);
-            }
-            else
-            {
-                Global.DBHandler.CreatePedido("Sin Nombre");
-            }
-
-            //Validar si el padre de los pedidos tiene hijos activos
-
-            var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
-            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-            if (element.Children.Count.Equals(0))
-            {
-                new UIRuntime().InitPedidosQueue(Global.DatbaseInstance.Pedidos);
-            }
-            else
-            {
-                //Validar botones siguiente y atras
-                Global.UIRuntime.validatebtnPedidoNextAndBack(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid));
-            }
-
-            // Clear InputBox.
-            InputTextBox.Text = String.Empty;
-        }
-
-        private void NoButton_Click(object sender, RoutedEventArgs e)
-        {
-            // NoButton Clicked! Let's hide our InputBox.
-            InputBox.Visibility = System.Windows.Visibility.Collapsed;
-            // Clear InputBox.
-            InputTextBox.Text = String.Empty;
-        }
-
-        #endregion
         private void BtnSiguientePedido_Click(object sender, RoutedEventArgs e)
         {
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
@@ -597,7 +547,6 @@ namespace ItemInventoryApp
         private void BtnEliminarPedidoEnCola_Click(object sender, RoutedEventArgs e)
         {
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-            //Global.DatbaseInstance.Pedidos.RemoveAt();
             //Pintar el primer pedido disponible o limpiar en caso de que no encuentre
             if (!Global.DatbaseInstance.EditOn)
             {
@@ -611,7 +560,7 @@ namespace ItemInventoryApp
                     Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
                     Global.UIRuntime.validatebtnPedidoNextAndBack(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
                     element.Children.Clear();
@@ -857,7 +806,7 @@ namespace ItemInventoryApp
         #endregion
 
         #region GoogleDriveModule
-        private async void BtnSetGoogleDrive_Click(object sender, RoutedEventArgs e)
+        private void BtnSetGoogleDrive_Click(object sender, RoutedEventArgs e)
         {
             if (Directory.Exists("token.json"))
             {
@@ -870,7 +819,7 @@ namespace ItemInventoryApp
                         //Delete cuenta
                         Directory.Delete("token.json", true);
                         //Generar cuenta nueva
-                        await Global.DriveService.inizialiceDriveServiceAsync();
+                        Global.DriveService.inizialiceDriveServiceAsync();
                         lblActualGDAccount.Content = "Vinculando Cuenta...";
                         MessageBox.Show("Se ha vinculado exitosamente la cuenta.");
                     }
@@ -971,5 +920,228 @@ namespace ItemInventoryApp
         {
             DriveExists();
         }
+
+        private void GridItems_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void GridItems_KeyUp(object sender, KeyEventArgs e)
+        {
+            //if (e.Key.Equals(Key.I))
+            //{
+            //    //Mostrar modal para introducir el ID
+
+            //    InputBoxID.Visibility = System.Windows.Visibility.Visible;
+            //    InputTextBoxID.Focus();
+            //}
+            //else if (e.Key.Equals(Key.C))
+            //{
+            //    //Mostrar modal para introducir el codigo
+            //    InputBoxCode.Visibility = System.Windows.Visibility.Visible;
+            //    InputTextBoxCode.Focus();
+            //}
+
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            //MessageBox.Show(e.Key.ToString());
+            if (e.Key.Equals(Key.F1))
+            {
+                //Mostrar modal para introducir el ID
+
+                InputBoxID.Visibility = System.Windows.Visibility.Visible;
+                InputTextBoxID.Focus();
+            }
+            else if (e.Key.Equals(Key.F2))
+            {
+                //Mostrar modal para introducir el codigo
+                InputBoxCode.Visibility = System.Windows.Visibility.Visible;
+                InputTextBoxCode.Focus();
+            }
+        }
+
+        private void GridItems_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //e.Text.ToLower();
+            //if (e.Text.Equals("i"))
+            //{
+            //    //Mostrar modal para introducir el ID
+
+            //    InputBoxID.Visibility = System.Windows.Visibility.Visible;
+            //    InputTextBoxID.Focus();
+            //}
+            //else if (e.Text.Equals("c"))
+            //{
+            //    //Mostrar modal para introducir el codigo
+            //    InputBoxCode.Visibility = System.Windows.Visibility.Visible;
+            //    InputTextBoxCode.Focus();
+            //}
+
+            //InputTextBoxID.Text = "";
+            //InputTextBoxCode.Text = "";
+
+        }
+
+        private void Window_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            
+        }
+
+        #region PROMPTS
+
+        private void YesButton_Click(object sender, RoutedEventArgs e)
+        {
+            // YesButton Clicked! Let's hide our InputBox and handle the input text.
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+            // Do something with the Input
+            String input = InputTextBox.Text;
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                Global.DBHandler.CreatePedido(input);
+            }
+            else
+            {
+                Global.DBHandler.CreatePedido("Sin Nombre");
+            }
+
+            //Validar si el padre de los pedidos tiene hijos activos
+
+            var element = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
+            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+            if (element.Children.Count.Equals(0))
+            {
+                new UIRuntime().InitPedidosQueue(Global.DatbaseInstance.Pedidos);
+            }
+            else
+            {
+                //Validar botones siguiente y atras
+                Global.UIRuntime.validatebtnPedidoNextAndBack(Global.DatbaseInstance.Pedidos, Convert.ToInt32(CurrentPedidoInfo.Uid));
+            }
+
+            // Clear InputBox.
+            InputTextBox.Text = String.Empty;
+            GridItems.Focus();
+        }
+
+        private void NoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // NoButton Clicked! Let's hide our InputBox.
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+            // Clear InputBox.
+            InputTextBox.Text = String.Empty;
+        }
+
+
+
+        #endregion
+
+        private void YesButtonID_Click(object sender, RoutedEventArgs e)
+        {
+            // YesButton Clicked! Let's hide our InputBox and handle the input text.
+            InputBoxID.Visibility = System.Windows.Visibility.Collapsed;
+            // Do something with the Input
+            String input = InputTextBoxID.Text;
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                try
+                {
+                    Global.DBHandler.addItemtoPedido(Convert.ToInt32(input), Global.UIRuntime);
+                }
+                catch (Exception)
+                {
+
+                    MessageBox.Show("No se encontro el ID especificado. Asegurese que el ID ingresado existe.", "ID no encontrado");
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se puede enviar un dato vacio a la busqueda, por favor introduzca un valor numerico.", "Error dato invalido.");
+            }
+
+            // Clear InputBox.
+            InputTextBoxID.Text = String.Empty;
+            GridItems.Focus();
+        }
+
+        private void NoButtonID_Click(object sender, RoutedEventArgs e)
+        {
+            // NoButton Clicked! Let's hide our InputBox.
+            InputBoxID.Visibility = System.Windows.Visibility.Collapsed;
+            // Clear InputBox.
+            InputTextBoxID.Text = String.Empty;
+        }
+
+        private void YesButtonCode_Click(object sender, RoutedEventArgs e)
+        {
+            // YesButton Clicked! Let's hide our InputBox and handle the input text.
+            InputBoxCode.Visibility = System.Windows.Visibility.Collapsed;
+            // Do something with the Input
+            String input = InputTextBoxCode.Text;
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                try
+                {
+                    //Global.DBHandler.SearchOneItembyCode(input);
+                    var item = Global.DBHandler.SearchByCriteria("codigo", input);
+                    Global.DBHandler.addItemtoPedido(item[0].id, Global.UIRuntime);
+                }
+                catch (Exception)
+                {
+
+                    MessageBox.Show("No se encontro el Codigo introducido. Asegurese que el Codigo ingresado existe.", "Codigo no encontrado");
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se puede enviar un dato vacio a la busqueda, por favor introduzca un codigo valido y vuelva a intentar.", "Error dato invalido.");
+            }
+            // Clear InputBox.
+            InputTextBoxCode.Text = String.Empty;
+            GridItems.Focus();
+        }
+
+        private void NoButtonCode_Click(object sender, RoutedEventArgs e)
+        {
+            // NoButton Clicked! Let's hide our InputBox.
+            InputBoxCode.Visibility = System.Windows.Visibility.Collapsed;
+            // Clear InputBox.
+            InputTextBoxCode.Text = String.Empty;
+        }
+
+        private void InputTextBoxID_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
+        }
+
+        private void InputBoxID_KeyDown(object sender, KeyEventArgs e)
+        {
+            //            MessageBox.Show(e.Key.ToString());
+            if (e.Key.Equals(Key.Return))
+            {
+                YesButtonID_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key.Equals(Key.Escape))
+            {
+                NoButtonID_Click(this, new RoutedEventArgs());
+            }
+        }
+
+        private void InputBoxCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key.Equals(Key.Return))
+            {
+                YesButtonCode_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key.Equals(Key.Escape))
+            {
+                NoButtonCode_Click(this, new RoutedEventArgs());
+            }
+        }
+
     } //End of the way
 }

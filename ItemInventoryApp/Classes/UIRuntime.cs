@@ -140,10 +140,10 @@ namespace ItemInventoryApp.Classes
                 {
                     Name = "TextoDescripcion",
                     Height = 70,
-                    Width = 300,
-                    MaxWidth = 300,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Padding = new Thickness(5),
+                    Width = 200,
+                    MaxWidth = 250,
+                    //HorizontalAlignment = HorizontalAlignment.Left,
+                    Padding = new Thickness(15),
                     Margin = new Thickness(0, 30, 0, 0),
                     TextWrapping = TextWrapping.WrapWithOverflow,
                     Text = item.Description
@@ -338,7 +338,7 @@ namespace ItemInventoryApp.Classes
                 }
                 dg.ItemsSource = datasource;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 list = handler.SearchByCriteria("Nombre", "");
                 dg.ItemsSource = list;
@@ -365,7 +365,7 @@ namespace ItemInventoryApp.Classes
                 //}
                 //dg.ItemsSource = datasource;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 list = handler.SearchPedidoByCriteria("Nombre", "");
                 dg.ItemsSource = list;

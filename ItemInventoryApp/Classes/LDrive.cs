@@ -83,7 +83,7 @@ namespace ItemInventoryApp.Classes
             return service;
         }
 
-        public async Task<DriveService> inizialiceDriveServiceAsync()
+        public DriveService inizialiceDriveServiceAsync()
         {
             UserCredential credential;
 
@@ -126,9 +126,8 @@ namespace ItemInventoryApp.Classes
             try
             {
                 files = await searchRepositoryfFiles("_InventoryDB.json", "name");
-                string a = "";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
