@@ -1291,5 +1291,25 @@ namespace ItemInventoryApp.DAL
             return SaveDB(DBInstance);
         }
 
+        internal void SearchOnMainView(string text, UIRuntime runtime)
+        {
+            DBInstance = UpdateDBObject();
+            List<Border> borderList = new List<Border>();
+            if (!string.IsNullOrEmpty(text))
+            {
+                 borderList = runtime.CreatePanels(DBInstance.Items.Where(x => x.Name.ToLower().Contains(text)).ToList());
+            }
+            else
+            {
+                 borderList = runtime.CreatePanels(DBInstance.Items);
+            }
+            //Set the list on the content viewer
+            StackPanel MainViewer = (StackPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "stackpanel", "MainViewer");
+            MainViewer.Children.Clear();
+            for (int i = 0; i < borderList.Count; i++)
+            {
+                MainViewer.Children.Add(borderList[i]);
+            }
+        }
     } //End of way
 }

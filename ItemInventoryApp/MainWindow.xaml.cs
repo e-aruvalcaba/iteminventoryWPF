@@ -49,20 +49,6 @@ namespace ItemInventoryApp
             Global.DatbaseInstance = Global.DBHandler.InitializeDB();
             //Create an instance of UIruntime class
             UIRuntime obj = new UIRuntime();
-            //Create a list of border UIComponent dinamically that shows the app to the final user 
-            //Create 5000 generic products
-            //for (int i = 0; i < 5000; i++)
-            //{
-            //    Global.DatbaseInstance.Items.Add(
-            //    new Item
-            //    {
-            //        id = Global.DBHandler.GenerateID("item", Global.DatbaseInstance),
-            //        Name = "Item generado dinamicamente numero: " + i,
-            //        Description = "Descripcion del Item generado dinamicamente numero: " + i,
-            //        ImagePath = i.ToString()
-            //    }
-            //    );
-            //}
 
             /*List<Border> */
             borderList = obj.CreatePanels(Global.DatbaseInstance.Items);
@@ -575,7 +561,7 @@ namespace ItemInventoryApp
 
         private void BtnEditarPedidoEnCola_Click(object sender, RoutedEventArgs e)
         {
-            
+
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
             if (!Global.DatbaseInstance.EditOn)
             {
@@ -756,7 +742,7 @@ namespace ItemInventoryApp
                                         "a dia de hoy, ¿Desea continuar generando el reporte? Esta accion puede tomar tiempos largos de respuesta.", "Advertencia", MessageBoxButton.YesNo);
                         if (resp.ToString().Equals("Yes"))
                         {
-                            fechas = new DateTime(1990, 01, 01).ToString() + "|" +DateTime.Now.ToString();
+                            fechas = new DateTime(1990, 01, 01).ToString() + "|" + DateTime.Now.ToString();
                             Global.DBHandler.SaveReport(reportType, path, filename, fechas);
                         }
                     }
@@ -825,7 +811,7 @@ namespace ItemInventoryApp
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Ha ocurrido un error tratando de eliminar la cuenta actual de google drive. Error: "+ex.Message);
+                        MessageBox.Show("Ha ocurrido un error tratando de eliminar la cuenta actual de google drive. Error: " + ex.Message);
                     }
                 }
             }
@@ -834,7 +820,7 @@ namespace ItemInventoryApp
                 Global.DriveService.inizialiceDriveService();
             }
         }
-        
+
 
         private void BtnEliminarGoogleDrive_Click(object sender, RoutedEventArgs e)
         {
@@ -854,18 +840,18 @@ namespace ItemInventoryApp
         {
             try
             {
-                    //Upload el archivo
-                    string path = @"C:\InventoryApp\_InventoryDB.json";
-                    
-                    if (await Global.DriveService.upload(path, "_InventoryDB.json"))
-                    {
-                        MessageBox.Show("Se ha guardado exitosamente la BD actual en el Google Drive vinculado a la aplicacion.");
-                    }
-                    else
-                    {
-                        MessageBox.Show("No se ha pudo guardar la BD actual en el Google Drive vinculado a la aplicacion.");
-                    }
-                
+                //Upload el archivo
+                string path = @"C:\InventoryApp\_InventoryDB.json";
+
+                if (await Global.DriveService.upload(path, "_InventoryDB.json"))
+                {
+                    MessageBox.Show("Se ha guardado exitosamente la BD actual en el Google Drive vinculado a la aplicacion.");
+                }
+                else
+                {
+                    MessageBox.Show("No se ha pudo guardar la BD actual en el Google Drive vinculado a la aplicacion.");
+                }
+
             }
             catch (Exception ex)
             {
@@ -893,7 +879,7 @@ namespace ItemInventoryApp
                 string filename = saveFileDialog.SafeFileName;
                 string path = saveFileDialog.FileName.Substring(0, (saveFileDialog.FileName.Length - saveFileDialog.SafeFileName.Length));
 
-                if(Global.DBHandler.SaveDBLocal(path, filename))
+                if (Global.DBHandler.SaveDBLocal(path, filename))
                 {
                     MessageBox.Show("Se ha guardado correctamente la BD en el disco duro.");
                 }
@@ -906,7 +892,7 @@ namespace ItemInventoryApp
 
         private void BtnRestoreDBFile_Click(object sender, RoutedEventArgs e)
         {
-        
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
@@ -986,7 +972,7 @@ namespace ItemInventoryApp
 
         private void Window_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            
+
         }
 
         #region PROMPTS
@@ -1033,10 +1019,6 @@ namespace ItemInventoryApp
             // Clear InputBox.
             InputTextBox.Text = String.Empty;
         }
-
-
-
-        #endregion
 
         private void YesButtonID_Click(object sender, RoutedEventArgs e)
         {
@@ -1142,6 +1124,19 @@ namespace ItemInventoryApp
                 NoButtonCode_Click(this, new RoutedEventArgs());
             }
         }
+        #endregion
 
+        #region Principal Search
+
+        private void TxtSearchPrincipal_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void TxtSearchPrincipal_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Global.DBHandler.SearchOnMainView(txtSearchPrincipal.Text.ToLower(), Global.UIRuntime);
+        }
+        #endregion
     } //End of the way
 }

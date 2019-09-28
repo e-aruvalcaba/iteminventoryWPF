@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ItemInventoryApp"
-        mc:Ignorable="d" Height="499.047" Width="692.267" MinHeight="500" MinWidth="881.992" SizeChanged="Window_SizeChanged" Title="Sin titulo Provisional" PreviewTextInput="Window_PreviewTextInput" KeyUp="Window_KeyUp">
+        mc:Ignorable="d" Height="499.047" Width="692.267" MinHeight="500" MinWidth="881.992" SizeChanged="Window_SizeChanged" Title="Smart Till" PreviewTextInput="Window_PreviewTextInput" KeyUp="Window_KeyUp">
 
     <Window.Resources>
         <Style x:Key = "btnPedidos" TargetType = "Button">
@@ -143,52 +143,25 @@
                                     <!--A partir de aqui se clonaran los pedidos en tiempo real-->
                                     <StackPanel x:Name="PedidosMainViewer" Background="#F6CE3E">
                                         <Border BorderBrush="#8860D0" DockPanel.Dock="Top">
-                                            <DockPanel x:Name="PanelPedidos">
-                                                <!--<Canvas DockPanel.Dock="Top" Height="100">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        
-                                                        -->
-                                                <!--<TextBlock Grid.Row="0" FontSize="16" FontWeight="Bold" Padding="3" DockPanel.Dock="Top">
-                                                            Item #1
-                                                        </TextBlock>-->
-                                                <!--
-                                                        <Grid Grid.Row="0">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition/>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            
-                                                            <Button Grid.Column="1" Content=" - " Margin="5,5,5,5" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#FFE84040" Style = "{StaticResource btnEliminarPedido}" />
-                                                            <Button Grid.Column="2" Content=" + " Margin="5,5,5,5" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#FF138F00" Style = "{StaticResource btnEliminarPedido}" />
-
-                                                            <TextBlock Grid.Column="0" FontSize="12" FontWeight="Bold" Padding="3" DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                            Cantidad x 450
-                                                            </TextBlock>
-
-                                                        </Grid>
-                                                        <TextBlock Grid.Row="1" FontSize="13" Padding="3" Height="45" Width="160" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left">
-                                                            Orden de Tacos de Bisteck
-                                                        </TextBlock>
-                                                        <TextBlock Background="#232D33" Foreground="White" FontWeight="Bold" Grid.Row="2" FontSize="12" Padding="5" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" HorizontalAlignment="Right">
-                                                            Total: $345
-                                                        </TextBlock>
-                                                        <Button Grid.Row="2" Content="Eliminar" Style = "{StaticResource btnEliminarPedido}"/>
-                                                    </Grid>
-                                                </Canvas>-->
-
-                                            </DockPanel>
+                                            <DockPanel x:Name="PanelPedidos"/>
                                         </Border>
                                     </StackPanel>
 
                                     <!--Termina clonacion de pedidos en tiempo real-->
                                 </ScrollViewer>
                             </DockPanel>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Content="Buscar Articulos:" Margin="180,0,0,0" Width="90" Background="White"></Label>
+                                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtSearchPrincipal" HorizontalAlignment="Left" Height="32" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="417" KeyDown="TxtSearchPrincipal_KeyDown" TextChanged="TxtSearchPrincipal_TextChanged"/>
+                            </Grid>
+
                             <!--TERMINAN LAS PRUEBAS PARA EL GRI DE LOS PEDIDOS-->
                         </Grid>
 
@@ -316,7 +289,7 @@
                     <Grid Margin="180, 0, 180, 0">
                         <!--A PARTIR DE AQUI SE CLONARA EL SIGUIENTE DOCK PANEL-->
                         <DockPanel x:Name="DockMain">
-                            <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ScrollViewer IsTabStop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,29,0,0">
                                 <StackPanel x:Name="MainViewer">
                                     <!--<Border BorderBrush="#8860D0" BorderThickness="3" Height="105" DockPanel.Dock="Top" Margin="0,0,0,0">
                                         <DockPanel Height="100" >
@@ -374,7 +347,7 @@
                     <TabControl Background="#F6CE3E">
                         <TabItem Header="Crear Nuevo Producto">
 
-                           
+
 
                             <Grid x:Name="CreateForm" MaxWidth="400" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Grid.RowDefinitions>
@@ -393,7 +366,7 @@
                                     <Border.Effect>
                                         <DropShadowEffect/>
                                     </Border.Effect>
-                                    
+
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*"/>
