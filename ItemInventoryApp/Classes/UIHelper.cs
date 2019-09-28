@@ -34,6 +34,15 @@ namespace ItemInventoryApp.Classes
                 case "grid":
                     var grid = (Grid)el.FindName(childName);
                     return grid;
+                case "tabcontrol":
+                    var tabcontrol = (TabControl)el.FindName(childName);
+                    return tabcontrol;
+                case "border":
+                    var border = (Border)el.FindName(childName);
+                    return border;
+                case "combobox":
+                    var combobox = (ComboBox)el.FindName(childName);
+                    return combobox;
 
                 default:
                     return new UIElement();

@@ -99,7 +99,7 @@ namespace ItemInventoryApp.DAL
           * // Saves the changes on the JSON File writing the new values
           * // Return: bool (True/False)
         */
-        private bool SaveDB(DatabaseModel db)
+        public bool SaveDB(DatabaseModel db)
         {
 
             bool success = false;

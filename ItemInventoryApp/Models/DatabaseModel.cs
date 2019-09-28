@@ -14,5 +14,6 @@ namespace ItemInventoryApp.Models
         public int LastItemID { get; set; } = 1;
         public int LastPedidoID { get; set; } = 1;
         public bool EditOn { get; set; }
+        public int Theme { get; set; } = 0;
     }
 }

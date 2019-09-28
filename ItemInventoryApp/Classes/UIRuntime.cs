@@ -25,6 +25,198 @@ namespace ItemInventoryApp.Classes
 
         }
 
+        #region Color Configuration
+        
+        public void SetColors(string newcolor)
+        {
+            //1.PedidosMainViewer { Grid izquierdo de pedidos en construccion}
+            //2.GridPedidos(Modifica todo el trasero de los 3 paneles, excepto el fondo del total y el boton confirmar pedido y el de entrega)
+            //3.GridDerecha(Modifica el fondo completo del grid derecho junto con el boton)
+            //4.BackGroundCreateProductos(Fondo para la tab de crear producttos)
+            //5.BackGroundEditarProducto(Fondo para editar producto)
+            //6.BackGroundEliminarProducto(Fondo para eliminar producto)
+            //7.BackGroundPedidos(Fondo para pedidos)
+            //8.BackGroundReportes(Fondo para reportes module)
+            //9.BackGroundBD(Fondo para DB Module)
+            //10.BackGroundConfirmar (Para el boton confirmar y aledaño)
+            //11.MainViewer (Resto de pedidos main viewer)
+
+            UIHelper helper = new UIHelper();
+            //Get Elements 
+            UIElement[] array = new UIElement[11];
+
+            array[0] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "grid", "GridPedidos");
+            array[1] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "grid", "GridDerecha");
+            array[2] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "Grid", "BackGroundBD");
+            array[3] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "Grid", "BackGroundEditarProducto");
+            array[4] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "Grid", "BackGroundEliminarProducto");
+            array[5] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "Grid", "BackGroundPedidos");
+            array[6] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "Grid", "BackGroundReportes");
+            array[7] = (Grid)helper.FindChildByName(Application.Current.MainWindow, "Grid", "BackGroundConfirmar");
+            array[8] = (TabControl)helper.FindChildByName(Application.Current.MainWindow, "tabcontrol", "BackGroundCreateProductos");
+            array[9] = (StackPanel)helper.FindChildByName(Application.Current.MainWindow, "stackpanel", "PedidosMainViewer"); /*StackPanel PedidosMainViewer =*/
+            array[10] = (StackPanel)helper.FindChildByName(Application.Current.MainWindow, "stackpanel", "MainViewer"); /*StackPanel MainViewer =*/
+
+            Color color = (Color)ColorConverter.ConvertFromString(newcolor); //("#FFC1C8E4");
+            SolidColorBrush myBrush = new SolidColorBrush(color);
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (i<8)
+                {
+                    var element = (Grid)array[i];
+                    element.Background = myBrush;
+                }
+                else if (i.Equals(8))
+                {
+                    var element = (TabControl)array[i];
+                    element.Background = myBrush;
+                }
+                else
+                {
+                    var element = (StackPanel)array[i];
+                    element.Background = myBrush;
+
+                }
+            }
+        }
+
+        public Color GetTableColors(int option, string color1, string color2)
+        {
+            Color color = new Color();
+            switch (option)
+            {
+                case 1:
+                    color = (Color)ColorConverter.ConvertFromString("#BCBABE");
+                    break;
+                case 2:
+                    color = (Color)ColorConverter.ConvertFromString("#90AFC5");
+                    break;
+                default:
+                    color = (Color)ColorConverter.ConvertFromString("#90AFC5");
+                    break;
+            }
+            //SolidColorBrush myBrush = new SolidColorBrush(color);
+            return color;
+        }
+
+        public void SetFormsColor(string newcolor)
+        {
+            //Color color = new Color();
+            SolidColorBrush myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(newcolor));
+            UIHelper helper = new UIHelper();
+            UIElement[] array = new UIElement[3];
+
+            array[0] = (Border)helper.FindChildByName(Application.Current.MainWindow, "border", "FormCrearProducto");
+            array[1] = (Border)helper.FindChildByName(Application.Current.MainWindow, "border", "FormEditarProducto");
+            array[2] = (Border)helper.FindChildByName(Application.Current.MainWindow, "border", "FormBD");
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                var element = (Border)array[i];
+                element.Background = myBrush;
+            }
+        }
+
+        public void SetModalColor(string newcolor, string color2, string color3)
+        {
+            SolidColorBrush myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(newcolor));
+            UIHelper helper = new UIHelper();
+            UIElement[] array = new UIElement[3];
+
+            ((Border)helper.FindChildByName(Application.Current.MainWindow, "border", "PopUpConfimarPedido")).Background = myBrush;
+            myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color2));
+            ((Border)helper.FindChildByName(Application.Current.MainWindow, "border", "PopUpSearchID")).Background = myBrush;
+            myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color3));
+            ((Border)helper.FindChildByName(Application.Current.MainWindow, "border", "PopUpSearchCode")).Background = myBrush;
+        }
+
+        public void PopulateComboTheme()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("c1", typeof(int));
+            dt.Columns.Add("c2");
+
+            string[] displayMember = {"Default", "Tema 1", "Tema 2", "Azules Polares", "Aves y Bayas", "Bayas Azules", "Puesto Limonada", "Divertido y Tropical", "Citrico Alegre", "Pulido y Acogedor", "Verdes Frescos"};
+
+            for (int i = 0; i < 11; i++)
+            {
+                dt.Rows.Add(i, displayMember[i]);
+            }
+
+            var combo = (ComboBox)new UIHelper().FindChildByName(Application.Current.MainWindow, "combobox", "ComboTheme");
+            combo.ItemsSource = dt.DefaultView;
+            combo.DisplayMemberPath = "c2";
+            combo.SelectedValuePath = "c1";
+        }
+
+        public void SetTheme(int option)
+        {
+            DatabaseModel db = new DatabaseModel();
+            db = new DBHandler().UpdateDBObject();
+            db.Theme = option;
+            new DBHandler().SaveDB(db);
+            switch (option)
+            {
+                case 0: //Default
+                    SetColors("#DDBC95"); //Default Main Color
+                    SetFormsColor("#B38867"); //Default Main Form Color 
+                    break;
+                case 1: // tema 2
+                    SetColors("#F69454"); //Default Main Color
+                    SetFormsColor("#EE693F"); //Default Main Form Color 
+                    SetModalColor("#938b94", "#ebe244", "#739F3D"); //Default Colors
+                    break;
+                case 2: // tema 1
+                    SetColors("#4D648D"); //Default Main Color
+                    SetFormsColor("#283655"); //Default Main Form Color 
+                    SetModalColor("#1E1F26", "#cde86b", "#D0E1F9"); //Default Colors
+                    break;
+                case 3: // Azules polares
+                    SetColors("#1995AD"); //Default Main Color
+                    SetFormsColor("#A1D6E2"); //Default Main Form Color 
+                    SetModalColor("#F1F1F2", "#cde86b", "#BCBABE"); //Default Colors
+                    break;
+                case 4: // Aves y Bayas
+                    SetColors("#5D535E"); //Default Main Color
+                    SetFormsColor("#9A9EAB"); //Default Main Form Color 
+                    SetModalColor("#9A9EAB", "#DFE166", "#D0E1F9"); //Default Colors
+                    break;
+                case 5: //Bayas Azules
+                    SetColors("#4D648D"); //Default Main Color
+                    SetFormsColor("#283655"); //Default Main Form Color 
+                    SetModalColor("#1E1F26", "#cde86b", "#D0E1F9"); //Default Colors
+                    break;
+                case 6: //Puesto Limonada
+                    SetColors("#F25C00"); //Default Main Color
+                    SetFormsColor("#F7EFE2"); //Default Main Form Color 
+                    SetModalColor("#F7EFE2", "#F9A603", "#F70025"); //Default Colors
+                    break;
+                case 7: //Divertido y Tropical
+                    SetColors("#4798D8"); //Default Main Color
+                    SetFormsColor("#F8A055"); //Default Main Form Color 
+                    SetModalColor("#F8A055", "#FFDB5C", "#FA6E59"); //Default Colors
+                    break;
+                case 8: //Citrico Alegre
+                    SetColors("#FEF3E2"); //Default Main Color
+                    SetFormsColor("#FA812F"); //Default Main Form Color 
+                    SetModalColor("#FA812F", "#FAAF08", "#D0E1F9"); //Default Colors
+                    break;
+                case 9: //Pulido y Acogedor
+                    SetColors("#EAE2D6"); //Default Main Color
+                    SetFormsColor("#E1B80D"); //Default Main Form Color 
+                    SetModalColor("#867666", "#E1B80D", "#D5C3AA"); //Default Colors
+                    break;
+                case 10: //Verdes Frescos
+                    SetColors("#FDFFFF"); //Default Main Color
+                    SetFormsColor("#68A225"); //Default Main Form Color 
+                    SetModalColor("#68A225", "#E1B80D", "#265C00"); //Default Colors
+                    break;
+            }
+        }
+
+        #endregion
+
         #region UI Panel Creation
         /*//
             // SUMMARY
@@ -66,11 +258,13 @@ namespace ItemInventoryApp.Classes
                 #region border
                 if ((loop % 2).Equals(0))
                 {
-                    color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                    //color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+                    color = GetTableColors(1, "", "");//(Color)ColorConverter.ConvertFromString("#CDCDC0");
                 }
                 else
                 {
-                    color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                    //color = (Color)ColorConverter.ConvertFromString("#FF4EAFDC");
+                    color = GetTableColors(2, "", "");//(Color)ColorConverter.ConvertFromString("#90AFC5");
                 }
 
                 myBrush = new SolidColorBrush(color);
@@ -133,6 +327,7 @@ namespace ItemInventoryApp.Classes
                     Name = "TextoTitulo",
                     Padding = new Thickness(5),
                     TextWrapping = TextWrapping.WrapWithOverflow,
+                    FontWeight = FontWeights.Bold,
                     Width = 300,
                     Text = string.Format("{0} ${1}", item.Name, item.Price.ToString())
                 });
@@ -284,14 +479,15 @@ namespace ItemInventoryApp.Classes
          */
         public void SetTextBoxFromDataGrid(Item item, List<TextBox> list, RichTextBox rich, string action)
         {
-            string[] array = new string[4];
+            string[] array = new string[5];
             switch (action)
             {
                 case "edit":
                     array[0] = "txtIDE";
-                    array[1] = "txtNombreE";
-                    array[2] = "txtPriceE";
-                    array[3] = "txtImagePahE";
+                    array[1] = "txtCodeE";
+                    array[2] = "txtNombreE";
+                    array[3] = "txtPriceE";
+                    array[4] = "txtImagePahE";
                     break;
                 case "delete": //DEPRECATED DELETED MODULE NO LONGER NEED TEXTBOXES TO DELETE
                     array[0] = "txtIDEDel";
@@ -301,11 +497,12 @@ namespace ItemInventoryApp.Classes
                     break;
             }
 
-            string[] values = new string[4];
+            string[] values = new string[5];
             values[0] = item.id.ToString();
-            values[1] = item.Name;
-            values[2] = item.Price.ToString();
-            values[3] = item.ImagePath;
+            values[1] = item.Code;
+            values[2] = item.Name;
+            values[3] = item.Price.ToString();
+            values[4] = item.ImagePath;
             rich.Document.ContentStart.InsertTextInRun(item.Description);
             foreach (var it in list)
             {
@@ -389,11 +586,13 @@ namespace ItemInventoryApp.Classes
 
             if ((loop % 2).Equals(0))
             {
-                color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                //color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                color = GetTableColors(2, "", "");
             }
             else
             {
-                color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                //color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                color = GetTableColors(1, "", "");
             }
             myBrush = new SolidColorBrush(color);
 
@@ -698,11 +897,13 @@ namespace ItemInventoryApp.Classes
             {
                 if ((loop % 2).Equals(0))
                 {
-                    color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                    //color = (Color)ColorConverter.ConvertFromString("#E8E8E8");
+                    color = GetTableColors(1, "", "");
                 }
                 else
                 {
-                    color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                    //color = (Color)ColorConverter.ConvertFromString("#C9C8C8");
+                    color = GetTableColors(2, "", "");
                 }
 
                 myBrush = new SolidColorBrush(color);
@@ -937,11 +1138,9 @@ namespace ItemInventoryApp.Classes
             }
 
 
-            //Dictionary<int, string> Dictionary = new Dictionary<int, string>();
             DataTable dt = new DataTable();
             dt.Columns.Add("c1", typeof(int));
             dt.Columns.Add("c2");
-            //List<int> horas = new List<int>();
 
             for (int i = horainicio; i < 24; i++)
             {

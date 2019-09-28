@@ -16,19 +16,35 @@ namespace ItemInventoryApp.Classes
 
         public string SaveImageToLocal(int id, byte[] imageInfo)
         {
+            string path = "Images/" + id + ".jpg";
+
             if (!Directory.Exists("Images/"))
             {
                 Directory.CreateDirectory("Images/");
             }
 
             //Guardar la imagen en la carpeta images
-            File.WriteAllBytes("Images/" + id + ".jpg", imageInfo);
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                    //path = "Images/" + id +"_"+ ".jpg";
+                }
+                File.WriteAllBytes(path, imageInfo);
 
-            var imagen = File.Open("Images/" + id + ".jpg", FileMode.Open);
-            string newPath = imagen.Name;
-            imagen.Close();
+                var imagen = File.Open("Images/" + id + ".jpg", FileMode.Open);
+                string newPath = imagen.Name;
+                imagen.Close();
 
-            return newPath;
+                return newPath;
+            }
+            catch (Exception ex)
+            {
+
+                return "";
+            }
+            
         }
     }
 }

@@ -50,6 +50,15 @@ namespace ItemInventoryApp
             //Create an instance of UIruntime class
             UIRuntime obj = new UIRuntime();
 
+            //Set Styles to App
+            obj.SetTheme(Global.DatbaseInstance.Theme);
+            obj.PopulateComboTheme();
+            ComboTheme.SelectedIndex = Global.DatbaseInstance.Theme;
+            //obj.SetColors("#DDBC95"); //Default Main Color
+            //obj.SetFormsColor("#B38867"); //Default Main Form Color 
+            //obj.SetModalColor("#a41aab", "#4a32a8", "#c93b38");
+
+            //#626D71
             /*List<Border> */
             borderList = obj.CreatePanels(Global.DatbaseInstance.Items);
             //Set the list on the content viewer
@@ -73,10 +82,12 @@ namespace ItemInventoryApp
 
         }
 
+        #region Initialize Drive Label
         public void DriveExists()
         {
             lblActualGDAccount.Content = Directory.Exists("token.json") ? "Ya existe una cuenta Google Drive Vinculada" : "No hay cuentas vinculadas a la aplicacion.";
         }
+        #endregion
 
         #region ResponsiveElementsModule
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -147,6 +158,7 @@ namespace ItemInventoryApp
                             {
                                 List<TextBox> txtlist = new List<TextBox>();
 
+                                txtlist.Add(txtBoxCodigo    );
                                 txtlist.Add(txtBoxNombreC);
                                 txtlist.Add(txtImagePahC);
                                 txtlist.Add(txtPrecioC);
@@ -208,6 +220,7 @@ namespace ItemInventoryApp
 
                         //Create List of textboxes
                         List<TextBox> txtlist = new List<TextBox>();
+                        txtlist.Add(txtCodeE);
                         txtlist.Add(txtNombreE);
                         txtlist.Add(txtImagePahE);
                         txtlist.Add(txtPriceE);
@@ -246,6 +259,11 @@ namespace ItemInventoryApp
                             if (Global.DBHandler.edit_delete_item(dr, "delete", Global.DataGridList, Global.UIRuntime))
                             {
                                 MessageBox.Show("Se elimino correctamente el registro con el id: " + id);
+                                var obj = new object[1];
+                                Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                                borderList = Global.UIRuntime.CreatePanels(Global.DatbaseInstance.Items);
+                                obj[0] = borderList;
+                                Global.UIRuntime.redraw(MainViewer, "stackpanel", obj, "border");
                             }
                             else
                             {
@@ -261,40 +279,10 @@ namespace ItemInventoryApp
             }
         }
 
-        //private void DGDelete_MouseDoubleClick(object sender, MouseButtonEventArgs e) //This code is to enable the form on delete zone
-        //{
-        //    try
-        //    {
-        //        if (sender != null)
-        //        {
-        //            DataGrid grid = sender as DataGrid;
-        //            if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
-        //            {
-        //                //This is the code which helps to show the data when the row is double clicked.
-        //                DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
-        //                Item dr = (Item)dgr.Item;
-
-        //                //Create List of textboxes
-        //                List<TextBox> txtlist = new List<TextBox>();
-        //                txtlist.Add(txtNombreDel);
-        //                txtlist.Add(txtImgPahDel);
-        //                txtlist.Add(txtPriceDel);
-        //                txtlist.Add(txtIDEDel);
-        //                //Set text extracted from the datagrid
-        //                Global.UIRuntime.SetTextBoxFromDataGrid(dr, txtlist, txtDescDel, "delete");
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message.ToString());
-        //    }
-        //}
-
         private void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             List<TextBox> txtlist = new List<TextBox>();
-
+            txtlist.Add(txtCodeE);
             txtlist.Add(txtNombreE);
             txtlist.Add(txtImagePahE);
             txtlist.Add(txtPriceE);
@@ -312,6 +300,7 @@ namespace ItemInventoryApp
                         //Obtener el item con el id especifico
                         Item theitem = Global.DBHandler.SearchItembyID(Convert.ToInt32(txtIDE.Text));
 
+                        theitem.Code = txtCodeE.Text;
                         theitem.Name = txtNombreE.Text;
                         theitem.Description = richtext;
                         theitem.Price = Convert.ToDouble(txtPriceE.Text);
@@ -334,6 +323,11 @@ namespace ItemInventoryApp
                         Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
                         Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
                         btnEditar.IsEnabled = false;
+
+                        var obj = new object[1];
+                        borderList = Global.UIRuntime.CreatePanels(Global.DatbaseInstance.Items);
+                        obj[0] = borderList;
+                        Global.UIRuntime.redraw(MainViewer, "stackpanel", obj, "border");
                     }
                     else
                     {
@@ -350,33 +344,6 @@ namespace ItemInventoryApp
                 MessageBox.Show("Todos los campos excepto el campo para imagen deben estar llenos antes de guardar un articulo.");
             }
         }
-
-        //private void BtnDeleteItem_Click(object sender, RoutedEventArgs e)
-        //{
-        //    List<TextBox> txtlist = new List<TextBox>();
-
-        //    txtlist.Add(txtNombreDel);
-        //    txtlist.Add(txtImgPahDel);
-        //    txtlist.Add(txtPriceDel);
-        //    txtlist.Add(txtIDEDel);
-
-        //    Item theitem = Global.DBHandler.SearchItembyID(Convert.ToInt32(txtIDEDel.Text));
-
-        //    if (Global.DBHandler.edit_delete_item(theitem, "delete"))
-        //    {
-        //        MessageBox.Show("Se ha eliminado correctamente el producto con el id: " + theitem.id);
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("No se pudo eliminar el producto con el id: " + theitem.id);
-        //    }
-
-        //    Global.UIRuntime.ClearTextBoxes(txtlist);
-        //    txtDescDel.Document.Blocks.Clear();
-        //    //Update the datagrids after delete
-        //    Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-        //    Global.UIRuntime.PopulateAllDataGrids(Global.DataGridList, Global.DatbaseInstance);
-        //}
         #endregion
 
         #region ComboboxAndSearchModule
@@ -508,6 +475,7 @@ namespace ItemInventoryApp
             if (!Global.DatbaseInstance.EditOn || Global.DatbaseInstance.TempPedido.id == Global.DatbaseInstance.LastPedidoID)
             {
                 InputBox.Visibility = System.Windows.Visibility.Visible;
+                InputTextBox.Focus();
             }
             else
             {
@@ -516,8 +484,7 @@ namespace ItemInventoryApp
                 btnEntregarPedido.IsEnabled = true;
             }
         }
-        #endregion
-
+        
         private void BtnSiguientePedido_Click(object sender, RoutedEventArgs e)
         {
             Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
@@ -711,6 +678,8 @@ namespace ItemInventoryApp
             }
         }
 
+        #endregion
+
         #region Reporting
 
         private void BtnGenerarReporte_Click(object sender, RoutedEventArgs e)
@@ -902,79 +871,6 @@ namespace ItemInventoryApp
         }
         #endregion
 
-        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
-        {
-            DriveExists();
-        }
-
-        private void GridItems_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-
-        }
-
-        private void GridItems_KeyUp(object sender, KeyEventArgs e)
-        {
-            //if (e.Key.Equals(Key.I))
-            //{
-            //    //Mostrar modal para introducir el ID
-
-            //    InputBoxID.Visibility = System.Windows.Visibility.Visible;
-            //    InputTextBoxID.Focus();
-            //}
-            //else if (e.Key.Equals(Key.C))
-            //{
-            //    //Mostrar modal para introducir el codigo
-            //    InputBoxCode.Visibility = System.Windows.Visibility.Visible;
-            //    InputTextBoxCode.Focus();
-            //}
-
-        }
-
-        private void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-            //MessageBox.Show(e.Key.ToString());
-            if (e.Key.Equals(Key.F1))
-            {
-                //Mostrar modal para introducir el ID
-
-                InputBoxID.Visibility = System.Windows.Visibility.Visible;
-                InputTextBoxID.Focus();
-            }
-            else if (e.Key.Equals(Key.F2))
-            {
-                //Mostrar modal para introducir el codigo
-                InputBoxCode.Visibility = System.Windows.Visibility.Visible;
-                InputTextBoxCode.Focus();
-            }
-        }
-
-        private void GridItems_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            //e.Text.ToLower();
-            //if (e.Text.Equals("i"))
-            //{
-            //    //Mostrar modal para introducir el ID
-
-            //    InputBoxID.Visibility = System.Windows.Visibility.Visible;
-            //    InputTextBoxID.Focus();
-            //}
-            //else if (e.Text.Equals("c"))
-            //{
-            //    //Mostrar modal para introducir el codigo
-            //    InputBoxCode.Visibility = System.Windows.Visibility.Visible;
-            //    InputTextBoxCode.Focus();
-            //}
-
-            //InputTextBoxID.Text = "";
-            //InputTextBoxCode.Text = "";
-
-        }
-
-        private void Window_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-
-        }
-
         #region PROMPTS
 
         private void YesButton_Click(object sender, RoutedEventArgs e)
@@ -1124,6 +1020,18 @@ namespace ItemInventoryApp
                 NoButtonCode_Click(this, new RoutedEventArgs());
             }
         }
+
+        private void InputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key.Equals(Key.Return))
+            {
+                YesButton_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key.Equals(Key.Escape))
+            {
+                NoButton_Click(this, new RoutedEventArgs());
+            }
+        }
         #endregion
 
         #region Principal Search
@@ -1138,5 +1046,54 @@ namespace ItemInventoryApp
             Global.DBHandler.SearchOnMainView(txtSearchPrincipal.Text.ToLower(), Global.UIRuntime);
         }
         #endregion
+
+        #region Window Handlers
+
+        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            DriveExists();
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            //MessageBox.Show(e.Key.ToString());
+            if (e.Key.Equals(Key.F1))
+            {
+                //Mostrar modal para introducir el ID
+
+                InputBoxID.Visibility = System.Windows.Visibility.Visible;
+                InputTextBoxID.Focus();
+            }
+            else if (e.Key.Equals(Key.F2))
+            {
+                //Mostrar modal para introducir el codigo
+                InputBoxCode.Visibility = System.Windows.Visibility.Visible;
+                InputTextBoxCode.Focus();
+            }
+        }
+        #endregion
+
+        private void ComboTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int selection = Convert.ToInt32(((DataRowView)ComboTheme.SelectedItem).Row[0]);
+            Global.UIRuntime.SetTheme(selection);
+        }
+
+        private void BtnLoadImageEdit_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Uri fileUri = new Uri(openFileDialog.FileName);
+                txtImagePahE.Text = fileUri.ToString().Substring(8);
+                byte[] imageInfo = File.ReadAllBytes(fileUri.ToString().Substring(8));
+                txtImagePahE.Text = new ImageHandler().SaveImageToLocal(Global.DatbaseInstance.LastItemID, imageInfo);
+            }
+        }
+
+        private void ClearImageE_Click(object sender, RoutedEventArgs e)
+        {
+            txtImagePahE.Text = string.Empty;
+        }
     } //End of the way
 }
