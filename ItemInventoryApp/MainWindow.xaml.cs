@@ -344,6 +344,23 @@ namespace ItemInventoryApp
                 MessageBox.Show("Todos los campos excepto el campo para imagen deben estar llenos antes de guardar un articulo.");
             }
         }
+
+        private void BtnLoadImageEdit_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Uri fileUri = new Uri(openFileDialog.FileName);
+                txtImagePahE.Text = fileUri.ToString().Substring(8);
+                byte[] imageInfo = File.ReadAllBytes(fileUri.ToString().Substring(8));
+                txtImagePahE.Text = new ImageHandler().SaveImageToLocal(Global.DatbaseInstance.LastItemID, imageInfo);
+            }
+        }
+
+        private void ClearImageE_Click(object sender, RoutedEventArgs e)
+        {
+            txtImagePahE.Text = string.Empty;
+        }
         #endregion
 
         #region ComboboxAndSearchModule
@@ -544,25 +561,8 @@ namespace ItemInventoryApp
 
         private void BtnEntregarPedido_Click(object sender, RoutedEventArgs e)
         {
-            //Cambiar estatus del pedido de 1 a 2
-            if (Global.DBHandler.CompletarPedidoConfirmado(Convert.ToInt32(CurrentPedidoInfo.Uid)))
-            {
-                MessageBox.Show("El pedido fue completado exitosamente.");
-                Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
-                if (!Global.DBHandler.GetNextConfirmedPedido("index").Equals(-1))
-                {
-                    Global.UIRuntime.InitPedidosQueue(Global.DatbaseInstance.Pedidos);
-                }
-                else
-                {
-                    btnEntregarPedido.IsEnabled = false;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Error completando el pedido.");
-            }
-
+            InputBoxCambio.Visibility = Visibility.Visible;
+            InputTextBoxCambio.Focus();
         }
 
         private void BtnLoadImage_Click(object sender, RoutedEventArgs e)
@@ -730,6 +730,7 @@ namespace ItemInventoryApp
             {
                 PickerReporteFinal.IsEnabled = true;
                 btnLimpiarCamposReporte.IsEnabled = true;
+                btnGenerarReporte.IsEnabled = true;
             }
         }
 
@@ -745,10 +746,7 @@ namespace ItemInventoryApp
 
         private void ComboReporte_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ComboReporte.SelectedItem != null)
-            {
-                btnGenerarReporte.IsEnabled = true;
-            }
+            btnGenerarReporte.IsEnabled = true;
         }
 
         private void BtnLimpiarCamposReporte_Click(object sender, RoutedEventArgs e)
@@ -1073,27 +1071,55 @@ namespace ItemInventoryApp
         }
         #endregion
 
+        #region Themes
         private void ComboTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int selection = Convert.ToInt32(((DataRowView)ComboTheme.SelectedItem).Row[0]);
             Global.UIRuntime.SetTheme(selection);
         }
+        #endregion
 
-        private void BtnLoadImageEdit_Click(object sender, RoutedEventArgs e)
+        private void InputTextBoxCambio_KeyDown(object sender, KeyEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
+            if (e.Key.Equals(Key.Escape))
             {
-                Uri fileUri = new Uri(openFileDialog.FileName);
-                txtImagePahE.Text = fileUri.ToString().Substring(8);
-                byte[] imageInfo = File.ReadAllBytes(fileUri.ToString().Substring(8));
-                txtImagePahE.Text = new ImageHandler().SaveImageToLocal(Global.DatbaseInstance.LastItemID, imageInfo);
+                InputBoxCambio.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                if (e.Key.Equals(Key.Return))
+                {
+                    if (!string.IsNullOrEmpty(txtCambio.Text))
+                    {
+                        double cambio = Convert.ToDouble(InputTextBoxCambio.Text) - (Global.DatbaseInstance.Pedidos.Find(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid))).Total);
+                        InputBoxCambio.Visibility = Visibility.Collapsed;
+                        //Cambiar estatus del pedido de 1 a 2
+                        if (Global.DBHandler.CompletarPedidoConfirmado(Convert.ToInt32(CurrentPedidoInfo.Uid)))
+                        {
+                            MessageBox.Show("El pedido fue completado exitosamente. Su cambio es: " + cambio);
+                            Global.DatbaseInstance = Global.DBHandler.UpdateDBObject();
+                            if (!Global.DBHandler.GetNextConfirmedPedido("index").Equals(-1))
+                            {
+                                Global.UIRuntime.InitPedidosQueue(Global.DatbaseInstance.Pedidos);
+                            }
+                            else
+                            {
+                                btnEntregarPedido.IsEnabled = false;
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error completando el pedido.");
+                        }
+                    }
+                }
             }
         }
 
-        private void ClearImageE_Click(object sender, RoutedEventArgs e)
+        private void InputTextBoxCambio_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            txtImagePahE.Text = string.Empty;
+            e.Handled = !Global.ValidationsHandler.isNumber(e.Text);
         }
     } //End of the way
 }

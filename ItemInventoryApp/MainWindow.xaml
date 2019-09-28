@@ -233,7 +233,8 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock x:Name="textNombrePedido" Grid.Row="0" Foreground="Black" Margin="0,0,0,0" MaxWidth="140" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow">Nombre del pedido</TextBlock>
+                            <TextBlock x:Name="textNombrePedido" Grid.Row="0" Foreground="Black" Margin="0,0,0,0" MaxWidth="140" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" 
+                                                                                                        VerticalAlignment="Center" TextWrapping="WrapWithOverflow">Nombre del pedido</TextBlock>
                             <ScrollViewer Grid.Row="1" HorizontalAlignment="Left" Height="auto" Width="166">
                                 <DockPanel x:Name="CurrentPedidoInfo"/>
                                 <!--A partir de aqui se clonaran los elementos para llenar la informacion del pedido que se esta atendiendo
@@ -254,9 +255,9 @@
                                 </Button>
                                 <Button x:Name="btnEliminarPedidoEnCola" Background="Red" Grid.Column="1" Padding="3"  
                                         FontSize="10" Content="Eliminar Pedido" Style = "{StaticResource btnEditarPedido}" Click="BtnEliminarPedidoEnCola_Click">
-                                <Button.Effect>
-                                    <DropShadowEffect/>
-                                </Button.Effect>
+                                    <Button.Effect>
+                                        <DropShadowEffect/>
+                                    </Button.Effect>
                                 </Button>
                             </Grid>
                         </Grid>
@@ -338,7 +339,7 @@
                                         </Grid>
 
                                         <Button x:Name="btnCreateNewProduct" Grid.Row="6" Padding="5" Margin="0,10,0,10" HorizontalAlignment="Center" Click="BtnCreateNewProduct_Click" 
-                                                Style = "{StaticResource btnPedidos}" Background="#FF45B1C9"> Registrar item
+                                                Style = "{StaticResource btnPedidos}" Background="#FF45B1C9">Registrar item
                                             <Button.Effect>
                                                 <DropShadowEffect/>
                                             </Button.Effect>
@@ -402,7 +403,7 @@
                                             <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtImagePahE" Grid.Row="6" Margin="130,0,0,0"/>
                                             <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDE" Grid.Row="6"/>
                                             <Button x:Name="btnEditar" Grid.Row="7" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnEditar_Click" 
-                                                    Style = "{StaticResource btnPedidos}" Background="Orange" IsEnabled="False"> Editar item
+                                                    Style = "{StaticResource btnPedidos}" Background="Orange" IsEnabled="False">Editar item
                                                 <Button.Effect>
                                                     <DropShadowEffect/>
                                                 </Button.Effect>
@@ -523,7 +524,7 @@
                         </Grid>
 
                         <!--DatagridView-->
-                        <DataGrid x:Name="DGSearchPedido" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick" Grid.ColumnSpan="2"/>
+                        <DataGrid x:Name="DGSearchPedido" Background="Gray" Margin="120,0,120,30" Grid.Row="2" IsReadOnly="True" MouseDoubleClick="DGDelete_MouseDoubleClick"/>
                     </Grid>
                     <!--Termina Columna de la derecha-->
                 </Grid>
@@ -557,7 +558,7 @@
                             <ComboBox Grid.Column="1" Width="100" x:Name="ComboReporte" SelectionChanged="ComboReporte_SelectionChanged">
                                 <ComboBoxItem Content="Utilidades"/>
                                 <ComboBoxItem Content="Producto popular"/>
-                                <ComboBoxItem Content="Reporte personalizado"/>
+                                <!--<ComboBoxItem Content="Reporte personalizado"/>-->
                             </ComboBox>
 
                             <Button x:Name="btnLimpiarCamposReporte" Content="Limpiar busqueda" Grid.Column="2" Width="120" Height="30" Margin="10,0,0,0" Style = "{StaticResource btnPedidos}" IsEnabled="False" Click="BtnLimpiarCamposReporte_Click"/>
@@ -777,6 +778,31 @@
             </Border>
         </Grid>
         <!--TERMINA PROMPT-->
+
+        <!-- It's important that this is in the end of the XAML as it needs to be on top of everything else!-->
+        <Grid x:Name="InputBoxCambio" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+            x:Name="PopUpCambio"
+            MinWidth="250"
+            Background="DodgerBlue" 
+            BorderBrush="Black" 
+            BorderThickness="10" 
+            CornerRadius="10" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock x:Name="txtCambio" Margin="15" Padding="5" FontSize="16" Text="¿Con que Cantidad Pago el cliente? Introduzca Cantidad y Presione 'Enter'" FontWeight="Black" FontFamily="Comic Sans MS" HorizontalAlignment="Center" />
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,15" Padding="5" FontSize="16" TextAlignment="Center" FontWeight="Black" x:Name="InputTextBoxCambio" KeyDown="InputTextBoxCambio_KeyDown" PreviewTextInput="InputTextBoxCambio_PreviewTextInput"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="btnOKCambio" Margin="5" Width="80" Content="OK" Visibility="Hidden" Style = "{StaticResource btnPedidos}" Click="YesButtonCode_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <!--TERMINA PROMPT-->
+
+
     </Grid>
     <!--End of the way-->
 </Window>

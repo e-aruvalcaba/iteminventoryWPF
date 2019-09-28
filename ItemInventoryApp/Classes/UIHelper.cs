@@ -43,6 +43,9 @@ namespace ItemInventoryApp.Classes
                 case "combobox":
                     var combobox = (ComboBox)el.FindName(childName);
                     return combobox;
+                case "datagrid":
+                    var datagrid = (DataGrid)el.FindName(childName);
+                    return datagrid;
 
                 default:
                     return new UIElement();

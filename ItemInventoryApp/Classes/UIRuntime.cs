@@ -137,7 +137,7 @@ namespace ItemInventoryApp.Classes
             dt.Columns.Add("c1", typeof(int));
             dt.Columns.Add("c2");
 
-            string[] displayMember = {"Default", "Tema 1", "Tema 2", "Azules Polares", "Aves y Bayas", "Bayas Azules", "Puesto Limonada", "Divertido y Tropical", "Citrico Alegre", "Pulido y Acogedor", "Verdes Frescos"};
+            string[] displayMember = {"Default", "Naranja Intenso", "Nubes de Lluvia", "Azules Polares", "Aves y Bayas", "Bayas Azules", "Puesto Limonada", "Divertido y Tropical", "Citrico Alegre", "Pulido y Acogedor", "Verdes Frescos"};
 
             for (int i = 0; i < 11; i++)
             {
@@ -458,7 +458,8 @@ namespace ItemInventoryApp.Classes
                 dg.ItemsSource = data;
             }
 
-        }        /*
+        }        
+        /*
            // SUMMARY
            // Sets the itemSource (DataSource) of datagrid pedido from the JSON DB
            // Return: Void
@@ -990,7 +991,7 @@ namespace ItemInventoryApp.Classes
         {
             List<Grid> elements = CreateListaPedido(selectedPedido);
 
-            ShowHidePedidoData(selectedPedido.Name, "show");
+            ShowHidePedidoData(selectedPedido.Name + Environment.NewLine +"Total Pedido: "+selectedPedido.Total, "show");
             DockPanel ViewElement = (DockPanel)new UIHelper().FindChildByName(Application.Current.MainWindow, "dockpanel", "CurrentPedidoInfo");
             ViewElement.Children.Clear();
             SetNextPedidoData(selectedPedido.id);

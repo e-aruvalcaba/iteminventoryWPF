@@ -875,6 +875,8 @@ namespace ItemInventoryApp.DAL
                 Pedido pedido = DBInstance.Pedidos.Find(x => x.id.Equals(pedidoId));
                 pedido.Status = new PedidoStatus().Completed;
                 SaveDB(DBInstance);
+                //Actualizar Tabla de Pedidos Completados
+                new UIRuntime().PopulatePedidosDataGrid((DataGrid)new UIHelper().FindChildByName(Application.Current.MainWindow, "datagrid", "DGSearchPedido"), DBInstance.Pedidos);
                 //Validar si quedan pedidos en la cola si no ocultar los paneles
                 if (GetNextConfirmedPedido("index").Equals(-1))
                 {
