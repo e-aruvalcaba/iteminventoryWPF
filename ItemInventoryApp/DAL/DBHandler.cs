@@ -1067,6 +1067,7 @@ namespace ItemInventoryApp.DAL
                 popular.Add(new PopularItem
                 {
                     id = item.id,
+                    code = item.Code,
                     Name = item.Name,
                     Description = item.Description,
                     Price = item.Price,
@@ -1078,7 +1079,14 @@ namespace ItemInventoryApp.DAL
             {
                 foreach (var item in pedido.ItemsQuantity)
                 {
-                    popular.Find(x => x.id.Equals(item.Id)).TotalInPedidos += 1;
+                    try
+                    {
+                        popular.Find(x => x.id.Equals(item.Id)).TotalInPedidos += 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.Message);
+                    }
                 }
             }
 
@@ -1191,7 +1199,8 @@ namespace ItemInventoryApp.DAL
                         success = SaveDB(newDB);
                         if (success)
                         {
-                            MessageBox.Show("Se ha restaurado la base de datos guardada en Google Drive Correctamente.");
+                            MessageBox.Show("Se ha restaurado la base de datos guardada en Google Drive Correctamente. Es necesario reiniciar el programa para el correcto funcionamiento");
+                            System.Environment.Exit(1);
                         }
                         else
                         {
@@ -1255,9 +1264,9 @@ namespace ItemInventoryApp.DAL
                 string fileName = string.Format("@{0}", fullpath);//@"C:\InventoryApp\_InventoryDB.json";
                 string content = "";
 
-                using (StreamReader sr = File.OpenText(fileName))
+                using (StreamReader sr = File.OpenText(fullpath))
                 {
-                    using (StreamReader r = new StreamReader(fileName))
+                    using (StreamReader r = new StreamReader(fullpath))
                     {
                         content = r.ReadToEnd();
                     }
@@ -1267,7 +1276,8 @@ namespace ItemInventoryApp.DAL
                 success = SaveDB(DBInstance);
                 if (success)
                 {
-                    MessageBox.Show("Se ha restaurado la BD local exitosamente.");
+                    MessageBox.Show("Se ha restaurado la BD local exitosamente. Es necesario reiniciar el programa para el correcto funcionamiento.");
+                    System.Environment.Exit(1);
                 }
             }
             catch (Exception ex)

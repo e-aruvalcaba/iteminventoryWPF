@@ -360,7 +360,7 @@
                                 <!-- Inicia columna de la izquierda-->
 
                                 <Border x:Name="FormEditarProducto" Padding="5" Grid.Column="0"  
-                                        Margin="10,70,10,30" BorderBrush="Black" BorderThickness="3,3,3,3" CornerRadius="30,30,30,30">
+                                        Margin="10,50,10,30" BorderBrush="Black" BorderThickness="3,3,3,3" CornerRadius="30,30,30,30">
                                     <!--COLOR DEL FORM#1-->
                                     <Border.Background>
                                         <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
@@ -402,7 +402,7 @@
                                             <Button x:Name="ClearImageE" Grid.Row="6" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,10,0" Height="30" Style = "{StaticResource btnPedidos}" Click="ClearImageE_Click">Quitar Imagen</Button>
                                             <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtImagePahE" Grid.Row="6" Margin="130,0,0,0"/>
                                             <TextBox Visibility="Hidden" IsEnabled="False" x:Name="txtIDE" Grid.Row="6"/>
-                                            <Button x:Name="btnEditar" Grid.Row="7" Margin="20,20,20,5" HorizontalAlignment="Center" Click="BtnEditar_Click" 
+                                            <Button x:Name="btnEditar" Grid.Row="7" Margin="20,10,20,3" HorizontalAlignment="Center" Click="BtnEditar_Click" 
                                                     Style = "{StaticResource btnPedidos}" Background="Orange" IsEnabled="False">Editar item
                                                 <Button.Effect>
                                                     <DropShadowEffect/>

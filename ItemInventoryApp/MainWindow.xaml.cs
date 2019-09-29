@@ -23,6 +23,11 @@ using Microsoft.Win32;
 namespace ItemInventoryApp
 {
     /// <summary>
+    /// ITEM INVENTORY APP -- DEVELOPED BY ADRIAN RUVALCABA GARCIA 
+    /// ICON CREDITS TO: <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/"             title="Flaticon">www.flaticon.com</a></div>
+    /// VERSION 1.0 ON SEPT 28 2019 
+    /// 
+    /// 
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
@@ -1089,7 +1094,7 @@ namespace ItemInventoryApp
             {
                 if (e.Key.Equals(Key.Return))
                 {
-                    if (!string.IsNullOrEmpty(txtCambio.Text))
+                    if (!string.IsNullOrEmpty(txtCambio.Text) && Convert.ToDouble(InputTextBoxCambio.Text) > (Global.DatbaseInstance.Pedidos.Find(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid))).Total))
                     {
                         double cambio = Convert.ToDouble(InputTextBoxCambio.Text) - (Global.DatbaseInstance.Pedidos.Find(x => x.id.Equals(Convert.ToInt32(CurrentPedidoInfo.Uid))).Total);
                         InputBoxCambio.Visibility = Visibility.Collapsed;
@@ -1112,6 +1117,10 @@ namespace ItemInventoryApp
                         {
                             MessageBox.Show("Error completando el pedido.");
                         }
+                    }
+                    else
+                    {
+                        MessageBox.Show("El pago debe ser mayor al precio del pedido.");
                     }
                 }
             }
